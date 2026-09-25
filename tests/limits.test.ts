@@ -75,7 +75,8 @@ describe('validateExport / usableMvDuration', () => {
     expect(warnings(validateExport(360, 350, undefined, 'mp4'))).toBe(0);
     const png = validateExport(360, 350, undefined, 'png', 30);
     expect(warnings(png)).toBe(1);
-    expect(png[0].message).toContain('10,800');
+    expect(png[0].key).toBe('limits.pngMany');
+    expect(png[0].params?.frames).toBe('10,800');
     expect(errors(validateExport(1000, 990, undefined, 'png'))).toBe(1);
   });
 

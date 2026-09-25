@@ -1,286 +1,296 @@
 # motiontext
 
-歌詞の字幕ファイルを読み込むだけで、リリックビデオ風の文字アニメーションを自動で作る Web アプリです。
-作った映像は、手持ちの MV（ミュージックビデオ）に重ねて使えます。
+**English** | [日本語](README.ja.md)
 
-**▶ アプリを開く： [https://louddrive.github.io/motiontext/](https://louddrive.github.io/motiontext/)**
+A web app that automatically turns a lyrics subtitle file into lyric-video-style text animation.
+You can overlay the result on your own MV (music video).
 
-- **インストール不要・無料**：ブラウザで開くだけで使えます。
-- **字幕を入れるだけで自動生成**：文字の動き・配置・色・縦書きなどを自動で決めます。気に入らなければボタン1つで作り直せます。
-- **データはどこにも送信されません**：字幕や MV は、あなたのパソコンのブラウザの中だけで処理されます。
+**▶ Open the app: [https://louddrive.github.io/motiontext/](https://louddrive.github.io/motiontext/)**
 
----
-
-## 目次
-
-1. [必要なもの](#必要なもの)
-2. [はじめての使い方（5ステップ）](#はじめての使い方5ステップ)
-3. [設定の説明](#設定の説明)
-4. [書き出し形式の選び方](#書き出し形式の選び方)
-5. [困ったとき](#困ったとき)
-6. [制限](#制限)
-7. [プライバシー](#プライバシー)
-8. [開発者向け情報](#開発者向け情報)
+- **Free, nothing to install**: just open it in your browser.
+- **Fully automatic**: motion, layout, colors and vertical text are chosen for you. Don't like it? Regenerate with one click.
+- **Your data never leaves your computer**: subtitles and MVs are processed only inside your browser.
+- **5 languages**: the interface is available in English, 日本語, 简体中文, 繁體中文 and 한국어 (language menu at the top right).
 
 ---
 
-## 必要なもの
+## Contents
 
-### 1. パソコンと、Chrome または Edge
+1. [What you need](#what-you-need)
+2. [Getting started (5 steps)](#getting-started-5-steps)
+3. [Settings](#settings)
+4. [Choosing an output format](#choosing-an-output-format)
+5. [Troubleshooting](#troubleshooting)
+6. [Limits](#limits)
+7. [Privacy](#privacy)
+8. [For developers](#for-developers)
 
-- **Google Chrome** または **Microsoft Edge** の最新版を使ってください。
-- Safari・Firefox・スマートフォンでは、書き出しの一部（または全部）が使えません。
+---
 
-### 2. 歌詞の字幕ファイル（SRT または SBV）
+## What you need
 
-字幕ファイルは、「どの時間に、どの歌詞を表示するか」を書いたテキストファイルです。拡張子は `.srt` か `.sbv` です。
+### 1. A computer with Chrome or Edge
 
-SRT 形式の例：
+- Use the latest **Google Chrome** or **Microsoft Edge**.
+- On Safari, Firefox and smartphones, some (or all) export features are not available.
+
+### 2. A lyrics subtitle file (SRT or SBV)
+
+A subtitle file is a text file that says which lyric to show at which time. Its extension is `.srt` or `.sbv`.
+
+SRT example:
 
 ```text
 1
 00:00:12,500 --> 00:00:15,000
-夜明けの街を歩いていく
+Walking through the city at dawn
 
 2
 00:00:15,200 --> 00:00:18,000
-君の笑顔を忘れないように
+So I never forget your smile
 ```
 
-- 番号、表示する時間（開始 --> 終了）、歌詞の順に並べ、字幕ごとに空行で区切ります。
-- YouTube Studio の字幕の編集画面から、`.srt` や `.sbv` 形式でダウンロードできます。字幕作成ソフトで作ったものも使えます。
-- 文字コードは UTF-8 と Shift_JIS に対応しています（どちらか分からなくても、自動で判別します）。
-- サンプルの字幕として [tests/fixtures/sample.srt](tests/fixtures/sample.srt) があります。まず試したいときに使ってください。
+- Each cue has a number, a time range (start --> end) and the lyric, separated by a blank line.
+- You can download `.srt` or `.sbv` files from the subtitle editor in YouTube Studio, or use files made with subtitle software.
+- UTF-8 and Shift_JIS text encodings are supported (detected automatically).
+- A sample file is available at [tests/fixtures/sample.srt](tests/fixtures/sample.srt) (Japanese lyrics) if you just want to try it.
 
-### 3.（任意）重ねたい MV や曲のファイル
+### 3. (Optional) The MV or song you want to overlay
 
-- 仕上がりを確認するとき、または「MV／曲と合成」で書き出すときに使います。
-- MV は **H.264 形式の MP4** がおすすめです。
-
----
-
-## はじめての使い方（5ステップ）
-
-画面は上から順に「1. 字幕ファイル」〜「5. 書き出し」の5つに分かれています。上から順に進めれば完成します。
-
-### ステップ 1：字幕ファイルを読み込む（「1. 字幕ファイル」）
-
-1. 「**SRT / SBV ファイルをドロップ**」と書かれた枠に、字幕ファイルをドラッグ＆ドロップします。枠をクリックしてファイルを選んでもかまいません。
-2. 読み込めると、ファイル名と字幕の件数が表示され、下に「2.」以降の欄が現れます。
-
-> 時刻の打ち間違いが疑われる字幕があると、「注意:」として表示されます。内容を確認してください。
-
-### ステップ 2：フォントを選ぶ（「2. フォント」）
-
-- 使いたい書体にチェックを入れます。**複数選べます**。
-- 書体には「**通常行向け**」と「**強調向け**」の2種類があります。
-  - 通常の歌詞には、通常行向けの書体が使われます。
-  - サビなどの目立たせたい行には、強調向けの書体が自動で使われます。
-- 迷ったら、最初から選ばれている「Noto Sans JP」と「Dela Gothic One」のままで大丈夫です。
-
-### ステップ 3：スタイルを選ぶ（「3. スタイル」）
-
-- 画面の向き・演出の強さ・文字の大きさなどを選びます。
-- どの項目も、選ぶとすぐ下のプレビューに反映されます。
-- 項目の意味は [設定の説明](#設定の説明) を見てください。**最初はそのままでも大丈夫です。**
-
-### ステップ 4：プレビューで確認する（「4. プレビュー」）
-
-- 「**再生**」ボタンで動きを確認できます。下のバーを動かすと、好きな時間に移動できます。
-- キーボードでも操作できます（文字の入力欄を選んでいないとき）。
-  - スペース：再生／停止
-  - ← →：1秒戻る／進む
-  - Shift ＋ ← →：0.1秒戻る／進む
-- 「**演出を再生成**」を押すと、同じ字幕で別の演出パターンを作り直します。気に入るまで何度でも押せます。
-  - 「**1つ前に戻す**」で、直前のパターンに戻れます（最大100回分さかのぼれます）。
-  - 「**パターン番号**」は、今のパターンの番号です。番号を控えておき、あとで入力欄に入力して Enter を押すと、同じパターンを再現できます（同じ字幕・同じ設定の場合）。
-- 「**MV / 音声を読み込む（任意・確認用）**」で MV や曲を読み込むと、実際に重ねたときの見え方を確認できます。
-  - 「MVに重ねて表示」のチェックで、重ねる・重ねないを切り替えられます。
-  - 読み込んだ MV／曲の長さは、書き出しの長さにも反映されます。
-- 字幕と MV のタイミングがずれているときは、「**字幕のタイミング**」で字幕全体をずらせます。
-  - 「+0.1秒」で字幕が遅く、「-0.1秒」で早く表示されます。秒数を直接入力することもできます（±30秒まで）。
-  - 「0に戻す」で元に戻ります。字幕ファイル自体は書き換わりません。
-- 「**字幕の一覧**」を開くと、字幕が時間順に並びます。行をクリックすると、その字幕の時刻に移動します。再生中の字幕は色が変わります。
-
-### ステップ 5：書き出す（「5. 書き出し」）
-
-1. 書き出し形式（「3. スタイル」の「出力形式」で選んだもの）に合わせたボタンを押します。
-   - MP4 の場合：「**MP4 を書き出す**」。いつものダウンロードと同じように、パソコンに保存されます。
-   - PNG 連番の場合：「**保存先を選んで PNG連番を書き出す**」。保存先のフォルダを選ぶ画面が開きます。
-   - 合成の場合：「**保存先を選んで合成 MP4 を書き出す**」。保存するファイルの名前と場所を選ぶ画面が開きます。
-2. 進み具合と残り時間の目安が表示されます。終わるまで、そのページを閉じずに待ってください。途中でやめたいときは「キャンセル」を押します。
-3. 書き出したファイルを、動画編集ソフトで MV に重ねます（手順は [書き出し形式の選び方](#書き出し形式の選び方) を参照）。
-
-> 書き出しが終わっても、画面はそのまま残ります。続けて別の形式（例：MP4 と PNG 連番の両方）でも書き出せます。
-> 作業が終わったら、右上の「**データを破棄**」を押すか、ページを閉じてください。
-> 書き出しと同時に消したい場合は、書き出す前に「書き出し後にアプリ内のデータ（字幕・MV・生成結果）を自動で破棄する」にチェックを入れてください。
+- Used to check the result, or to export with "Composite with MV / song".
+- For MVs, an **H.264 MP4** is recommended.
 
 ---
 
-## 設定の説明
+## Getting started (5 steps)
 
-「3. スタイル」の各項目の意味です。迷ったら「おすすめ」を選んでください。
+The page is divided into five sections, "1. Subtitle file" to "5. Export". Work from top to bottom.
 
-| 項目 | 選べるもの | どう変わるか | おすすめ |
+> The interface language is chosen from your browser's language settings (English unless it is Japanese, Chinese or Korean). You can change it with the language menu at the top right.
+> The chosen language is added to the URL (e.g. `?lang=en`), so a bookmark opens in the same language next time (nothing is saved in the browser).
+
+### Step 1: Load a subtitle file ("1. Subtitle file")
+
+1. Drag and drop your subtitle file onto the box that says "**Drop an SRT / SBV file**". You can also click the box to choose a file.
+2. Once loaded, the file name and the number of cues are shown, and the sections from "2." onward appear.
+
+> If a timestamp looks like a typo, it is shown as "Note:". Please check it.
+
+### Step 2: Choose fonts ("2. Fonts")
+
+- Check the fonts you want to use. **You can select more than one.**
+- Fonts come in two types: "**Regular**" and "**Emphasis**".
+  - Regular fonts are used for normal lyrics.
+  - Emphasis fonts are used automatically for lines you want to stand out, such as the chorus.
+- If unsure, keep the defaults, "Noto Sans JP" and "Dela Gothic One".
+
+> The bundled fonts are Japanese fonts. They also cover English. Some Korean (Hangul) and Simplified Chinese characters are not included and are drawn with your system's fonts instead.
+
+### Step 3: Choose a style ("3. Style")
+
+- Choose the aspect ratio, effect level, text size and more.
+- Every change is reflected in the preview right away.
+- See [Settings](#settings) for what each option does. **The defaults are fine to start with.**
+
+### Step 4: Check the preview ("4. Preview")
+
+- Press "**Play**" to watch the animation. Drag the bar to jump to any time.
+- You can also use the keyboard (when you are not typing in a text field):
+  - Space: play / pause
+  - ← →: back / forward 1 second
+  - Shift + ← →: back / forward 0.1 seconds
+- Press "**Regenerate**" to create a different animation pattern for the same subtitles. Press it as many times as you like.
+  - "**Undo**" goes back to the previous pattern (up to 100 steps).
+  - "**Pattern No.**" is the number of the current pattern. Write it down, and later type it into the field and press Enter to reproduce the same pattern (with the same subtitles and settings).
+- Use "**Load MV / audio (optional, for preview)**" to see how the lyrics look over your MV or song.
+  - The "Overlay on MV" checkbox turns the overlay on and off.
+  - The length of the loaded MV / song is also used as the export length.
+- If the subtitles and the MV are out of sync, shift all subtitles with "**Subtitle timing**".
+  - "+0.1 s" shows the subtitles later, "-0.1 s" earlier. You can also type a value (up to ±30 seconds).
+  - "Reset to 0" undoes the shift. The subtitle file itself is not modified.
+- Open the "**Subtitle list**" to see all cues in time order. Click a row to jump to that cue. The cue being played is highlighted.
+
+### Step 5: Export ("5. Export")
+
+1. Press the button for your output format (chosen under "Output" in "3. Style"):
+   - MP4: "**Export MP4**". The file is saved like a normal download.
+   - PNG sequence: "**Choose a folder and export the PNG sequence**". A dialog opens to choose the destination folder.
+   - Composite: "**Choose a file and export the composite MP4**". A dialog opens to choose the file name and location.
+2. The progress and the estimated time left are shown. Keep the page open until it finishes. Press "Cancel" to stop.
+3. Overlay the exported file on your MV in your video editor (see [Choosing an output format](#choosing-an-output-format)).
+
+> After exporting, the page stays as it is, so you can also export in another format (for example, both MP4 and a PNG sequence).
+> When you are done, click "**Clear data**" at the top right or close the page.
+> To clear the data automatically, check "Clear app data (subtitles, MV, results) after exporting" before exporting.
+
+---
+
+## Settings
+
+What each option in "3. Style" does. When in doubt, pick the "Recommended" value.
+
+| Option | Choices | What it changes | Recommended |
 |---|---|---|---|
-| 画面比率 | 16:9（横） / 9:16（縦・Shorts / Reels / TikTok） | 横長の動画か、スマホ向けの縦長の動画か | 通常の MV なら 16:9 |
-| 演出レベル | 演出なし（可読性重視） / 控えめ / 標準 / エモい / 超エモ | 文字の動きの激しさ。上げるほど、奥行きのあるカメラの動き・縦書き・装飾が増える | 日本向けは「標準」〜「エモい」、英語圏向けや読みやすさ重視なら「演出なし」 |
-| 出力形式 | MP4（CapCut など） / PNG連番・背景透過（DaVinci Resolve など） / MV／曲と合成（MP4・音声付き） | 書き出すファイルの種類 | [書き出し形式の選び方](#書き出し形式の選び方) を参照 |
-| 背景 | 黒 / グリーン | MP4 の背景の色。PNG 連番と合成では自動で決まる | 黒 |
-| 文字サイズ | 小 / 中 / 大（画面いっぱい） | 歌詞の大きさ。「大」は歌詞が画面いっぱいに広がる | 中 |
-| 漢字とかなのサイズ差 | なし / 控えめ / 標準 / 強め | 漢字を大きく、ひらがなを小さくして、メリハリを付ける | 標準 |
-| 画数の多い漢字を強調 | オン / オフ | 各行で、いちばん画数の多い漢字の言葉を少し大きくする | オン |
-| 縦書き | 自動 / なし / 常に（日本語の行） | 日本語の歌詞を縦書きにする。「自動」では横書きと混ざる | 自動 |
-| 文字色 | 自動（テーマ配色） / 単色指定 | 文字の色。単色指定では色を1つ選べる | 自動 |
+| Aspect ratio | 16:9 (landscape) / 9:16 (portrait · Shorts / Reels / TikTok) | A landscape video or a vertical video for phones | 16:9 for a regular MV |
+| Effect level | None (readability first) / Subtle / Standard / Emotional / Ultra emotional | How intense the motion is. Higher levels add more 3D camera moves, vertical text and decorations | "Standard"–"Emotional" for Japanese audiences; "None" for English-speaking audiences or maximum readability |
+| Output | MP4 (CapCut, etc.) / PNG sequence · transparent (DaVinci Resolve, etc.) / Composite with MV / song (MP4 with audio) | The type of file to export | See [Choosing an output format](#choosing-an-output-format) |
+| Background | Black / Green | The MP4 background color. Set automatically for PNG sequences and composites | Black |
+| Text size | Small / Medium / Large (fill the screen) | Size of the lyrics. "Large" fills the screen | Medium |
+| Kanji / kana size contrast | None / Subtle / Standard / Strong | Makes kanji larger and kana smaller for rhythm (Japanese lyrics only) | Standard |
+| Emphasize kanji with many strokes | On / Off | Slightly enlarges the kanji word with the most strokes on each line (Japanese lyrics only) | On |
+| Vertical text | Auto / Off / Always (Japanese lines) | Sets Japanese lyrics vertically. "Auto" mixes vertical and horizontal lines | Auto |
+| Text color | Auto (theme colors) / Single color | The text color. "Single color" lets you pick one color | Auto |
 
-補足：
+Notes:
 
-- **縦書き**になるのは、日本語だけの行です。英字や数字を含む行は、横書きのままになります。
-- **「演出なし」**では、文字が動かず、ふわっと表示されて消えるだけになります。読みやすさを最優先したいときに使います。
-- 背景を「黒」にしたときに暗い文字色を選ぶと、重ねたときにほとんど見えなくなるので、警告が表示されます。背景を「グリーン」にしたときの緑系の文字色も同様です。
+- Only lines that are entirely Japanese become **vertical**. Lines containing Latin letters or digits stay horizontal.
+- With **"None"**, the text does not move; it simply fades in and out. Use it when readability comes first.
+- A warning is shown if you pick a dark text color with a black background (it becomes nearly invisible when overlaid), or a greenish color with a green background.
 
 ---
 
-## 書き出し形式の選び方
+## Choosing an output format
 
-### どれを選べばいい？
+### Which one should I use?
 
-| やりたいこと | 選ぶ出力形式 |
+| What you want to do | Output to choose |
 |---|---|
-| **CapCut** などで MV に重ねたい | MP4（CapCut など）＋ 背景「黒」 |
-| **DaVinci Resolve** などで MV に重ねたい | PNG連番・背景透過（DaVinci Resolve など） |
-| 編集ソフトを使わず、**そのまま完成した動画**がほしい | MV／曲と合成（MP4・音声付き） |
+| Overlay on your MV in **CapCut** or similar | MP4 (CapCut, etc.) + "Black" background |
+| Overlay on your MV in **DaVinci Resolve** or similar | PNG sequence · transparent (DaVinci Resolve, etc.) |
+| Get a **finished video** without an editor | Composite with MV / song (MP4 with audio) |
 
-### MP4（CapCut など）
+### MP4 (CapCut, etc.)
 
-- 歌詞だけが入った、背景が黒（またはグリーン）の動画です。
-- CapCut での重ね方：
-  - **背景が黒の場合（おすすめ）**：MV の上に「オーバーレイ」で追加し、「描画モード」を「**スクリーン**」にします。黒い部分が消えて、歌詞だけが残ります。
-  - **背景がグリーンの場合**：MV の上に「オーバーレイ」で追加し、「**クロマキー**」で緑色を選んで消します。
-- 縦型（9:16）で書き出した場合は、CapCut のプロジェクトの比率も 9:16 にしてください。
+- A video with only the lyrics on a black (or green) background.
+- How to overlay it in CapCut:
+  - **Black background (recommended)**: add it on top of the MV as an "Overlay" and set the blend mode to "**Screen**". The black disappears, leaving only the lyrics.
+  - **Green background**: add it on top of the MV as an "Overlay" and remove the green with "**Chroma key**".
+- If you exported a portrait (9:16) video, set the CapCut project ratio to 9:16 as well.
 
-### PNG連番・背景透過（DaVinci Resolve など）
+### PNG sequence · transparent (DaVinci Resolve, etc.)
 
-- 1コマずつの画像（PNG）が、連番のファイルとしてフォルダにまとめて保存されます。背景は透明です。
-- 保存するときは、親フォルダを選びます。その中に新しいフォルダが作られ、画像が保存されます。
-  - 同じ名前のフォルダがすでにあっても上書きしません（名前の末尾に `_2` などが付きます）。
-- DaVinci Resolve での使い方：書き出したフォルダを「メディアプール」にドラッグします。連番の画像が1本の動画として読み込まれ、背景の透明もそのまま使えます。
-- ファイル数と容量が大きくなります。1分あたり約1,800枚・約0.3〜0.6GB が目安です。保存先の空き容量を確認してください。
+- Each frame is saved as a numbered PNG image in a folder. The background is transparent.
+- When saving, you choose a parent folder. A new folder is created inside it for the images.
+  - Existing folders are never overwritten (a suffix such as `_2` is added).
+- In DaVinci Resolve: drag the exported folder into the Media Pool. The images are loaded as a single clip, with transparency.
+- This uses a lot of files and disk space: about 1,800 images and 0.3–0.6 GB per minute. Check the free space at the destination.
 
-### MV／曲と合成（MP4・音声付き）
+### Composite with MV / song (MP4 with audio)
 
-- 読み込んだ MV の上に歌詞を重ねた、**音声付きの完成した動画**を書き出します。
-- 曲（音声だけのファイル）を読み込んだ場合は、黒い背景に歌詞が流れる動画になります。
-- この形式を選ぶには、先に「4. プレビュー」の「MV / 音声を読み込む（任意・確認用）」で MV か曲を読み込んでおく必要があります。
-- MV の縦横比と画面比率が違う場合は、画面いっぱいになるように拡大し、はみ出した部分は切り取ります。
-- 1秒あたりのコマ数（fps）は、MV に合わせます（最大 60）。
-- 音声は、できるだけ元のまま（音質が変わらない形）で入れます。
-
----
-
-## 困ったとき
-
-### 字幕ファイルが読み込めない
-
-- 拡張子が `.srt` か `.sbv` か確認してください。
-- 時間の書き方（`00:00:12,500 --> 00:00:15,000` など）が崩れていないか確認してください。
-- 字幕ファイルは 1MB まで、字幕は 3,000 件までです。
-
-### 保存先を選ぶ画面が出ない／出力形式が選べない
-
-- Chrome または Edge の最新版を使ってください。PNG連番と合成は、この2つのブラウザでしか使えません。
-- 「MV／曲と合成」は、MV か曲を読み込むまで選べません。
-
-### MV が読み込めない・合成でエラーになる
-
-- MV の形式によっては、ブラウザで読み込めないことがあります（特に HEVC／H.265 形式）。
-- HandBrake などの変換ソフトで「H.264 の MP4」に変換してから、もう一度読み込んでください。
-
-### 書き出しに時間がかかる
-
-- パソコンの性能によって大きく変わります。書き出し中は残り時間の目安が表示されます。
-- 書き出し中にページを閉じたり、再読み込みしたりしないでください。
-
-### 気に入った演出をもう一度作りたい
-
-- 「演出を再生成」を押しすぎたときは、「1つ前に戻す」で前のパターンに戻れます。
-- 後日同じパターンで作り直したい場合は、「パターン番号」を控えておいてください。同じ字幕・同じ設定（フォント・スタイル・字幕のタイミング）で番号を入力すると、同じ演出になります。
-- パターン番号や設定は、ブラウザには保存されません（ページを閉じると消えます）。
-
-### 途中でキャンセルしたら「削除しますか？」と出た
-
-- 途中まで書き出したファイル（またはフォルダ）が残っています。
-- 不要なら「ファイルを削除する」（または「フォルダを削除する」）を、残したいなら「残す」を押してください。
+- Exports a **finished video with audio**, with the lyrics over the loaded MV.
+- If you load a song (audio only), the video shows the lyrics on a black background.
+- To choose this format, first load an MV or song with "Load MV / audio (optional, for preview)" in "4. Preview".
+- If the MV's aspect ratio differs from the output, the MV is scaled to fill the screen and the overflow is cropped.
+- The frame rate (frames per second, fps) follows the MV (up to 60).
+- The audio is kept as-is whenever possible (no quality change).
 
 ---
 
-## 制限
+## Troubleshooting
 
-- 字幕ファイル：**1MB まで**、字幕は **3,000 件まで**
-- 書き出しの長さ：**15 分まで**
-  - 10 分を超えると（PNG 連番は 5 分を超えると）、時間と容量が大きくなる旨の注意が出ます。
-- 時刻の打ち間違いの確認：次の場合に注意を表示します。
-  - 前の字幕から 10 分以上離れている字幕がある。
-  - 1つの字幕が 60 秒以上表示される。
-- MV：ファイルの大きさの制限はありません。ただし 15 分を超える MV は、合成には使えません。
+### The subtitle file won't load
+
+- Make sure the extension is `.srt` or `.sbv`.
+- Make sure the timestamps are well-formed (for example `00:00:12,500 --> 00:00:15,000`).
+- Subtitle files are limited to 1 MB and 3,000 cues.
+
+### The save dialog doesn't open / an output format can't be selected
+
+- Use the latest Chrome or Edge. PNG sequences and composites work only in these two browsers.
+- "Composite with MV / song" can't be selected until you load an MV or song.
+
+### The MV won't load / compositing fails
+
+- Some video formats can't be read by browsers (especially HEVC / H.265).
+- Convert the video to an H.264 MP4 with a tool such as HandBrake, then load it again.
+
+### Exporting takes a long time
+
+- It depends heavily on your computer. The estimated time left is shown while exporting.
+- Don't close or reload the page while exporting.
+
+### I want to recreate a pattern I liked
+
+- If you pressed "Regenerate" too many times, use "Undo" to go back.
+- To recreate the same pattern later, write down the "Pattern No.". Entering it with the same subtitles and settings (fonts, style, subtitle timing) gives the same animation.
+- Pattern numbers and settings are not saved in the browser (they are gone when you close the page).
+
+### I canceled and was asked "Delete it?"
+
+- A partially exported file (or folder) remains.
+- Press "Delete file" (or "Delete folder") if you don't need it, or "Keep" to keep it.
 
 ---
 
-## プライバシー
+## Limits
 
-- 字幕・MV・曲は、**あなたのブラウザの中だけで処理**され、インターネット上のどこにも送信されません。
-- ブラウザにデータを保存することもありません。ページを閉じる、または「**データを破棄**」ボタンを押すと、アプリ内のデータは消えます。
-- 書き出したファイルは、あなたが選んだ場所に保存されます。ブラウザのダウンロード履歴も含め、アプリから消すことはできないので、必要に応じてご自身で管理してください。
+- Subtitle file: **up to 1 MB** and **3,000 cues**
+- Export length: **up to 15 minutes**
+  - Over 10 minutes (5 minutes for PNG sequences), a note warns that it will take more time and space.
+- Timestamp checks: a note is shown when
+  - a cue starts 10 minutes or more after the previous one, or
+  - a single cue is displayed for 60 seconds or more.
+- MV: no file size limit, but MVs longer than 15 minutes can't be used for compositing.
 
 ---
 
-## 開発者向け情報
+## Privacy
 
-### 開発環境
+- Subtitles, MVs and songs are **processed only in your browser** and are never sent anywhere on the internet.
+- Nothing is saved in the browser. Closing the page or pressing "**Clear data**" removes the data from the app.
+- Exported files are saved where you choose. The app can't delete them (or your browser's download history), so please manage them yourself as needed.
+
+---
+
+## For developers
+
+### Development
 
 ```sh
 npm install
-npm run dev      # 開発サーバー
-npm test         # 単体テスト（Vitest）
-npm run build    # 型チェック + 本番ビルド（dist/ を静的ホスティング）
+npm run dev      # dev server
+npm test         # unit tests (Vitest)
+npm run build    # type check + production build (serve dist/ as static files)
 ```
 
-### 技術メモ
+### Technical notes
 
-- 描画は Canvas 2D。書き出しは Worker 内で WebCodecs（H.264）と [Mediabunny](https://mediabunny.dev/) を使い、MP4 の生成と MV の読み込みを行う。
-- PNG 連番と合成は File System Access API で保存先へ直接書き込む（メモリに溜めないので長尺でも容量の問題が起きない）。
-- MP4（歌詞のみ）は全体をメモリ上に作ってから保存するため、10 分超で警告を出す。
-- 本番ビルドは CSP（`index.html` の meta タグ）で外部接続を禁止している。localStorage / IndexedDB / Cookie / Service Worker は使わない。
-- 制限値は [src/limits.ts](src/limits.ts) の `LIMITS` にまとめている。
+- Rendering uses Canvas 2D. Exporting runs in a Worker with WebCodecs (H.264) and [Mediabunny](https://mediabunny.dev/) to create MP4s and read MVs.
+- PNG sequences and composites are written directly to the destination with the File System Access API (nothing accumulates in memory, so long videos are fine).
+- Lyrics-only MP4s are built in memory before saving, so a warning is shown over 10 minutes.
+- The production build blocks external connections with a CSP (meta tag in `index.html`). localStorage / IndexedDB / cookies / Service Workers are not used.
+- Limits are defined in `LIMITS` in [src/limits.ts](src/limits.ts).
+- UI text lives in the dictionaries in [src/i18n/messages/](src/i18n/messages/). English (`en.ts`) is the source; missing keys in other languages are caught by the type checker. Logic code (validation, export errors) returns keys and parameters instead of text, and the UI translates them.
 
-### 構成
+### Structure
 
 ```text
-src/parsers    SRT/SBV パーサー
-src/analysis   特徴量（テンポ・セクション・サビ推定・文節近似分割・画数・縦書き判定）
-src/director   特徴量 + テーマ + シード → Timeline（決定的）
-src/themes     テーマ定義と演出レベル
-src/fonts      同梱フォントカタログとローダー（@fontsource, OFL-1.1）
-src/animations 演出と装飾
-src/render     レイアウト（横書き・縦書き）・疑似3Dカメラ・描画（renderFrame は時刻の純関数）
-src/export     書き出し（MP4 / PNG 連番 / MV との合成、Worker）
-src/session    Blob URL 管理・破棄
+src/parsers    SRT/SBV parsers
+src/analysis   Features (tempo, sections, chorus detection, phrase segmentation, stroke counts, vertical-text check)
+src/director   Features + theme + seed → Timeline (deterministic)
+src/themes     Theme definitions and effect levels
+src/fonts      Bundled font catalog and loader (@fontsource, OFL-1.1)
+src/animations Animations and decorations
+src/render     Layout (horizontal / vertical), pseudo-3D camera, rendering (renderFrame is a pure function of time)
+src/export     Export (MP4 / PNG sequence / composite with MV, in a Worker)
+src/session    Blob URL management and cleanup
 src/ui         React UI
-src/data       生成データ（漢字の総画数表）
-scripts        データ生成・ライセンス収集スクリプト
+src/i18n       Localization (dictionaries: en / ja / zh-Hans / zh-Hant / ko, language detection, React context)
+src/data       Generated data (kanji stroke counts)
+scripts        Data generation and license collection scripts
 ```
 
-### デプロイ（GitHub Pages）
+### Deployment (GitHub Pages)
 
-- `main` に push すると `.github/workflows/deploy.yml` が実行され、テスト → ビルド → GitHub Pages へのデプロイまで自動で行う。
-- 配信パスはリポジトリ名から自動で決まる（`BASE_PATH=/<リポジトリ名>/`）。
-  - 手元で同じ構成を確認するときは `BASE_PATH=/motiontext/ npm run build && BASE_PATH=/motiontext/ npx vite preview` を実行する（Git Bash では先頭に `MSYS_NO_PATHCONV=1` を付ける）。
-- 初回のみ、リポジトリの Settings → Pages → Source を「GitHub Actions」にする。
-- 第三者ライセンスはビルド時に `dist/THIRD_PARTY_LICENSES.txt` として生成し、画面下部の「ライセンス一覧」からリンクしている。
+- Pushing to `main` runs `.github/workflows/deploy.yml`: test → build → deploy to GitHub Pages.
+- The base path comes from the repository name (`BASE_PATH=/<repo name>/`).
+  - To reproduce it locally: `BASE_PATH=/motiontext/ npm run build && BASE_PATH=/motiontext/ npx vite preview` (in Git Bash, prefix with `MSYS_NO_PATHCONV=1`).
+- One-time setup: set the repository's Settings → Pages → Source to "GitHub Actions".
+- Third-party licenses are generated at build time as `dist/THIRD_PARTY_LICENSES.txt` and linked from "Licenses" at the bottom of the page.
 
-### ライセンス
+### License
 
-- このアプリ本体：Apache License 2.0（[LICENSE](LICENSE)）
-- フォント：@fontsource 経由（SIL Open Font License 1.1）
-- 漢字の総画数：Unicode Unihan Database 18.0.0 `kTotalStrokes`（Unicode License v3、[src/data/UNICODE-LICENSE.txt](src/data/UNICODE-LICENSE.txt)）
-  - JIS X 0208/0212/0213 の漢字 12,155 字。再生成は `node scripts/gen-strokes.mjs <Unihan展開先>`
+- This app: Apache License 2.0 ([LICENSE](LICENSE))
+- Fonts: via @fontsource (SIL Open Font License 1.1)
+- Kanji stroke counts: Unicode Unihan Database 18.0.0 `kTotalStrokes` (Unicode License v3, [src/data/UNICODE-LICENSE.txt](src/data/UNICODE-LICENSE.txt))
+  - 12,155 kanji from JIS X 0208/0212/0213. Regenerate with `node scripts/gen-strokes.mjs <Unihan dir>`.

@@ -1,4 +1,6 @@
 import type { Timeline } from '../director/types';
+import type { MessageParams } from '../i18n/errors';
+import type { MessageKey } from '../i18n/messages/en';
 import type { CompositeResult } from './composite';
 
 /** mp4: 黒／グリーン背景の H.264 / png: 背景透過の PNG 連番 / composite: MV／曲と合成した MP4（音声付き） */
@@ -21,5 +23,6 @@ export type FromWorker =
   | { type: 'framesDone'; total: number }
   /** 合成の完了 */
   | { type: 'compositeDone'; result: CompositeResult }
-  | { type: 'error'; message: string }
+  /** key があれば画面側で翻訳する（想定外のエラーは message をそのまま表示） */
+  | { type: 'error'; message: string; key?: MessageKey; params?: MessageParams }
   | { type: 'canceled' };

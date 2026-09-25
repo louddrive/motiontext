@@ -95,3 +95,5 @@ footer a { color: var(--muted); }
 .cue-time { color: var(--muted); font-variant-numeric: tabular-nums; flex: none; width: 4.5em; }
 .cue-list li.active .cue-time { color: var(--accent); }
 .cue-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lang-select { margin-left: auto; font-size: 13px; padding: 4px 8px; }
+header .lang-select + button.danger { margin-left: 8px; }

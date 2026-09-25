@@ -1,0 +1,174 @@
+// 英語（基準の辞書）。ここにあるキーが全言語で必須になる（他言語は Record<MessageKey, string> で型チェック）
+// {name} は t() の params で差し込む
+export const en = {
+  // ヘッダー・全体
+  'app.tagline': 'Subtitles → auto-generated lyric motion',
+  'app.language': 'Language',
+  'app.wipe': 'Clear data',
+  'app.wiped': 'Data cleared.',
+  'sec.subtitle': '1. Subtitle file',
+  'sec.fonts': '2. Fonts',
+  'sec.style': '3. Style',
+  'sec.preview': '4. Preview',
+  'sec.export': '5. Export',
+
+  // 字幕ファイル
+  'drop.title': 'Drop an SRT / SBV file',
+  'drop.sub': 'or click to choose (files are processed only in your browser and never uploaded)',
+  'subtitle.loaded': '{name} ({format} / {count} cues)',
+  'subtitle.warnings': '{count} warnings',
+
+  // フォント
+  'font.hint':
+    'You can select more than one. {body} fonts are used for regular lines, and {display} fonts are used automatically for emphasized lines such as the chorus (if you only pick one type, it is used for both).',
+  'font.role.body': 'Regular',
+  'font.role.display': 'Emphasis',
+  'font.sample': 'Sample lyrics',
+
+  // スタイル
+  'style.aspect': 'Aspect ratio',
+  'aspect.landscape': '16:9 (landscape)',
+  'aspect.portrait': '9:16 (portrait · Shorts / Reels / TikTok)',
+  'style.effect': 'Effect level',
+  'effect.none': 'None (readability first)',
+  'effect.subtle': 'Subtle',
+  'effect.standard': 'Standard',
+  'effect.emo': 'Emotional',
+  'effect.ultra': 'Ultra emotional',
+  'style.output': 'Output',
+  'output.mp4': 'MP4 (CapCut, etc.)',
+  'output.png': 'PNG sequence · transparent (DaVinci Resolve, etc.)',
+  'output.composite': 'Composite with MV / song (MP4 with audio)',
+  'output.chromeOnly': ' *Chrome / Edge only',
+  'output.needMedia': ' *Load an MV / song in Preview to enable',
+  'style.background': 'Background',
+  'bg.transparent': 'Transparent',
+  'bg.mv': 'MV (black for audio only)',
+  'bg.black': 'Black (CapCut "Screen" blend · recommended)',
+  'bg.green': 'Green (CapCut "Chroma key")',
+  'style.size': 'Text size',
+  'size.small': 'Small',
+  'size.medium': 'Medium',
+  'size.large': 'Large (fill the screen)',
+  'style.contrast': 'Kanji / kana size contrast',
+  'contrast.none': 'None',
+  'contrast.soft': 'Subtle',
+  'contrast.normal': 'Standard',
+  'contrast.strong': 'Strong',
+  'style.strokeEmphasis': 'Emphasize kanji with many strokes',
+  'style.vertical': 'Vertical text',
+  'vertical.auto': 'Auto',
+  'vertical.off': 'Off',
+  'vertical.always': 'Always (Japanese lines)',
+  'style.color': 'Text color',
+  'color.auto': 'Auto (theme colors)',
+  'color.single': 'Single color',
+  'style.keyWarning':
+    'This color is close to green and may be removed together with the background by the chroma key. A black background or a different color is recommended.',
+  'style.darkWarning':
+    'Dark colors become almost invisible with "Screen" blending. A bright color or a green background is recommended.',
+
+  // プレビュー
+  'seed.regenerate': 'Regenerate',
+  'seed.undo': 'Undo',
+  'seed.label': 'Pattern No.',
+  'seed.title': 'With the same subtitles and settings, the same number reproduces the same animation',
+  'mv.load': 'Load MV / audio (optional, for preview)',
+  'mv.loaded': '{name} ({sec} s, used as the export length)',
+  'mv.loadFailed': 'Could not load the MV / audio file.',
+  'timing.label': 'Subtitle timing',
+  'timing.title': 'Shifts all subtitles (up to ±{max} s). Positive values show them later, negative values earlier',
+  'timing.aria': 'Subtitle timing (seconds)',
+  'timing.minus': '-0.1 s',
+  'timing.plus': '+0.1 s',
+  'timing.unit': 's',
+  'timing.reset': 'Reset to 0',
+  'preview.loadingFonts': 'Loading fonts…',
+  'preview.play': 'Play',
+  'preview.pause': 'Pause',
+  'preview.overlay': 'Overlay on MV',
+  'preview.keys': 'Keys: Space = play / pause, ← → = move 1 s, Shift + ← → = move 0.1 s',
+  'preview.cueList': 'Subtitle list (click to jump) · {count} cues',
+
+  // 書き出し
+  'export.unsupported': 'This browser does not support video export with WebCodecs. Please use the latest Chrome or Edge.',
+  'export.hint.composite':
+    'Exports an MP4 with audio, with the lyrics over the MV (a black background if you loaded audio only). The MV fills the screen and any overflow is cropped. The frame rate follows the MV (up to 60fps). Clicking the button opens a dialog to choose the file to save to, and the video is written directly to it. H.264 MVs are recommended (HEVC may not load depending on your PC).',
+  'export.hint.png':
+    'DaVinci Resolve: drag the exported folder into the Media Pool to load the sequence as a single clip with its transparency (alpha). Clicking the button opens a dialog to choose a parent folder; a new folder is created inside it (existing files are never overwritten).',
+  'export.hint.black': 'CapCut: add the video on top of the MV as an "Overlay" and set the blend mode to "Screen" to remove the black.',
+  'export.hint.green': 'CapCut: add the video on top of the MV as an "Overlay" and remove the green with "Chroma key".',
+  'export.hint.portrait': ' For portrait videos, set the CapCut project ratio to 9:16 as well.',
+  'export.info.compositeLength': 'Length {len} (matches the MV / song) / {w}x{h} / fps matches the MV / ',
+  'export.info.length': 'Length {len} / {w}x{h} / {fps}fps / ',
+  'export.info.composite':
+    'Composite · H.264 + audio / est. size ~{size} / est. time ~{time} (at 30fps; about 2× for 60fps MVs)',
+  'export.info.png': 'PNG sequence (transparent) / {frames} frames · ~{low}–{high} / est. time ~{time}',
+  'export.info.mp4': 'H.264 / est. size ~{low}–{high} / est. time ~{time}',
+  'export.info.note': ' (varies greatly with your PC)',
+  'export.autoWipe': 'Clear app data (subtitles, MV, results) after exporting',
+  'export.btn.mp4': 'Export MP4',
+  'export.btn.png': 'Choose a folder and export the PNG sequence',
+  'export.btn.composite': 'Choose a file and export the composite MP4',
+  'export.remaining': 'about {time} left',
+  'export.cancel': 'Cancel',
+  'export.partial.folder': 'The partially exported folder "{name}" remains. Delete it?',
+  'export.partial.file': 'The partially exported file "{name}" remains. Delete it?',
+  'export.partial.deleteFolder': 'Delete folder',
+  'export.partial.deleteFile': 'Delete file',
+  'export.partial.keep': 'Keep',
+  'export.deleteFailed': 'Could not delete: {error}',
+  'export.noMedia': 'No MV / song is loaded.',
+  'export.done': 'Export complete.',
+  'export.done.png': 'Exported {frames} frames ({size}) to "{name}".',
+  'export.done.composite': 'Exported to "{name}" ({len} / {fps}fps / {audio}).',
+  'export.done.wiped': '{message} App data has been cleared.',
+  'export.done.keep':
+    '{message} You can also export in another format. When you are done, click "Clear data" or close the page.',
+  'audio.copy': 'audio copied as-is',
+  'audio.aac': 'audio converted to AAC',
+  'audio.none': 'no audio',
+  'picker.mp4': 'MP4 video',
+  'composite.needMedia': 'Compositing requires an MV / song of 15 minutes or less.',
+
+  // 検証メッセージ
+  'issue.error': 'Error: ',
+  'issue.warning': 'Note: ',
+  'issue.more': '{count} more',
+  'limits.fileTooLarge': 'The subtitle file is too large ({size} KB). The limit is {max} KB (1 MB).',
+  'limits.tooManyCues': 'Too many subtitles ({count}). The limit is {max}.',
+  'limits.endBeyondMax': 'The subtitles end at {end}, beyond the export limit of {max}. Check the timestamps for typos.',
+  'limits.gap': 'Cue {n} ({start}) starts {gap} after the previous one. The timestamp may be a typo.',
+  'limits.longCue': 'Cue {n} ({start}) is displayed for {dur}. The end time may be a typo.',
+  'limits.exportTooLong': 'The export length ({len}) exceeds the limit of {max}.',
+  'limits.pngMany':
+    'The PNG sequence will have {frames} frames and needs several GB of disk space and a long export time. Check the free space at the destination.',
+  'limits.exportLong': 'The export is long ({len}) and will take more time and memory.',
+  'limits.mvTooLong': 'The MV ({len}) is longer than the limit of {max}, so the export length follows the subtitles.',
+  'limits.subsBeyondMv':
+    'The subtitles end at {end}, after the end of the MV ({mv}). Check that the subtitle file matches the MV.',
+  'parse.skipLine': 'Line {line}: skipped a line that could not be read',
+  'parse.droppedCue': 'Removed a cue whose end time is not after its start time: "{text}"',
+  'parse.unknownFormat': 'Could not recognize the file as SRT / SBV.',
+  'parse.noCues': 'No subtitles were found.',
+
+  // エラー
+  'err.fontRequired': 'Select at least one font.',
+  'err.noTracks': 'No video or audio track was found in the loaded file.',
+  'err.unsupportedCodec':
+    'This video format ({codec}) cannot be read by this browser. Convert it to an H.264 MP4 and load it again.',
+  'err.h264Unsupported': 'This browser does not support H.264 video encoding (the latest Chrome / Edge is recommended).',
+  'err.canvasUnavailable': 'OffscreenCanvas 2D is not available.',
+  'err.emptyBuffer': 'The output buffer is empty.',
+  'err.worker': 'An error occurred in the export worker.',
+  'err.writeFailed': 'Failed to write the file: {error}',
+
+  // フッター
+  'footer.privacy':
+    'Privacy: subtitles and MVs are processed entirely in this browser and are never sent to a server. Nothing is saved in browser storage. Downloaded files and your browser’s download history cannot be removed by the app, so please manage them yourself as needed.',
+  'footer.licenses':
+    'All bundled fonts are licensed under the SIL Open Font License 1.1. Kanji stroke data comes from the Unicode Unihan Database (Unicode License v3, © Unicode, Inc.).',
+  'footer.licenseLink': 'Licenses',
+} as const;
+
+export type MessageKey = keyof typeof en;

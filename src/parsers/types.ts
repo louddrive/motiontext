@@ -8,8 +8,11 @@ export interface Cue {
 
 export type SubtitleFormat = 'srt' | 'sbv';
 
+import type { Localized } from '../i18n/errors';
+
 export interface ParseResult {
   format: SubtitleFormat;
   cues: Cue[];
-  warnings: string[];
+  /** 読み込み時の警告（画面側で翻訳する） */
+  warnings: Localized[];
 }

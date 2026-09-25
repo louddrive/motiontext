@@ -42,10 +42,10 @@ export function kanjiBoost(kanaRatio: number): number {
 }
 
 export const SIZE_CONTRAST_LEVELS = {
-  none: { label: 'なし', kanaRatio: 1 },
-  soft: { label: '控えめ', kanaRatio: 0.82 },
-  normal: { label: '標準', kanaRatio: 0.7 },
-  strong: { label: '強め', kanaRatio: 0.56 },
+  none: { kanaRatio: 1 },
+  soft: { kanaRatio: 0.82 },
+  normal: { kanaRatio: 0.7 },
+  strong: { kanaRatio: 0.56 },
 } as const;
 
 export type SizeContrast = keyof typeof SIZE_CONTRAST_LEVELS;

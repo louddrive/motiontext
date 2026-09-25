@@ -4,6 +4,8 @@ import { isKeyUnsafe } from '../themes/color';
 import { EFFECT_LEVELS, type EffectLevel } from '../themes/effectLevel';
 import type { ExportFormat } from '../export/protocol';
 import type { BackgroundMode } from '../themes/types';
+import type { MessageKey } from '../i18n';
+import { useI18n } from '../i18n/react';
 
 export interface StyleSettings {
   /** 出力形式（PNG 連番は背景透過なので background を使わない） */
@@ -43,7 +45,26 @@ interface Props {
   hasMedia: boolean;
 }
 
+// 選択肢の値 → 翻訳キー（キーの打ち間違いは型で検出される）
+const ASPECT_KEYS: Record<Aspect, MessageKey> = { landscape: 'aspect.landscape', portrait: 'aspect.portrait' };
+const EFFECT_KEYS: Record<EffectLevel, MessageKey> = {
+  none: 'effect.none',
+  subtle: 'effect.subtle',
+  standard: 'effect.standard',
+  emo: 'effect.emo',
+  ultra: 'effect.ultra',
+};
+const SIZE_KEYS: Record<SizeLevel, MessageKey> = { small: 'size.small', medium: 'size.medium', large: 'size.large' };
+const CONTRAST_KEYS: Record<SizeContrast, MessageKey> = {
+  none: 'contrast.none',
+  soft: 'contrast.soft',
+  normal: 'contrast.normal',
+  strong: 'contrast.strong',
+};
+const VERTICAL_KEYS: Record<VerticalMode, MessageKey> = { auto: 'vertical.auto', off: 'vertical.off', always: 'vertical.always' };
+
 export function StylePanel({ value, onChange, pngSupported, compositeSupported, hasMedia }: Props) {
+  const { t } = useI18n();
   const png = value.output === 'png';
   const composite = value.output === 'composite';
   const set = <K extends keyof StyleSettings>(k: K, v: StyleSettings[K]) => onChange({ ...value, [k]: v });
@@ -54,92 +75,93 @@ export function StylePanel({ value, onChange, pngSupported, compositeSupported, 
     <div>
       <div className="controls">
         <label>
-          画面比率
+          {t('style.aspect')}
           <select value={value.aspect} onChange={(e) => set('aspect', e.target.value as Aspect)}>
             {(Object.keys(ASPECTS) as Aspect[]).map((k) => (
               <option key={k} value={k}>
-                {ASPECTS[k].label}
+                {t(ASPECT_KEYS[k])}
               </option>
             ))}
           </select>
         </label>
         <label>
-          演出レベル
+          {t('style.effect')}
           <select value={value.effectLevel} onChange={(e) => set('effectLevel', e.target.value as EffectLevel)}>
-            {(Object.keys(EFFECT_LEVELS) as EffectLevel[]).map((k) => (
+            {EFFECT_LEVELS.map((k) => (
               <option key={k} value={k}>
-                {EFFECT_LEVELS[k].label}
+                {t(EFFECT_KEYS[k])}
               </option>
             ))}
           </select>
         </label>
         <label>
-          出力形式
+          {t('style.output')}
           <select value={value.output} onChange={(e) => set('output', e.target.value as ExportFormat)}>
-            <option value="mp4">MP4（CapCut など）</option>
+            <option value="mp4">{t('output.mp4')}</option>
             <option value="png" disabled={!pngSupported}>
-              PNG連番・背景透過（DaVinci Resolve など）{pngSupported ? '' : ' ※Chrome / Edge のみ'}
+              {t('output.png')}
+              {pngSupported ? '' : t('output.chromeOnly')}
             </option>
             <option value="composite" disabled={!compositeSupported || !hasMedia}>
-              MV／曲と合成（MP4・音声付き）
-              {!compositeSupported ? ' ※Chrome / Edge のみ' : !hasMedia ? ' ※プレビューで MV／曲を読み込むと選べます' : ''}
+              {t('output.composite')}
+              {!compositeSupported ? t('output.chromeOnly') : !hasMedia ? t('output.needMedia') : ''}
             </option>
           </select>
         </label>
         <label>
-          背景
+          {t('style.background')}
           {png || composite ? (
             <select disabled value="fixed">
-              <option value="fixed">{png ? '透過' : 'MV（曲だけの場合は黒）'}</option>
+              <option value="fixed">{png ? t('bg.transparent') : t('bg.mv')}</option>
             </select>
           ) : (
             <select value={value.background} onChange={(e) => set('background', e.target.value as BackgroundMode)}>
-              <option value="black">黒（CapCut「スクリーン」合成・推奨）</option>
-              <option value="green">グリーン（CapCut「クロマキー」）</option>
+              <option value="black">{t('bg.black')}</option>
+              <option value="green">{t('bg.green')}</option>
             </select>
           )}
         </label>
         <label>
-          文字サイズ
+          {t('style.size')}
           <select value={value.sizeLevel} onChange={(e) => set('sizeLevel', e.target.value as SizeLevel)}>
             {(Object.keys(SIZE_LEVELS) as SizeLevel[]).map((k) => (
               <option key={k} value={k}>
-                {SIZE_LEVELS[k].label}
+                {t(SIZE_KEYS[k])}
               </option>
             ))}
           </select>
         </label>
         <label>
-          漢字とかなのサイズ差
+          {t('style.contrast')}
           <select value={value.sizeContrast} onChange={(e) => set('sizeContrast', e.target.value as SizeContrast)}>
             {(Object.keys(SIZE_CONTRAST_LEVELS) as SizeContrast[]).map((k) => (
               <option key={k} value={k}>
-                {SIZE_CONTRAST_LEVELS[k].label}
+                {t(CONTRAST_KEYS[k])}
               </option>
             ))}
           </select>
         </label>
         <label className="inline">
           <input type="checkbox" checked={value.strokeEmphasis} onChange={(e) => set('strokeEmphasis', e.target.checked)} />
-          画数の多い漢字を強調
+          {t('style.strokeEmphasis')}
         </label>
       </div>
       <div className="controls">
         <label>
-          縦書き
+          {t('style.vertical')}
           <select value={value.verticalMode} onChange={(e) => set('verticalMode', e.target.value as VerticalMode)}>
-            {(Object.keys(VERTICAL_MODES) as VerticalMode[]).map((k) => (
+            {VERTICAL_MODES.map((k) => (
               <option key={k} value={k}>
-                {VERTICAL_MODES[k].label}
+                {t(VERTICAL_KEYS[k])}
               </option>
             ))}
           </select>
         </label>
         <label>
-          文字色
+          {t('style.color')}
           <select value={value.colorMode} onChange={(e) => set('colorMode', e.target.value as StyleSettings['colorMode'])}>
-            <option value="auto">自動（テーマ配色）</option>
-            <option value="single">単色指定</option>
+            <option value="auto">{t('color.auto')}</option>
+            <option value="single">{t('color.single')}</option>
           </select>
         </label>
         {value.colorMode === 'single' && (
@@ -149,8 +171,8 @@ export function StylePanel({ value, onChange, pngSupported, compositeSupported, 
           </label>
         )}
       </div>
-      {keyWarning && <p className="error">この色は緑に近いため、クロマキーで文字ごと抜けてしまう可能性があります。黒背景か別の色を推奨します。</p>}
-      {darkWarning && <p className="error">暗い色は「スクリーン」合成でほとんど見えなくなります。明るい色かグリーン背景を推奨します。</p>}
+      {keyWarning && <p className="error">{t('style.keyWarning')}</p>}
+      {darkWarning && <p className="error">{t('style.darkWarning')}</p>}
     </div>
   );
 }

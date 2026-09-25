@@ -1,3 +1,5 @@
+import type { Localized } from '../i18n/errors';
+
 /** BOM除去・改行統一 */
 export function normalizeText(src: string): string {
   return src.replace(/^﻿/, '').replace(/\r\n?/g, '\n');
@@ -20,12 +22,12 @@ export function toSeconds(h: string, m: string, s: string, frac: string): number
 /** 開始時刻でソートし、index を振り直す。end <= start のものは除外して警告する */
 export function finalizeCues<T extends { start: number; end: number; text: string }>(
   cues: T[],
-  warnings: string[],
+  warnings: Localized[],
 ): { index: number; start: number; end: number; text: string }[] {
   return cues
     .filter((c) => {
       if (c.end <= c.start) {
-        warnings.push(`終了時刻が開始時刻以前の字幕を除外しました: "${c.text.slice(0, 20)}"`);
+        warnings.push({ key: 'parse.droppedCue', params: { text: c.text.slice(0, 20) } });
         return false;
       }
       if (!c.text.trim()) return false;

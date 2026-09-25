@@ -14,6 +14,8 @@ import {
 import { compositeFileName, estimateComposite } from '../export/compositeParams';
 import type { ExportFormat } from '../export/protocol';
 import { activeSeconds, estimatePngSequence, estimateSizeMB, formatTime, type Issue } from '../limits';
+import { LocalizedError, type Localized } from '../i18n/errors';
+import { useI18n } from '../i18n/react';
 import { downloadBlob } from '../session/session';
 import { IssueList } from './IssueList';
 
@@ -26,7 +28,7 @@ interface Props {
   issues: Issue[];
   /** 合成書き出しに使う MV／曲 */
   media: { file: File; duration: number } | null;
-  onExported: (autoWipe: boolean, message: string) => void;
+  onExported: (autoWipe: boolean, message: Localized) => void;
 }
 
 /** MP4 書き出し速度の目安（フレーム/秒）。開発機の実測（約130fps）より控えめに見積もる */
@@ -38,7 +40,9 @@ function formatMB(mb: number): string {
 
 export function ExportPanel({ timeline, fontIds, text, baseName, format, issues, media, onExported }: Props) {
   const [progress, setProgress] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { t, te } = useI18n();
+  // エラーは表示時に翻訳する（言語を切り替えたときも追従する）
+  const [error, setError] = useState<unknown>(null);
   // 初期値はオフ（続けて別の形式でも書き出せるように）。オンにすると書き出し後にアプリ内のデータを破棄する
   const [autoWipe, setAutoWipe] = useState(false);
   /** 途中で止まった出力（PNG 連番のフォルダ／合成 MP4 のファイル）。削除するか利用者に確認する */
@@ -64,7 +68,7 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
     downloadBlob(blob, `${baseName}_${timeline.background}_${timeline.width}x${timeline.height}_${timeline.fps}fps.mp4`);
   }
 
-  async function runPng(): Promise<string> {
+  async function runPng(): Promise<Localized> {
     // 保存先はクリック直後に選ばせる（ブラウザの制約）
     const parent = await pickOutputDirectory();
     setProgress(0);
@@ -72,20 +76,23 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
     const job = startPngSequenceExport(parent, baseName, timeline, fontIds, text, setProgress);
     jobRef.current = job;
     const result = await job.promise;
-    return `「${result.folderName}」に ${result.frames.toLocaleString()} 枚（${formatMB(result.bytes / 1024 / 1024)}）書き出しました。`;
+    return {
+      key: 'export.done.png',
+      params: { name: result.folderName, frames: result.frames.toLocaleString('en-US'), size: formatMB(result.bytes / 1024 / 1024) },
+    };
   }
 
-  async function runComposite(): Promise<string> {
-    if (!media) throw new Error('MV／曲が読み込まれていません');
+  async function runComposite(): Promise<Localized> {
+    if (!media) throw new LocalizedError('export.noMedia');
     // 保存先はクリック直後に選ばせる（ブラウザの制約）
-    const handle = await pickOutputFile(compositeFileName(baseName, timeline.width, timeline.height));
+    const handle = await pickOutputFile(compositeFileName(baseName, timeline.width, timeline.height), t('picker.mp4'));
     setProgress(0);
     startedAtRef.current = performance.now();
     const job = startCompositeExport(handle, media.file, timeline, fontIds, text, setProgress);
     jobRef.current = job;
     const r = await job.promise;
-    const audio = r.audio === 'copy' ? '音声はそのままコピー' : r.audio === 'aac' ? '音声は AAC に変換' : '音声なし';
-    return `「${handle.name}」に書き出しました（${formatTime(r.duration)} / ${r.fps}fps / ${audio}）。`;
+    const audio = t(r.audio === 'copy' ? 'audio.copy' : r.audio === 'aac' ? 'audio.aac' : 'audio.none');
+    return { key: 'export.done.composite', params: { name: handle.name, len: formatTime(r.duration), fps: r.fps, audio } };
   }
 
   async function run() {
@@ -100,16 +107,16 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
       else if (composite) onExported(autoWipe, await runComposite());
       else {
         await runMp4();
-        onExported(autoWipe, '書き出しが完了しました。');
+        onExported(autoWipe, { key: 'export.done' });
       }
     } catch (e) {
       if (e instanceof PartialOutputError) {
         // 途中まで書いたフォルダが残っている。削除するかは利用者に確認する
         setPartial(e);
-        if (!e.aborted) setError(e.message);
+        if (!e.aborted) setError(e.reason);
       } else if (!(e instanceof DOMException && e.name === 'AbortError')) {
         // AbortError: 書き出しのキャンセル、またはフォルダ選択のキャンセル
-        setError(e instanceof Error ? e.message : String(e));
+        setError(e);
       }
     } finally {
       jobRef.current = null;
@@ -123,12 +130,12 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
       await partial.remove();
       setPartial(null);
     } catch (e) {
-      setError(`削除できませんでした: ${e instanceof Error ? e.message : String(e)}`);
+      setError(new LocalizedError('export.deleteFailed', { error: te(e) }));
     }
   }
 
   if (!supported) {
-    return <p className="error">このブラウザは WebCodecs による動画書き出しに対応していません。Chrome または Edge の最新版をご利用ください。</p>;
+    return <p className="error">{t('export.unsupported')}</p>;
   }
 
   const portrait = timeline.height > timeline.width;
@@ -141,62 +148,56 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
   return (
     <div className="export">
       {composite ? (
-        <p className="hint">
-          MV（曲だけの場合は黒背景）の上に歌詞を重ねた、音声付きの MP4 を書き出します。MV は画面を埋めるように配置し、はみ出した部分は切り取ります。
-          フレームレートは MV に合わせます（最大60fps）。ボタンを押すと保存先のファイルを選ぶ画面が開き、そこへ直接書き込みます。
-          H.264 の MV を推奨します（HEVC は PC の環境によって読み込めない場合があります）。
-        </p>
+        <p className="hint">{t('export.hint.composite')}</p>
       ) : png ? (
-        <p className="hint">
-          DaVinci Resolve: 書き出したフォルダをメディアプールにドラッグすると、連番が1本のクリップとして読み込まれ、透過（アルファ）もそのまま使えます。
-          ボタンを押すと保存先の親フォルダを選ぶ画面が開き、その中に新しいフォルダを作って書き出します（既存のファイルは上書きしません）。
-        </p>
+        <p className="hint">{t('export.hint.png')}</p>
       ) : (
         <p className="hint">
-          {timeline.background === 'black'
-            ? 'CapCut: MVの上に「オーバーレイ」で追加し、描画モードを「スクリーン」にすると黒が消えます。'
-            : 'CapCut: MVの上に「オーバーレイ」で追加し、「クロマキー」で緑を選択して抜いてください。'}
-          {portrait && ' 縦型は CapCut のプロジェクト比率も 9:16 にしてください。'}
+          {t(timeline.background === 'black' ? 'export.hint.black' : 'export.hint.green')}
+          {portrait && t('export.hint.portrait')}
         </p>
       )}
       <p className="hint">
         {composite
-          ? `長さ ${formatTime(media?.duration ?? 0)}（MV／曲に合わせる） / ${timeline.width}x${timeline.height} / fps は MV に合わせる / `
-          : `長さ ${formatTime(timeline.duration)} / ${timeline.width}x${timeline.height} / ${timeline.fps}fps / `}
+          ? t('export.info.compositeLength', { len: formatTime(media?.duration ?? 0), w: timeline.width, h: timeline.height })
+          : t('export.info.length', { len: formatTime(timeline.duration), w: timeline.width, h: timeline.height, fps: timeline.fps })}
         {composite
-          ? `MV／曲と合成・H.264＋音声 ／ サイズの目安 約${formatMB(compEst.mb)} ／ 書き出し時間の目安 約${formatTime(Math.max(1, compEst.sec))}（30fps の場合。60fps の MV は約2倍）`
+          ? t('export.info.composite', { size: formatMB(compEst.mb), time: formatTime(Math.max(1, compEst.sec)) })
           : png
-          ? `PNG連番（透過） ／ ${pngEst.frames.toLocaleString()} 枚・約${formatMB(pngEst.lowMB)}〜${formatMB(pngEst.highMB)} ／ 書き出し時間の目安 約${formatTime(Math.max(1, pngEst.sec))}`
-          : `H.264 ／ サイズの目安 約${formatMB(mp4Size.low)}〜${formatMB(mp4Size.high)} ／ 書き出し時間の目安 約${formatTime(Math.max(1, mp4Sec))}`}
-        （PCの性能で大きく変わります）
+            ? t('export.info.png', {
+                frames: pngEst.frames.toLocaleString('en-US'),
+                low: formatMB(pngEst.lowMB),
+                high: formatMB(pngEst.highMB),
+                time: formatTime(Math.max(1, pngEst.sec)),
+              })
+            : t('export.info.mp4', { low: formatMB(mp4Size.low), high: formatMB(mp4Size.high), time: formatTime(Math.max(1, mp4Sec)) })}
+        {t('export.info.note')}
       </p>
       <IssueList issues={issues} />
       <label className="inline">
         <input type="checkbox" checked={autoWipe} onChange={(e) => setAutoWipe(e.target.checked)} />
-        書き出し後にアプリ内のデータ（字幕・MV・生成結果）を自動で破棄する
+        {t('export.autoWipe')}
       </label>
       {progress === null ? (
         <button className="primary" disabled={blocked} onClick={() => void run()}>
-          {composite ? '保存先を選んで合成 MP4 を書き出す' : png ? '保存先を選んで PNG連番を書き出す' : 'MP4 を書き出す'}
+          {t(composite ? 'export.btn.composite' : png ? 'export.btn.png' : 'export.btn.mp4')}
         </button>
       ) : (
         <div className="progress-row">
           <progress value={progress} max={1} />
           <span>{Math.round(progress * 100)}%</span>
-          {remaining && <span className="hint">残り 約{remaining}</span>}
-          <button onClick={() => jobRef.current?.cancel()}>キャンセル</button>
+          {remaining && <span className="hint">{t('export.remaining', { time: remaining })}</span>}
+          <button onClick={() => jobRef.current?.cancel()}>{t('export.cancel')}</button>
         </div>
       )}
-      {error && <p className="error">{error}</p>}
+      {error != null && <p className="error">{te(error)}</p>}
       {partial && (
         <div className="partial">
-          <span>
-            途中まで書き出した{partial.kind === 'folder' ? 'フォルダ' : 'ファイル'}「{partial.label}」が残っています。削除しますか？
-          </span>
+          <span>{t(partial.kind === 'folder' ? 'export.partial.folder' : 'export.partial.file', { name: partial.label })}</span>
           <button className="danger-inline" onClick={() => void deletePartial()}>
-            {partial.kind === 'folder' ? 'フォルダを削除する' : 'ファイルを削除する'}
+            {t(partial.kind === 'folder' ? 'export.partial.deleteFolder' : 'export.partial.deleteFile')}
           </button>
-          <button onClick={() => setPartial(null)}>残す</button>
+          <button onClick={() => setPartial(null)}>{t('export.partial.keep')}</button>
         </div>
       )}
     </div>

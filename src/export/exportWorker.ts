@@ -4,6 +4,7 @@
 // - composite: MV／曲と歌詞を合成して MP4（保存先ファイルへ直接書き込み）
 import { BufferTarget, CanvasSource, Mp4OutputFormat, Output, canEncodeVideo } from 'mediabunny';
 import type { Timeline } from '../director/types';
+import { LocalizedError } from '../i18n/errors';
 import { ensureGlyphs } from '../fonts/loader';
 import { buildLayouts, renderFrame } from '../render/renderer';
 import { CompositeCanceled, runComposite } from './composite';
@@ -21,6 +22,12 @@ let canceled = false;
 const MAX_IN_FLIGHT = 8;
 let inFlight = 0;
 let slotWaiter: (() => void) | null = null;
+
+/** エラーを画面へ送る形にする（LocalizedError はキーと値も送り、画面側で翻訳する） */
+function errorMessage(err: unknown): FromWorker {
+  if (err instanceof LocalizedError) return { type: 'error', message: err.message, key: err.key, params: err.params };
+  return { type: 'error', message: err instanceof Error ? err.message : String(err) };
+}
 
 function post(msg: FromWorker, transfer: Transferable[] = []) {
   scope.postMessage(msg, transfer);
@@ -49,14 +56,14 @@ async function exportMp4(timeline: Timeline, fontIds: string[], text: string, bi
   try {
     const { width, height, fps } = timeline;
     if (!(await canEncodeVideo('avc', { width, height, bitrate }))) {
-      throw new Error('このブラウザは H.264 の動画エンコードに対応していません（Chrome / Edge の最新版を推奨）');
+      throw new LocalizedError('err.h264Unsupported');
     }
     // Worker では document.fonts が使えないため、Worker 側の FontFaceSet に登録してロードを待つ
     await ensureGlyphs(scope.fonts, fontIds, text);
 
     const canvas = new OffscreenCanvas(width, height);
     const ctx = canvas.getContext('2d', { alpha: false });
-    if (!ctx) throw new Error('OffscreenCanvas 2D が利用できません');
+    if (!ctx) throw new LocalizedError('err.canvasUnavailable');
     const layouts = buildLayouts(ctx, timeline);
 
     const target = new BufferTarget();
@@ -78,11 +85,11 @@ async function exportMp4(timeline: Timeline, fontIds: string[], text: string, bi
     }
     await output.finalize();
     const buffer = target.buffer;
-    if (!buffer) throw new Error('出力バッファが空です');
+    if (!buffer) throw new LocalizedError('err.emptyBuffer');
     post({ type: 'done', buffer, mimeType: await output.getMimeType() }, [buffer]);
   } catch (err) {
     if (output && output.state !== 'finalized' && output.state !== 'canceled') await output.cancel().catch(() => {});
-    post({ type: 'error', message: err instanceof Error ? err.message : String(err) });
+    post(errorMessage(err));
   }
 }
 
@@ -92,7 +99,7 @@ async function exportPng(timeline: Timeline, fontIds: string[], text: string) {
     await ensureGlyphs(scope.fonts, fontIds, text);
     const canvas = new OffscreenCanvas(width, height);
     const ctx = canvas.getContext('2d', { alpha: true });
-    if (!ctx) throw new Error('OffscreenCanvas 2D が利用できません');
+    if (!ctx) throw new LocalizedError('err.canvasUnavailable');
     const layouts = buildLayouts(ctx, timeline);
 
     inFlight = 0;
@@ -125,7 +132,7 @@ async function exportPng(timeline: Timeline, fontIds: string[], text: string) {
     }
     post({ type: 'framesDone', total });
   } catch (err) {
-    post({ type: 'error', message: err instanceof Error ? err.message : String(err) });
+    post(errorMessage(err));
   }
 }
 
@@ -142,6 +149,6 @@ async function exportComposite(timeline: Timeline, fontIds: string[], text: stri
     post({ type: 'compositeDone', result });
   } catch (err) {
     if (err instanceof CompositeCanceled) post({ type: 'canceled' });
-    else post({ type: 'error', message: err instanceof Error ? err.message : String(err) });
+    else post(errorMessage(err));
   }
 }

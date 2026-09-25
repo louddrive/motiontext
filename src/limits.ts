@@ -1,4 +1,5 @@
 import type { ExportFormat } from './export/protocol';
+import type { Localized } from './i18n/errors';
 import type { Cue } from './parsers/types';
 
 // 入力・書き出しの制限値。書き出しは MP4 全体をメモリ上に保持してから保存するため、長さで上限を設ける。
@@ -19,9 +20,9 @@ export const LIMITS = {
   longCueSec: 60,
 } as const;
 
-export interface Issue {
+/** 検証結果。文言は持たず、画面側で key / params から翻訳する */
+export interface Issue extends Localized {
   level: 'error' | 'warning';
-  message: string;
 }
 
 export function formatTime(sec: number): string {
@@ -37,7 +38,8 @@ export function checkSubtitleFileSize(bytes: number): Issue | null {
   if (bytes <= LIMITS.maxSubtitleBytes) return null;
   return {
     level: 'error',
-    message: `字幕ファイルが大きすぎます（${Math.ceil(bytes / 1024).toLocaleString()}KB）。上限は ${(LIMITS.maxSubtitleBytes / 1024).toLocaleString()}KB（1MB）です。`,
+    key: 'limits.fileTooLarge',
+    params: { size: Math.ceil(bytes / 1024).toLocaleString('en-US'), max: (LIMITS.maxSubtitleBytes / 1024).toLocaleString('en-US') },
   };
 }
 
@@ -45,13 +47,14 @@ export function checkSubtitleFileSize(bytes: number): Issue | null {
 export function validateSubtitles(cues: Cue[]): Issue[] {
   const issues: Issue[] = [];
   if (cues.length > LIMITS.maxCues) {
-    issues.push({ level: 'error', message: `字幕が多すぎます（${cues.length} 件）。上限は ${LIMITS.maxCues} 件です。` });
+    issues.push({ level: 'error', key: 'limits.tooManyCues', params: { count: cues.length, max: LIMITS.maxCues } });
   }
   const end = cues.reduce((m, c) => Math.max(m, c.end), 0);
   if (end > LIMITS.maxExportSec) {
     issues.push({
       level: 'error',
-      message: `字幕の終わり（${formatTime(end)}）が書き出し上限の ${formatTime(LIMITS.maxExportSec)} を超えています。時刻に打ち間違いがないか確認してください。`,
+      key: 'limits.endBeyondMax',
+      params: { end: formatTime(end), max: formatTime(LIMITS.maxExportSec) },
     });
   }
   for (let i = 0; i < cues.length; i++) {
@@ -60,13 +63,15 @@ export function validateSubtitles(cues: Cue[]): Issue[] {
     if (c.start - prevEnd >= LIMITS.suspiciousGapSec) {
       issues.push({
         level: 'warning',
-        message: `${i + 1} 件目（${formatTime(c.start)}）が前の字幕から ${formatTime(c.start - prevEnd)} 離れています。時刻の打ち間違いの可能性があります。`,
+        key: 'limits.gap',
+        params: { n: i + 1, start: formatTime(c.start), gap: formatTime(c.start - prevEnd) },
       });
     }
     if (c.end - c.start >= LIMITS.longCueSec) {
       issues.push({
         level: 'warning',
-        message: `${i + 1} 件目（${formatTime(c.start)}）の表示時間が ${formatTime(c.end - c.start)} あります。終了時刻の打ち間違いの可能性があります。`,
+        key: 'limits.longCue',
+        params: { n: i + 1, start: formatTime(c.start), dur: formatTime(c.end - c.start) },
       });
     }
   }
@@ -88,26 +93,29 @@ export function validateExport(
 ): Issue[] {
   const issues: Issue[] = [];
   if (exportSec > LIMITS.maxExportSec) {
-    issues.push({ level: 'error', message: `書き出しの長さ（${formatTime(exportSec)}）が上限の ${formatTime(LIMITS.maxExportSec)} を超えています。` });
+    issues.push({ level: 'error', key: 'limits.exportTooLong', params: { len: formatTime(exportSec), max: formatTime(LIMITS.maxExportSec) } });
   } else if (format === 'png' && exportSec > LIMITS.warnPngSequenceSec) {
     const frames = Math.ceil(exportSec * fps);
     issues.push({
       level: 'warning',
-      message: `PNG連番は ${frames.toLocaleString()} 枚になり、数GBのディスク容量と長い書き出し時間が必要です。保存先の空き容量を確認してください。`,
+      key: 'limits.pngMany',
+      params: { frames: frames.toLocaleString('en-US') },
     });
   } else if (format !== 'png' && exportSec > LIMITS.warnExportSec) {
-    issues.push({ level: 'warning', message: `書き出しが ${formatTime(exportSec)} と長いため、時間とメモリを多く使います。` });
+    issues.push({ level: 'warning', key: 'limits.exportLong', params: { len: formatTime(exportSec) } });
   }
   if (mvDuration !== undefined) {
     if (mvDuration > LIMITS.maxExportSec) {
       issues.push({
         level: 'warning',
-        message: `MV（${formatTime(mvDuration)}）が上限の ${formatTime(LIMITS.maxExportSec)} を超えるため、書き出しの長さは字幕に合わせます。`,
+        key: 'limits.mvTooLong',
+        params: { len: formatTime(mvDuration), max: formatTime(LIMITS.maxExportSec) },
       });
     } else if (subtitleEnd > mvDuration) {
       issues.push({
         level: 'warning',
-        message: `字幕の終わり（${formatTime(subtitleEnd)}）が MV の長さ（${formatTime(mvDuration)}）を超えています。字幕ファイルと MV の組み合わせを確認してください。`,
+        key: 'limits.subsBeyondMv',
+        params: { end: formatTime(subtitleEnd), mv: formatTime(mvDuration) },
       });
     }
   }

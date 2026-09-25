@@ -1,3 +1,4 @@
+import { LocalizedError } from '../i18n/errors';
 import { parseSbv } from './sbv';
 import { parseSrt } from './srt';
 import type { ParseResult, SubtitleFormat } from './types';
@@ -12,7 +13,7 @@ export function detectFormat(fileName: string, content: string): SubtitleFormat 
 
 export function parseSubtitle(fileName: string, content: string): ParseResult {
   const format = detectFormat(fileName, content);
-  if (!format) throw new Error('SRT / SBV 形式として認識できませんでした');
+  if (!format) throw new LocalizedError('parse.unknownFormat');
   const result = format === 'srt' ? parseSrt(content) : parseSbv(content);
   // 拡張子と中身が食い違う場合（.srt だが中身は SBV 等）はもう一方でも試す
   if (result.cues.length === 0) {

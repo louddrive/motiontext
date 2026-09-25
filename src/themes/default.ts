@@ -2,7 +2,7 @@ import type { Theme } from './types';
 
 export const defaultTheme: Theme = {
   id: 'default',
-  name: 'スタンダード',
+  name: 'Standard',
   energy: 0.6,
   palette: {
     text: ['#FFFFFF', '#F4F1EA', '#EAF2FF'],

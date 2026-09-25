@@ -1,4 +1,5 @@
 import { finalizeCues, normalizeText, stripTags, toSeconds } from './common';
+import type { Localized } from '../i18n/errors';
 import type { ParseResult } from './types';
 
 // 0:00:01.000,0:00:03.500
@@ -6,7 +7,7 @@ const TIME_RE =
   /^\s*(\d{1,2}):(\d{1,2}):(\d{1,2})(?:\.(\d{1,3}))?\s*,\s*(\d{1,2}):(\d{1,2}):(\d{1,2})(?:\.(\d{1,3}))?\s*$/;
 
 export function parseSbv(src: string): ParseResult {
-  const warnings: string[] = [];
+  const warnings: Localized[] = [];
   const lines = normalizeText(src).split('\n');
   const raw: { start: number; end: number; text: string }[] = [];
 
@@ -14,7 +15,7 @@ export function parseSbv(src: string): ParseResult {
   while (i < lines.length) {
     const m = TIME_RE.exec(lines[i]);
     if (!m) {
-      if (lines[i].trim()) warnings.push(`${i + 1}行目: 解釈できない行をスキップしました`);
+      if (lines[i].trim()) warnings.push({ key: 'parse.skipLine', params: { line: i + 1 } });
       i++;
       continue;
     }

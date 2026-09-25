@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FONT_CATALOG, familyName } from '../fonts/catalog';
 import { ensureGlyphs } from '../fonts/loader';
+import { useI18n } from '../i18n/react';
 
 interface Props {
   selected: string[];
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export function FontPicker({ selected, onChange, sample }: Props) {
+  const { t, tn } = useI18n();
   const [ready, setReady] = useState<Set<string>>(new Set());
 
   // 見本テキストの描画に必要な分だけ各フォントをロード
@@ -33,7 +35,7 @@ export function FontPicker({ selected, onChange, sample }: Props) {
   return (
     <div>
       <p className="hint">
-        複数選択できます。<b>通常行向け</b>の書体は通常の歌詞に、<b>強調向け</b>の書体はサビなどの強調行に自動で割り当てます（片方しか選ばない場合はその書体で補います）。
+        {tn('font.hint', { body: <b>{t('font.role.body')}</b>, display: <b>{t('font.role.display')}</b> })}
       </p>
       <div className="font-grid">
         {FONT_CATALOG.map((f) => {
@@ -43,7 +45,7 @@ export function FontPicker({ selected, onChange, sample }: Props) {
               <input type="checkbox" checked={on} onChange={() => toggle(f.id)} />
               <span className="font-meta">
                 {f.label}
-                <span className={`badge ${f.role}`}>{f.role === 'body' ? '通常行向け' : '強調向け'}</span>
+                <span className={`badge ${f.role}`}>{t(f.role === 'body' ? 'font.role.body' : 'font.role.display')}</span>
               </span>
               <span
                 className="font-sample"

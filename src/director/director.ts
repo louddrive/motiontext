@@ -2,6 +2,7 @@ import type { CueFeature } from '../analysis/features';
 import { findStrokeEmphasis } from '../analysis/strokes';
 import { canTategaki } from '../analysis/tategaki';
 import { getFont } from '../fonts/catalog';
+import { LocalizedError } from '../i18n/errors';
 import type { CameraMove } from '../render/camera';
 import { isKeyUnsafe } from '../themes/color';
 import type { BackgroundMode, Theme } from '../themes/types';
@@ -37,7 +38,7 @@ export interface FontRoles {
 
 /** 選択フォントを通常行用／強調行用に振り分ける。片方の役割が空ならもう片方で補う */
 export function assignFontRoles(fontIds: string[]): FontRoles {
-  if (fontIds.length === 0) throw new Error('フォントを1つ以上選択してください');
+  if (fontIds.length === 0) throw new LocalizedError('err.fontRequired');
   const body = fontIds.filter((id) => getFont(id).role === 'body');
   const display = fontIds.filter((id) => getFont(id).role === 'display');
   return {

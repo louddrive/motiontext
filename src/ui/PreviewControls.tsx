@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MAX_TIMING_OFFSET_SEC, clampOffset } from '../analysis/timing';
+import { useI18n } from '../i18n/react';
 
 interface SeedProps {
   seed: number;
@@ -11,6 +12,7 @@ interface SeedProps {
 
 /** 演出パターンの操作: 再生成・1つ前に戻す・パターン番号の表示と入力 */
 export function SeedControls({ seed, canUndo, onRegenerate, onUndo, onSeedInput }: SeedProps) {
+  const { t } = useI18n();
   const [draft, setDraft] = useState(String(seed));
   useEffect(() => setDraft(String(seed)), [seed]);
 
@@ -22,12 +24,12 @@ export function SeedControls({ seed, canUndo, onRegenerate, onUndo, onSeedInput 
 
   return (
     <>
-      <button onClick={onRegenerate}>演出を再生成</button>
+      <button onClick={onRegenerate}>{t('seed.regenerate')}</button>
       <button onClick={onUndo} disabled={!canUndo}>
-        1つ前に戻す
+        {t('seed.undo')}
       </button>
-      <label className="inline" title="同じ字幕・同じ設定なら、同じ番号で同じ演出を再現できます">
-        パターン番号
+      <label className="inline" title={t('seed.title')}>
+        {t('seed.label')}
         <input
           className="seed-input"
           type="text"
@@ -51,20 +53,21 @@ interface TimingProps {
 
 /** 字幕全体のタイミング調整（正で遅く、負で早く） */
 export function TimingControls({ offsetSec, onChange }: TimingProps) {
+  const { t } = useI18n();
   const [draft, setDraft] = useState(offsetSec.toFixed(2));
   useEffect(() => setDraft(offsetSec.toFixed(2)), [offsetSec]);
   const set = (v: number) => onChange(clampOffset(v));
 
   return (
     // ボタンを含むので <label> では囲まない（ラベルのクリックが先頭のボタンに伝わるため）
-    <div className="inline" role="group" aria-label="字幕のタイミング" title={`字幕全体の表示時刻をずらします（±${MAX_TIMING_OFFSET_SEC}秒まで）。プラスで遅く、マイナスで早く表示します`}>
-      <span>字幕のタイミング</span>
+    <div className="inline" role="group" aria-label={t('timing.label')} title={t('timing.title', { max: MAX_TIMING_OFFSET_SEC })}>
+      <span>{t('timing.label')}</span>
       <button type="button" onClick={() => set(offsetSec - 0.1)}>
-        -0.1秒
+        {t('timing.minus')}
       </button>
       <input
         className="offset-input"
-        aria-label="字幕のタイミング（秒）"
+        aria-label={t('timing.aria')}
         type="number"
         step={0.05}
         min={-MAX_TIMING_OFFSET_SEC}
@@ -76,12 +79,12 @@ export function TimingControls({ offsetSec, onChange }: TimingProps) {
           if (e.key === 'Enter') set(Number(draft));
         }}
       />
-      秒
+      {t('timing.unit')}
       <button type="button" onClick={() => set(offsetSec + 0.1)}>
-        +0.1秒
+        {t('timing.plus')}
       </button>
       <button type="button" onClick={() => set(0)} disabled={offsetSec === 0}>
-        0に戻す
+        {t('timing.reset')}
       </button>
     </div>
   );

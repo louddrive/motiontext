@@ -4,6 +4,9 @@ import { shiftCues } from '../analysis/timing';
 import { direct } from '../director/director';
 import { ASPECTS } from '../director/types';
 import { isCompositeSupported, isPngSequenceSupported } from '../export/encoder';
+import { LANGUAGES, LANGUAGE_NAMES, isLang, type MessageKey } from '../i18n';
+import type { Localized } from '../i18n/errors';
+import { useI18n } from '../i18n/react';
 import { usableMvDuration, validateExport, validateSubtitles } from '../limits';
 import { DEFAULT_FONT_IDS } from '../fonts/catalog';
 import type { ParseResult } from '../parsers/types';
@@ -34,7 +37,14 @@ interface Mv {
 
 const randomSeed = () => Math.floor(Math.random() * 1e9);
 
+/** 画面上部の通知。表示時に翻訳する（言語を切り替えても追従する）。wrap は message を包む定型文 */
+interface Notice {
+  msg: Localized;
+  wrap?: MessageKey;
+}
+
 export function App() {
+  const { t, tl, lang, setLang } = useI18n();
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [fontIds, setFontIds] = useState<string[]>(DEFAULT_FONT_IDS);
   const [seed, setSeed] = useState(randomSeed);
@@ -45,12 +55,12 @@ export function App() {
   const [style, setStyle] = useState<StyleSettings>(DEFAULT_STYLE);
   const [mv, setMv] = useState<Mv | null>(null);
   const [resetKey, setResetKey] = useState(0);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [notice, setNotice] = useState<Notice | null>(null);
 
   const text = useMemo(() => loaded?.result.cues.map((c) => c.text).join('\n') ?? '', [loaded]);
   // タイミング調整を反映した字幕（演出の生成と書き出しの検証に使う）
   const cues = useMemo(() => (loaded ? shiftCues(loaded.result.cues, offsetSec) : []), [loaded, offsetSec]);
-  const sample = loaded?.result.cues.find((c) => c.text.length >= 4)?.text.split('\n')[0] ?? '歌詞のサンプル Lyrics';
+  const sample = loaded?.result.cues.find((c) => c.text.length >= 4)?.text.split('\n')[0] ?? t('font.sample');
 
   const timeline = useMemo(() => {
     if (!loaded) return null;
@@ -79,7 +89,7 @@ export function App() {
     const issues = validateExport(timeline.duration, subtitleEnd, mv?.duration, style.output, timeline.fps);
     // 合成は MV／曲が必要（MV を外した・上限超えの場合）
     if (style.output === 'composite' && (!mv || usableMvDuration(mv.duration) === undefined)) {
-      issues.unshift({ level: 'error', message: '合成書き出しには、15分以内の MV／曲の読み込みが必要です。' });
+      issues.unshift({ level: 'error', key: 'composite.needMedia' });
     }
     return issues;
   }, [loaded, cues, timeline, mv?.duration, style.output]);
@@ -96,7 +106,7 @@ export function App() {
     setSeedHistory(seedHistory.slice(0, -1));
   }
 
-  function wipe(message: string) {
+  function wipe(message: Notice) {
     revokeAll();
     setLoaded(null);
     setMv(null);
@@ -121,7 +131,7 @@ export function App() {
     };
     probe.onerror = () => {
       revokeObjectUrl(url);
-      setNotice('MV / 音声ファイルを読み込めませんでした');
+      setNotice({ msg: { key: 'mv.loadFailed' } });
     };
     probe.src = url;
   }
@@ -132,34 +142,48 @@ export function App() {
     <div className="app" key={resetKey}>
       <header>
         <h1>motiontext</h1>
-        <span className="tag">字幕 → リリックモーション自動生成</span>
+        <span className="tag">{t('app.tagline')}</span>
+        <select
+          className="lang-select"
+          aria-label={t('app.language')}
+          value={lang}
+          onChange={(e) => {
+            if (isLang(e.target.value)) setLang(e.target.value);
+          }}
+        >
+          {LANGUAGES.map((l) => (
+            <option key={l} value={l}>
+              {LANGUAGE_NAMES[l]}
+            </option>
+          ))}
+        </select>
         {loaded && (
-          <button className="danger" onClick={() => wipe('データを破棄しました。')}>
-            データを破棄
+          <button className="danger" onClick={() => wipe({ msg: { key: 'app.wiped' } })}>
+            {t('app.wipe')}
           </button>
         )}
       </header>
 
       {notice && (
         <p className="notice" onClick={() => setNotice(null)}>
-          {notice}
+          {notice.wrap ? t(notice.wrap, { message: tl(notice.msg) }) : tl(notice.msg)}
         </p>
       )}
 
       <section>
-        <h2>1. 字幕ファイル</h2>
+        <h2>{t('sec.subtitle')}</h2>
         {loaded ? (
           <div className="loaded">
             <span>
-              {loaded.fileName}（{loaded.result.format.toUpperCase()} / {loaded.result.cues.length} 件）
+              {t('subtitle.loaded', { name: loaded.fileName, format: loaded.result.format.toUpperCase(), count: loaded.result.cues.length })}
             </span>
             <IssueList issues={subtitleIssues} />
             {loaded.result.warnings.length > 0 && (
               <details>
-                <summary>警告 {loaded.result.warnings.length} 件</summary>
+                <summary>{t('subtitle.warnings', { count: loaded.result.warnings.length })}</summary>
                 <ul>
                   {loaded.result.warnings.slice(0, 50).map((w, i) => (
-                    <li key={i}>{w}</li>
+                    <li key={i}>{tl(w)}</li>
                   ))}
                 </ul>
               </details>
@@ -176,14 +200,14 @@ export function App() {
       </section>
 
       <section>
-        <h2>2. フォント</h2>
+        <h2>{t('sec.fonts')}</h2>
         <FontPicker selected={fontIds} onChange={setFontIds} sample={sample} />
       </section>
 
       {timeline && (
         <>
           <section>
-            <h2>3. スタイル</h2>
+            <h2>{t('sec.style')}</h2>
             <StylePanel
               value={style}
               onChange={setStyle}
@@ -194,7 +218,7 @@ export function App() {
           </section>
 
           <section>
-            <h2>4. プレビュー</h2>
+            <h2>{t('sec.preview')}</h2>
             <div className="controls">
               <SeedControls
                 seed={seed}
@@ -204,12 +228,12 @@ export function App() {
                 onSeedInput={changeSeed}
               />
               <label className="file-btn">
-                MV / 音声を読み込む（任意・確認用）
+                {t('mv.load')}
                 <input type="file" accept="video/*,audio/*" hidden onChange={(e) => loadMv(e.target.files?.[0])} />
               </label>
               {mv && (
                 <span className="hint">
-                  {mv.name}（{mv.duration.toFixed(1)} 秒・書き出し長に反映）
+                  {t('mv.loaded', { name: mv.name, sec: mv.duration.toFixed(1) })}
                 </span>
               )}
             </div>
@@ -227,7 +251,7 @@ export function App() {
           </section>
 
           <section>
-            <h2>5. 書き出し</h2>
+            <h2>{t('sec.export')}</h2>
             <ExportPanel
               timeline={timeline}
               fontIds={fontIds}
@@ -237,8 +261,8 @@ export function App() {
               media={mv ? { file: mv.file, duration: mv.duration } : null}
               issues={exportIssues}
               onExported={(autoWipe, message) => {
-                if (autoWipe) wipe(`${message} アプリ内のデータを破棄しました。`);
-                else setNotice(`${message} 続けて別の形式でも書き出せます。終わったら「データを破棄」を押すか、ページを閉じてください。`);
+                if (autoWipe) wipe({ msg: message, wrap: 'export.done.wiped' });
+                else setNotice({ msg: message, wrap: 'export.done.keep' });
               }}
             />
           </section>
@@ -246,15 +270,11 @@ export function App() {
       )}
 
       <footer>
+        <p>{t('footer.privacy')}</p>
         <p>
-          プライバシー: 字幕・MV はすべてこのブラウザ内で処理され、サーバーへは送信されません。ブラウザのストレージにも保存しません。
-          ただし、ダウンロードしたファイルとブラウザのダウンロード履歴はアプリから削除できないため、必要に応じてご自身で管理してください。
-        </p>
-        <p>
-          同梱フォントはすべて SIL Open Font License 1.1 です。漢字の画数データは Unicode Unihan Database（Unicode License v3,
-          © Unicode, Inc.）を使用しています。
+          {t('footer.licenses')}{' '}
           <a href={`${import.meta.env.BASE_URL}THIRD_PARTY_LICENSES.txt`} target="_blank" rel="noopener noreferrer">
-            ライセンス一覧
+            {t('footer.licenseLink')}
           </a>
         </p>
       </footer>

@@ -1,4 +1,5 @@
 import type { Timeline } from '../director/types';
+import { LocalizedError } from '../i18n/errors';
 import type { CompositeResult } from './composite';
 import type { FromWorker, ToWorker } from './protocol';
 import { frameFileName, pickUniqueName, sequenceFolderName } from './sequence';
@@ -53,12 +54,12 @@ export function startExport(
         onProgress(1);
         settle.resolve(new Blob([m.buffer], { type: m.mimeType }));
       } else if (m.type === 'canceled') settle.reject(new DOMException('canceled', 'AbortError'));
-      else if (m.type === 'error') settle.reject(new Error(m.message));
+      else if (m.type === 'error') settle.reject(workerError(m));
     }
   };
   worker.onerror = (e) => {
     worker.terminate();
-    settle.reject(new Error(e.message || '書き出し Worker でエラーが発生しました'));
+    settle.reject(workerCrash(e));
   };
 
   const start: ToWorker = { type: 'start', format: 'mp4', timeline, fontIds, text, bitrate: DEFAULT_BITRATE };
@@ -75,15 +76,26 @@ export function startExport(
  */
 export class PartialOutputError extends Error {
   constructor(
-    message: string,
+    /** 止まった理由（キャンセル時は null）。表示は画面側で翻訳する */
+    readonly reason: unknown,
     /** 表示用の名前（フォルダ名・ファイル名） */
     readonly label: string,
     readonly kind: 'folder' | 'file',
     readonly remove: () => Promise<void>,
     readonly aborted: boolean,
   ) {
-    super(message);
+    super(reason instanceof Error ? reason.message : reason == null ? 'canceled' : String(reason));
   }
+}
+
+/** Worker からのエラー通知をエラーオブジェクトにする（キーがあれば翻訳できるエラー） */
+function workerError(m: { message: string; key?: LocalizedError['key']; params?: LocalizedError['params'] }): Error {
+  return m.key ? new LocalizedError(m.key, m.params) : new Error(m.message);
+}
+
+/** Worker 自体のエラー（読み込み失敗など） */
+function workerCrash(e: ErrorEvent): Error {
+  return e.message ? new Error(e.message) : new LocalizedError('err.worker');
 }
 
 export interface PngSequenceResult {
@@ -127,8 +139,7 @@ export function startPngSequenceExport(
         if (failed) return;
         failed = true;
         worker.terminate();
-        const message = aborted ? 'canceled' : err instanceof Error ? err.message : String(err);
-        reject(new PartialOutputError(message, folderName, 'folder', () => removeFolder(parent, folderName), aborted));
+        reject(new PartialOutputError(aborted ? null : err, folderName, 'folder', () => removeFolder(parent, folderName), aborted));
       };
       const finishIfDone = () => {
         if (!failed && expected >= 0 && written === expected) {
@@ -154,7 +165,7 @@ export function startPngSequenceExport(
               finishIfDone();
             } catch (err) {
               // ディスクの空き不足・権限の取り消しなど
-              fail(new Error(`ファイルの書き込みに失敗しました: ${err instanceof Error ? err.message : String(err)}`), false);
+              fail(new LocalizedError('err.writeFailed', { error: err instanceof Error ? err.message : String(err) }), false);
             }
           });
         } else if (m.type === 'progress') onProgress(m.done / m.total);
@@ -162,9 +173,9 @@ export function startPngSequenceExport(
           expected = m.total;
           queue = queue.then(finishIfDone);
         } else if (m.type === 'canceled') fail(null, true);
-        else if (m.type === 'error') fail(new Error(m.message), false);
+        else if (m.type === 'error') fail(workerError(m), false);
       };
-      worker.onerror = (e) => fail(new Error(e.message || '書き出し Worker でエラーが発生しました'), false);
+      worker.onerror = (e) => fail(workerCrash(e), false);
 
       const start: ToWorker = { type: 'start', format: 'png', timeline, fontIds, text, bitrate: 0 };
       worker.postMessage(start);
@@ -174,7 +185,7 @@ export function startPngSequenceExport(
     if (err instanceof PartialOutputError) throw err;
     // サブフォルダ作成前の失敗（フォルダの権限なし等）
     if (!folderName) throw err;
-    throw new PartialOutputError(err instanceof Error ? err.message : String(err), folderName, 'folder', () => removeFolder(parent, folderName), userCanceled);
+    throw new PartialOutputError(userCanceled ? null : err, folderName, 'folder', () => removeFolder(parent, folderName), userCanceled);
   });
 
   return {
@@ -205,9 +216,9 @@ export function isCompositeSupported(): boolean {
 }
 
 /** 保存先ファイルを選ばせる。ユーザー操作（クリック）の直後に呼ぶこと */
-export function pickOutputFile(suggestedName: string): Promise<FileSystemFileHandle> {
+export function pickOutputFile(suggestedName: string, typeDescription: string): Promise<FileSystemFileHandle> {
   const picker = (window as unknown as { showSaveFilePicker: SaveFilePicker }).showSaveFilePicker;
-  return picker({ suggestedName, id: 'motiontext-mp4', types: [{ description: 'MP4 動画', accept: { 'video/mp4': ['.mp4'] } }] });
+  return picker({ suggestedName, id: 'motiontext-mp4', types: [{ description: typeDescription, accept: { 'video/mp4': ['.mp4'] } }] });
 }
 
 /** 途中まで書いたファイルを削除する。remove() が無いブラウザでは中身を空にする */
@@ -253,14 +264,14 @@ export function startCompositeExport(
       },
     });
     return new Promise<CompositeResult>((resolve, reject) => {
-      const fail = (message: string, aborted: boolean) => {
+      const fail = (err: unknown, aborted: boolean) => {
         worker.terminate();
         // 書き込みを中断し、一時ファイル（.crswap）を残さない
         if (!closed) {
           closed = true;
           file.abort().catch(() => {});
         }
-        reject(new PartialOutputError(message, handle.name, 'file', () => removeFile(handle), aborted));
+        reject(new PartialOutputError(aborted ? null : err, handle.name, 'file', () => removeFile(handle), aborted));
       };
       worker.onmessage = (e: MessageEvent<FromWorker>) => {
         const m = e.data;
@@ -269,10 +280,10 @@ export function startCompositeExport(
           worker.terminate();
           onProgress(1);
           resolve(m.result);
-        } else if (m.type === 'canceled') fail('canceled', true);
-        else if (m.type === 'error') fail(m.message, userCanceled);
+        } else if (m.type === 'canceled') fail(null, true);
+        else if (m.type === 'error') fail(workerError(m), userCanceled);
       };
-      worker.onerror = (e) => fail(e.message || '書き出し Worker でエラーが発生しました', false);
+      worker.onerror = (e) => fail(workerCrash(e), false);
       const start: ToWorker = { type: 'start', format: 'composite', timeline, fontIds, text, media, writable: relay };
       worker.postMessage(start, [relay as unknown as Transferable]);
     });

@@ -22,6 +22,7 @@ import {
   type StreamTargetChunk,
 } from 'mediabunny';
 import type { Timeline } from '../director/types';
+import { LocalizedError } from '../i18n/errors';
 import { buildLayouts, renderFrame } from '../render/renderer';
 import { compositeBitrate, compositeFps } from './compositeParams';
 
@@ -51,16 +52,17 @@ export async function runComposite(opts: {
   try {
     const vTrack = await input.getPrimaryVideoTrack();
     const aTrack = await input.getPrimaryAudioTrack();
-    if (!vTrack && !aTrack) throw new Error('読み込んだファイルに映像・音声のトラックが見つかりません。');
+    if (!vTrack && !aTrack) throw new LocalizedError('err.noTracks');
     if (vTrack && !(await vTrack.canDecode())) {
-      const codec = (await vTrack.getCodec()) ?? '不明な形式';
-      throw new Error(`この動画の形式（${codec}）はこのブラウザで読み込めません。H.264 の MP4 に変換してから読み込んでください。`);
+      const codec = await vTrack.getCodec();
+      // codec が不明な場合は '?' を渡す（画面側で翻訳）
+      throw new LocalizedError('err.unsupportedCodec', { codec: codec ?? '?' });
     }
     const duration = await input.computeDuration();
     const fps = compositeFps(vTrack ? (await vTrack.computePacketStats(120)).averagePacketRate : null, !!vTrack);
     const bitrate = compositeBitrate(width, height, fps);
     if (!(await canEncodeVideo('avc', { width, height, bitrate }))) {
-      throw new Error('このブラウザは H.264 の動画エンコードに対応していません（Chrome / Edge の最新版を推奨）');
+      throw new LocalizedError('err.h264Unsupported');
     }
 
     // 保存先ファイルへ直接書き込む（moov は最後に位置指定で書くので fastStart なし）
@@ -69,7 +71,7 @@ export async function runComposite(opts: {
 
     const canvas = new OffscreenCanvas(width, height);
     const ctx = canvas.getContext('2d', { alpha: false });
-    if (!ctx) throw new Error('OffscreenCanvas 2D が利用できません');
+    if (!ctx) throw new LocalizedError('err.canvasUnavailable');
     const layouts = buildLayouts(ctx, timeline);
     const videoSource = new CanvasSource(canvas, { codec: 'avc', bitrate, keyFrameInterval: 2 });
     output.addVideoTrack(videoSource, { frameRate: fps });

@@ -43,26 +43,22 @@ export interface TimelineItem {
 
 /** 基本の文字サイズ。large は歌詞を画面いっぱいに表示する */
 export const SIZE_LEVELS = {
-  small: { label: '小', scale: 0.72, fit: false },
-  medium: { label: '中', scale: 1, fit: false },
-  large: { label: '大（画面いっぱい）', scale: 1, fit: true },
+  small: { scale: 0.72, fit: false },
+  medium: { scale: 1, fit: false },
+  large: { scale: 1, fit: true },
 } as const;
 
 export type SizeLevel = keyof typeof SIZE_LEVELS;
 
-/** 縦書きの使い方 */
-export const VERTICAL_MODES = {
-  auto: { label: '自動' },
-  off: { label: 'なし' },
-  always: { label: '常に（日本語の行）' },
-} as const;
+/** 縦書きの使い方（表示名は画面側で翻訳キー vertical.<値> から引く） */
+export const VERTICAL_MODES = ['auto', 'off', 'always'] as const;
 
-export type VerticalMode = keyof typeof VERTICAL_MODES;
+export type VerticalMode = (typeof VERTICAL_MODES)[number];
 
 /** 出力の画面比率 */
 export const ASPECTS = {
-  landscape: { label: '16:9（横）', width: 1920, height: 1080 },
-  portrait: { label: '9:16（縦・Shorts / Reels / TikTok）', width: 1080, height: 1920 },
+  landscape: { width: 1920, height: 1080 },
+  portrait: { width: 1080, height: 1920 },
 } as const;
 
 export type Aspect = keyof typeof ASPECTS;

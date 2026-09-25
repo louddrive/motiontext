@@ -1,6 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import type { Timeline, TimelineItem } from '../director/types';
 import { ensureGlyphs } from '../fonts/loader';
+import { useI18n } from '../i18n/react';
 import { buildLayouts, renderFrame, type Layouts } from '../render/renderer';
 
 interface Props {
@@ -36,6 +37,7 @@ function fmt(t: number) {
 }
 
 export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, compositePreview = false }: Props) {
+  const { t, lang } = useI18n();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const layoutsRef = useRef<Layouts | null>(null);
@@ -162,10 +164,10 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
           height={timeline.height}
           style={{ mixBlendMode: showMv && !transparent ? 'screen' : 'normal' }}
         />
-        {loading && <div className="stage-msg">フォントを読み込み中…</div>}
+        {loading && <div className="stage-msg">{t('preview.loadingFonts')}</div>}
       </div>
       <div className="transport">
-        <button onClick={() => (playing ? pause() : play())}>{playing ? '一時停止' : '再生'}</button>
+        <button onClick={() => (playing ? pause() : play())}>{playing ? t('preview.pause') : t('preview.play')}</button>
         <input
           type="range"
           min={0}
@@ -187,24 +189,27 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
                 setOverlay(e.target.checked);
               }}
             />
-            MVに重ねて表示
+            {t('preview.overlay')}
           </label>
         )}
       </div>
-      <p className="hint keys">キー操作: スペース＝再生／停止、← →＝1秒移動、Shift＋← →＝0.1秒移動</p>
-      <CueList items={timeline.items} activeId={activeId} onSeek={seek} />
+      <p className="hint keys">{t('preview.keys')}</p>
+      <CueList items={timeline.items} activeId={activeId} onSeek={seek} lang={lang} />
     </div>
   );
 }
 
 interface CueListProps {
   items: TimelineItem[];
+  /** 言語の切り替えで再描画するため（memo の比較に使う） */
+  lang: string;
   activeId: number | null;
   onSeek: (t: number) => void;
 }
 
 /** 字幕の一覧。クリックでその字幕の開始時刻へ移動する（再生中の字幕を強調） */
 const CueList = memo(function CueList({ items, activeId, onSeek }: CueListProps) {
+  const { t } = useI18n();
   const rows = useMemo(
     () => items.map((it) => ({ id: it.id, start: it.start, text: it.lines.map((phrases) => phrases.join('')).join(' / ') })),
     [items],
@@ -214,7 +219,7 @@ const CueList = memo(function CueList({ items, activeId, onSeek }: CueListProps)
   seekRef.current = onSeek;
   return (
     <details className="cue-list">
-      <summary>字幕の一覧（クリックでその時刻へ移動）・{rows.length} 件</summary>
+      <summary>{t('preview.cueList', { count: rows.length })}</summary>
       <ol>
         {rows.map((r) => (
           <li key={r.id} className={r.id === activeId ? 'active' : ''}>
@@ -227,4 +232,4 @@ const CueList = memo(function CueList({ items, activeId, onSeek }: CueListProps)
       </ol>
     </details>
   );
-}, (a, b) => a.items === b.items && a.activeId === b.activeId);
+}, (a, b) => a.items === b.items && a.activeId === b.activeId && a.lang === b.lang);

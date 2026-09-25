@@ -1,4 +1,5 @@
 import { finalizeCues, normalizeText, stripTags, toSeconds } from './common';
+import type { Localized } from '../i18n/errors';
 import type { ParseResult } from './types';
 
 // 00:00:01,000 --> 00:00:03,500  (区切りは , と . の両方を許容。後続の位置指定 X1: 等は無視)
@@ -6,7 +7,7 @@ const TIME_RE =
   /^\s*(\d{1,2}):(\d{1,2}):(\d{1,2})(?:[,.](\d{1,3}))?\s*-->\s*(\d{1,2}):(\d{1,2}):(\d{1,2})(?:[,.](\d{1,3}))?/;
 
 export function parseSrt(src: string): ParseResult {
-  const warnings: string[] = [];
+  const warnings: Localized[] = [];
   const lines = normalizeText(src).split('\n');
   const raw: { start: number; end: number; text: string }[] = [];
 
@@ -17,7 +18,7 @@ export function parseSrt(src: string): ParseResult {
     if (!m) {
       // 番号行・空行はスキップ。それ以外の孤立行は警告
       if (line.trim() && !/^\d+$/.test(line.trim())) {
-        warnings.push(`${i + 1}行目: 解釈できない行をスキップしました`);
+        warnings.push({ key: 'parse.skipLine', params: { line: i + 1 } });
       }
       i++;
       continue;

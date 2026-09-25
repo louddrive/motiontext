@@ -34,7 +34,7 @@ describe('演出レベル', () => {
   });
 
   it('レベルが上がるほどカメラワークと装飾が増え、グローが強くなる（単調増加）', () => {
-    const levels = Object.keys(EFFECT_LEVELS) as EffectLevel[];
+    const levels = [...EFFECT_LEVELS];
     const stats = levels.map((l) => {
       const t = run(l);
       return {
@@ -58,6 +58,6 @@ describe('演出レベル', () => {
   });
 
   it('どのレベルでも決定的', () => {
-    for (const l of Object.keys(EFFECT_LEVELS) as EffectLevel[]) expect(run(l, 8)).toEqual(run(l, 8));
+    for (const l of [...EFFECT_LEVELS]) expect(run(l, 8)).toEqual(run(l, 8));
   });
 });

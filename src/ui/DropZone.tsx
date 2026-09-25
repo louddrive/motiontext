@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { LocalizedError } from '../i18n/errors';
+import { useI18n } from '../i18n/react';
 import { LIMITS, checkSubtitleFileSize } from '../limits';
 import { decodeBytes, parseSubtitle } from '../parsers/detect';
 import type { ParseResult } from '../parsers/types';
@@ -8,7 +10,9 @@ interface Props {
 }
 
 export function DropZone({ onLoaded }: Props) {
-  const [error, setError] = useState<string | null>(null);
+  const { t, te } = useI18n();
+  // エラーは表示時に翻訳する（言語を切り替えたときも追従する）
+  const [error, setError] = useState<unknown>(null);
   const [over, setOver] = useState(false);
 
   async function handle(file: File | undefined) {
@@ -17,16 +21,16 @@ export function DropZone({ onLoaded }: Props) {
     try {
       // 大きすぎるファイルは読み込む前に弾く
       const sizeIssue = checkSubtitleFileSize(file.size);
-      if (sizeIssue) throw new Error(sizeIssue.message);
+      if (sizeIssue) throw new LocalizedError(sizeIssue.key, sizeIssue.params);
       const text = decodeBytes(await file.arrayBuffer());
       const result = parseSubtitle(file.name, text);
-      if (result.cues.length === 0) throw new Error('字幕が1件も見つかりませんでした');
+      if (result.cues.length === 0) throw new LocalizedError('parse.noCues');
       if (result.cues.length > LIMITS.maxCues) {
-        throw new Error(`字幕が多すぎます（${result.cues.length} 件）。上限は ${LIMITS.maxCues} 件です。`);
+        throw new LocalizedError('limits.tooManyCues', { count: result.cues.length, max: LIMITS.maxCues });
       }
       onLoaded(file.name, result);
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(e);
     }
   }
 
@@ -46,10 +50,10 @@ export function DropZone({ onLoaded }: Props) {
         }}
       >
         <input type="file" accept=".srt,.sbv,text/plain" hidden onChange={(e) => void handle(e.target.files?.[0])} />
-        <strong>SRT / SBV ファイルをドロップ</strong>
-        <span>またはクリックして選択（ファイルはブラウザ内でのみ処理され、送信されません）</span>
+        <strong>{t('drop.title')}</strong>
+        <span>{t('drop.sub')}</span>
       </label>
-      {error && <p className="error">{error}</p>}
+      {error != null && <p className="error">{te(error)}</p>}
     </div>
   );
 }

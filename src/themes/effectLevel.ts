@@ -4,15 +4,10 @@ import type { Theme } from './types';
 // 英語圏向け（演出控えめ・可読性重視）〜日本向け（エモい演出）を1つの軸で切り替える。
 // 文字サイズ・漢字とかなの強弱・色・フォントはスタイル側の設定で、ここでは変えない。
 
-export const EFFECT_LEVELS = {
-  none: { label: '演出なし（可読性重視）' },
-  subtle: { label: '控えめ' },
-  standard: { label: '標準' },
-  emo: { label: 'エモい' },
-  ultra: { label: '超エモ' },
-} as const;
+/** 演出レベル（表示名は画面側で翻訳キー effect.<値> から引く） */
+export const EFFECT_LEVELS = ['none', 'subtle', 'standard', 'emo', 'ultra'] as const;
 
-export type EffectLevel = keyof typeof EFFECT_LEVELS;
+export type EffectLevel = (typeof EFFECT_LEVELS)[number];
 
 export function applyEffectLevel(theme: Theme, level: EffectLevel): Theme {
   switch (level) {
