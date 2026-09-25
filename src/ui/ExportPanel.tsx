@@ -39,7 +39,8 @@ function formatMB(mb: number): string {
 export function ExportPanel({ timeline, fontIds, text, baseName, format, issues, media, onExported }: Props) {
   const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [autoWipe, setAutoWipe] = useState(true);
+  // 初期値はオフ（続けて別の形式でも書き出せるように）。オンにすると書き出し後にアプリ内のデータを破棄する
+  const [autoWipe, setAutoWipe] = useState(false);
   /** 途中で止まった出力（PNG 連番のフォルダ／合成 MP4 のファイル）。削除するか利用者に確認する */
   const [partial, setPartial] = useState<PartialOutputError | null>(null);
   const jobRef = useRef<ExportJob<unknown> | null>(null);

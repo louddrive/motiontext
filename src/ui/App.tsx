@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { analyze } from '../analysis/features';
+import { shiftCues } from '../analysis/timing';
 import { direct } from '../director/director';
 import { ASPECTS } from '../director/types';
 import { isCompositeSupported, isPngSequenceSupported } from '../export/encoder';
@@ -15,6 +16,7 @@ import { ExportPanel } from './ExportPanel';
 import { FontPicker } from './FontPicker';
 import { IssueList } from './IssueList';
 import { Preview } from './Preview';
+import { SeedControls, TimingControls } from './PreviewControls';
 import { DEFAULT_STYLE, StylePanel, type StyleSettings } from './StylePanel';
 
 interface Loaded {
@@ -36,17 +38,23 @@ export function App() {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [fontIds, setFontIds] = useState<string[]>(DEFAULT_FONT_IDS);
   const [seed, setSeed] = useState(randomSeed);
+  /** 「1つ前に戻す」用のパターン番号（seed）の履歴 */
+  const [seedHistory, setSeedHistory] = useState<number[]>([]);
+  /** 字幕全体のタイミング調整（秒）。正で遅く、負で早く表示する */
+  const [offsetSec, setOffsetSec] = useState(0);
   const [style, setStyle] = useState<StyleSettings>(DEFAULT_STYLE);
   const [mv, setMv] = useState<Mv | null>(null);
   const [resetKey, setResetKey] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
 
   const text = useMemo(() => loaded?.result.cues.map((c) => c.text).join('\n') ?? '', [loaded]);
+  // タイミング調整を反映した字幕（演出の生成と書き出しの検証に使う）
+  const cues = useMemo(() => (loaded ? shiftCues(loaded.result.cues, offsetSec) : []), [loaded, offsetSec]);
   const sample = loaded?.result.cues.find((c) => c.text.length >= 4)?.text.split('\n')[0] ?? '歌詞のサンプル Lyrics';
 
   const timeline = useMemo(() => {
     if (!loaded) return null;
-    return direct(analyze(loaded.result.cues), {
+    return direct(analyze(cues), {
       theme: applyEffectLevel(defaultTheme, style.effectLevel),
       seed,
       fontIds,
@@ -62,19 +70,31 @@ export function App() {
       sizeLevel: style.sizeLevel,
       verticalMode: style.verticalMode,
     });
-  }, [loaded, seed, fontIds, mv?.duration, style]);
+  }, [loaded, cues, seed, fontIds, mv?.duration, style]);
 
   const subtitleIssues = useMemo(() => (loaded ? validateSubtitles(loaded.result.cues) : []), [loaded]);
   const exportIssues = useMemo(() => {
     if (!loaded || !timeline) return [];
-    const subtitleEnd = loaded.result.cues.reduce((m, c) => Math.max(m, c.end), 0);
+    const subtitleEnd = cues.reduce((m, c) => Math.max(m, c.end), 0);
     const issues = validateExport(timeline.duration, subtitleEnd, mv?.duration, style.output, timeline.fps);
     // 合成は MV／曲が必要（MV を外した・上限超えの場合）
     if (style.output === 'composite' && (!mv || usableMvDuration(mv.duration) === undefined)) {
       issues.unshift({ level: 'error', message: '合成書き出しには、15分以内の MV／曲の読み込みが必要です。' });
     }
     return issues;
-  }, [loaded, timeline, mv?.duration, style.output]);
+  }, [loaded, cues, timeline, mv?.duration, style.output]);
+
+  /** パターンを変える。今のパターン番号は「1つ前に戻す」用に履歴へ積む */
+  function changeSeed(next: number) {
+    if (next === seed) return;
+    setSeedHistory((h) => [...h, seed].slice(-100));
+    setSeed(next);
+  }
+  function undoSeed() {
+    if (seedHistory.length === 0) return;
+    setSeed(seedHistory[seedHistory.length - 1]);
+    setSeedHistory(seedHistory.slice(0, -1));
+  }
 
   function wipe(message: string) {
     revokeAll();
@@ -82,6 +102,8 @@ export function App() {
     setMv(null);
     setFontIds(DEFAULT_FONT_IDS);
     setSeed(randomSeed());
+    setSeedHistory([]);
+    setOffsetSec(0);
     setStyle(DEFAULT_STYLE);
     setResetKey((k) => k + 1); // ファイル入力等を再マウントして選択状態も消す
     setNotice(message);
@@ -174,7 +196,13 @@ export function App() {
           <section>
             <h2>4. プレビュー</h2>
             <div className="controls">
-              <button onClick={() => setSeed(randomSeed())}>演出を再生成</button>
+              <SeedControls
+                seed={seed}
+                canUndo={seedHistory.length > 0}
+                onRegenerate={() => changeSeed(randomSeed())}
+                onUndo={undoSeed}
+                onSeedInput={changeSeed}
+              />
               <label className="file-btn">
                 MV / 音声を読み込む（任意・確認用）
                 <input type="file" accept="video/*,audio/*" hidden onChange={(e) => loadMv(e.target.files?.[0])} />
@@ -184,6 +212,9 @@ export function App() {
                   {mv.name}（{mv.duration.toFixed(1)} 秒・書き出し長に反映）
                 </span>
               )}
+            </div>
+            <div className="controls">
+              <TimingControls offsetSec={offsetSec} onChange={setOffsetSec} />
             </div>
             <Preview
               timeline={timeline}
@@ -207,7 +238,7 @@ export function App() {
               issues={exportIssues}
               onExported={(autoWipe, message) => {
                 if (autoWipe) wipe(`${message} アプリ内のデータを破棄しました。`);
-                else setNotice(message);
+                else setNotice(`${message} 続けて別の形式でも書き出せます。終わったら「データを破棄」を押すか、ページを閉じてください。`);
               }}
             />
           </section>
