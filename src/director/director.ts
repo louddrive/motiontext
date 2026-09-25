@@ -58,16 +58,16 @@ export const CAMERA_MIN_DURATION = 1.2;
 
 /**
  * 字幕ごとのカメラワーク。既存の演出選択に影響しないよう、独立した乱数列を使う。
- * 確率・強さはテーマの energy に連動し、サビは強め、画面いっぱいモードははみ出し防止で控えめ。
+ * 確率・強さはテーマの energy に連動し、サビは強め、文字が大きいサイズははみ出し防止で控えめ（sizeScale）。
  */
-export function chooseCamera(f: CueFeature, theme: Theme, seed: number, fit: boolean): CameraMove | null {
+export function chooseCamera(f: CueFeature, theme: Theme, seed: number, sizeScale = 1): CameraMove | null {
   if (f.duration < CAMERA_MIN_DURATION) return null;
   const cr = rngFor(seed, 'camera', f.cue.index);
   const base = theme.camera.probability * (0.5 + theme.energy);
   const probability = Math.min(1, f.isChorus ? base * 1.3 : base);
   if (cr() >= probability) return null;
   const intensity =
-    theme.camera.intensity * (0.6 + 0.4 * theme.energy) * (f.isChorus ? 1.2 : 1) * (fit ? 0.5 : 1);
+    theme.camera.intensity * (0.6 + 0.4 * theme.energy) * (f.isChorus ? 1.2 : 1) * sizeScale;
   return {
     type: pickWeighted(cr, theme.camera.moves),
     // 左右の向きを交互にして、字幕が変わるたびに流れが生まれるようにする
@@ -120,7 +120,7 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
   const textColors = usablePalette(theme.palette.text, background);
   const accentColors = usablePalette(theme.palette.accent, background);
   const singleFont = opts.fontIds.length === 1;
-  const size = SIZE_LEVELS[opts.sizeLevel ?? 'medium'];
+  const size = SIZE_LEVELS[opts.sizeLevel ?? 'm'];
   const strokeEmphasis = opts.strokeEmphasis ?? theme.strokeEmphasis;
 
   const items: TimelineItem[] = [];
@@ -172,7 +172,7 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     }
 
     const align = animation === 'phraseStack' && !emphasis && r() < 0.4 ? 'left' : 'center';
-    const camera = chooseCamera(f, theme, seed, size.fit);
+    const camera = chooseCamera(f, theme, seed, size.camera);
     const vertical = chooseVertical(f, theme, seed, opts.verticalMode ?? 'auto', verticalRun);
     const side: Side = vertical ? chooseSide(f, seed, size.fit, prevSide) : 'center';
     verticalRun = vertical ? verticalRun + 1 : 0;

@@ -41,11 +41,16 @@ export interface TimelineItem {
   energy: number;
 }
 
-/** 基本の文字サイズ。large は歌詞を画面いっぱいに表示する */
+/**
+ * 基本の文字サイズ（5段階）。scale は M を 1 とした倍率、xl は歌詞を画面いっぱいに表示する。
+ * camera は疑似3Dカメラの動きの倍率（文字が大きいほど画面からはみ出しやすいので控えめにする）
+ */
 export const SIZE_LEVELS = {
-  small: { scale: 0.72, fit: false },
-  medium: { scale: 1, fit: false },
-  large: { scale: 1, fit: true },
+  xs: { scale: 0.55, fit: false, camera: 1 },
+  s: { scale: 0.72, fit: false, camera: 1 },
+  m: { scale: 1, fit: false, camera: 1 },
+  l: { scale: 1.5, fit: false, camera: 0.75 },
+  xl: { scale: 1, fit: true, camera: 0.5 },
 } as const;
 
 export type SizeLevel = keyof typeof SIZE_LEVELS;

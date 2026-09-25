@@ -135,7 +135,7 @@ What each option in "3. Style" does. When in doubt, pick the "Recommended" value
 | Effect level | None (readability first) / Subtle / Standard / Emotional / Ultra emotional | How intense the motion is. Higher levels add more 3D camera moves, vertical text and decorations | "Standard"–"Emotional" for Japanese audiences; "None" for English-speaking audiences or maximum readability |
 | Output | MP4 (CapCut, etc.) / PNG sequence · transparent (DaVinci Resolve, etc.) / Composite with MV / song (MP4 with audio) | The type of file to export | See [Choosing an output format](#choosing-an-output-format) |
 | Background | Black / Green | The MP4 background color. Set automatically for PNG sequences and composites | Black |
-| Text size | Small / Medium / Large (fill the screen) | Size of the lyrics. "Large" fills the screen | Medium |
+| Text size | XS / S / M / L / XL (fill the screen) | Size of the lyrics. M is the standard size and L is about 1.5×. "XL" fills the screen | M |
 | Kanji / kana size contrast | None / Subtle / Standard / Strong | Makes kanji larger and kana smaller for rhythm (Japanese lyrics only) | Standard |
 | Emphasize kanji with many strokes | On / Off | Slightly enlarges the kanji word with the most strokes on each line (Japanese lyrics only) | On |
 | Vertical text | Auto / Off / Always (Japanese lines) | Sets Japanese lyrics vertically. "Auto" mixes vertical and horizontal lines | Auto |

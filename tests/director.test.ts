@@ -54,13 +54,18 @@ describe('direct', () => {
     expect(mono.items.map((i) => [i.animation, i.fontId, i.deco])).toEqual(auto.items.map((i) => [i.animation, i.fontId, i.deco]));
   });
 
-  it('文字サイズ: 小 < 中、大は画面いっぱいモード（中央固定）', () => {
-    const s = direct(features, { ...base, seed: 1, sizeLevel: 'small' }).items;
-    const m = direct(features, { ...base, seed: 1, sizeLevel: 'medium' }).items;
-    const l = direct(features, { ...base, seed: 1, sizeLevel: 'large' }).items;
-    s.forEach((it, i) => expect(it.fontSize).toBeLessThan(m[i].fontSize));
-    expect(m.every((i) => !i.fit)).toBe(true);
-    expect(l.every((i) => i.fit && i.anchor === 'center')).toBe(true);
+  it('文字サイズ: XS < S < M < L、XL は画面いっぱいモード（中央固定）', () => {
+    const sizes = (['xs', 's', 'm', 'l'] as const).map((sizeLevel) => direct(features, { ...base, seed: 1, sizeLevel }).items);
+    for (let k = 1; k < sizes.length; k++) sizes[k].forEach((it, i) => expect(it.fontSize).toBeGreaterThan(sizes[k - 1][i].fontSize));
+    for (const items of sizes) expect(items.every((i) => !i.fit)).toBe(true);
+    const xl = direct(features, { ...base, seed: 1, sizeLevel: 'xl' }).items;
+    expect(xl.every((i) => i.fit && i.anchor === 'center')).toBe(true);
+  });
+
+  it('既定の文字サイズは M', () => {
+    expect(direct(features, { ...base, seed: 1 }).items.map((i) => i.fontSize)).toEqual(
+      direct(features, { ...base, seed: 1, sizeLevel: 'm' }).items.map((i) => i.fontSize),
+    );
   });
 
   it('画数強調は行ごとに範囲を持ち、無効化できる', () => {
@@ -83,11 +88,15 @@ describe('direct', () => {
     expect(direct(feats, { ...base, seed: 5 }).items.map((i) => i.camera)).toEqual(t.items.map((i) => i.camera));
   });
 
-  it('画面いっぱいモードではカメラの動きを控えめにする', () => {
+  it('文字が大きいサイズではカメラの動きを控えめにする（L は 0.75 倍、XL は 0.5 倍）', () => {
     const m = direct(features, { ...base, seed: 11 }).items;
-    const l = direct(features, { ...base, seed: 11, sizeLevel: 'large' }).items;
+    const l = direct(features, { ...base, seed: 11, sizeLevel: 'l' }).items;
+    const xl = direct(features, { ...base, seed: 11, sizeLevel: 'xl' }).items;
+    expect(m.some((i) => i.camera)).toBe(true);
     m.forEach((it, i) => {
-      if (it.camera) expect(l[i].camera!.intensity).toBeCloseTo(it.camera.intensity * 0.5);
+      if (!it.camera) return;
+      expect(l[i].camera!.intensity).toBeCloseTo(it.camera.intensity * 0.75);
+      expect(xl[i].camera!.intensity).toBeCloseTo(it.camera.intensity * 0.5);
     });
   });
 

@@ -85,7 +85,7 @@ describe('縦書きの割り当て', () => {
   });
 
   it('画面いっぱいモードの縦書きは中央固定', () => {
-    const t = run({ verticalMode: 'always', sizeLevel: 'large' });
+    const t = run({ verticalMode: 'always', sizeLevel: 'xl' });
     expect(t.items.filter((i) => i.vertical).every((i) => i.side === 'center')).toBe(true);
   });
 

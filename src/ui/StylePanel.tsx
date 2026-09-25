@@ -26,7 +26,7 @@ export const DEFAULT_STYLE: StyleSettings = {
   aspect: 'landscape',
   effectLevel: 'standard',
   background: 'black',
-  sizeLevel: 'medium',
+  sizeLevel: 'm',
   sizeContrast: 'normal',
   strokeEmphasis: true,
   verticalMode: 'auto',
@@ -54,7 +54,7 @@ const EFFECT_KEYS: Record<EffectLevel, MessageKey> = {
   emo: 'effect.emo',
   ultra: 'effect.ultra',
 };
-const SIZE_KEYS: Record<SizeLevel, MessageKey> = { small: 'size.small', medium: 'size.medium', large: 'size.large' };
+const SIZE_KEYS: Record<SizeLevel, MessageKey> = { xs: 'size.xs', s: 'size.s', m: 'size.m', l: 'size.l', xl: 'size.xl' };
 const CONTRAST_KEYS: Record<SizeContrast, MessageKey> = {
   none: 'contrast.none',
   soft: 'contrast.soft',
