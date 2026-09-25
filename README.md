@@ -72,6 +72,7 @@ scripts        データ生成スクリプト
 ```
 
 ## 同梱データ・ライセンス
+- このアプリ本体: Apache License 2.0（`LICENSE`）
 - フォント: @fontsource 経由（SIL OFL 1.1）
 - 漢字の総画数: Unicode Unihan Database 18.0.0 `kTotalStrokes`（Unicode License v3、`src/data/UNICODE-LICENSE.txt`）。
   JIS X 0208/0212/0213 の漢字 12,155 字。再生成は `node scripts/gen-strokes.mjs <Unihan展開先>`
