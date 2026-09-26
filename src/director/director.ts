@@ -1,13 +1,15 @@
 import type { CueFeature } from '../analysis/features';
 import { findStrokeEmphasis } from '../analysis/strokes';
+import type { AnimationId } from '../animations/types';
+import { EFFECTS, type EffectFlags } from '../config/effects';
 import { canTategaki } from '../analysis/tategaki';
 import { getFont } from '../fonts/catalog';
 import { LocalizedError } from '../i18n/errors';
 import type { CameraMove } from '../render/camera';
 import { isKeyUnsafe } from '../themes/color';
-import type { BackgroundMode, Theme } from '../themes/types';
+import type { BackgroundMode, Theme, WeightedList } from '../themes/types';
 import { hashString, pick, pickWeighted, rngFor } from './rng';
-import { FIT_MAX_FONT_SIZE, NO_BACKDROP, SIZE_LEVELS, type Backdrop, type Anchor, type Deco, type Side, type SizeLevel, type Timeline, type TimelineItem, type VerticalMode } from './types';
+import { FIT_MAX_FONT_SIZE, NO_BACKDROP, NO_MOTION_BLUR, SIZE_LEVELS, type Shake, type Backdrop, type Anchor, type Deco, type Side, type SizeLevel, type Timeline, type TimelineItem, type VerticalMode } from './types';
 
 export interface DirectOptions {
   theme: Theme;
@@ -31,6 +33,12 @@ export interface DirectOptions {
   verticalMode?: VerticalMode;
   /** 背景に重ねる色レイヤー（既定: なし） */
   backdrop?: Backdrop;
+  /** 文字の縁取り（既定: なし） */
+  outline?: boolean;
+  /** 文字のドロップシャドウ（既定: なし） */
+  shadow?: boolean;
+  /** エフェクトの有効・無効（既定: effects.config.json の値） */
+  effects?: EffectFlags;
 }
 
 export interface FontRoles {
@@ -113,6 +121,17 @@ export function chooseSide(f: CueFeature, seed: number, fit: boolean, prevSide: 
   return side;
 }
 
+/** 無効なエフェクトの演出を候補の表から外す。空になったら fadeUp にする */
+export function filterAnimations(table: WeightedList<AnimationId>, effects: EffectFlags): WeightedList<AnimationId> {
+  const out: WeightedList<AnimationId> = {};
+  for (const [id, w] of Object.entries(table) as [AnimationId, number][]) {
+    if (id === 'glitch' && !effects.glitch) continue;
+    if (id === 'echo' && !effects.echo) continue;
+    out[id] = w;
+  }
+  return Object.keys(out).length ? out : { fadeUp: 1 };
+}
+
 export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
   const { theme, seed, background } = opts;
   const width = opts.width ?? 1920;
@@ -124,6 +143,21 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
   const singleFont = opts.fontIds.length === 1;
   const size = SIZE_LEVELS[opts.sizeLevel ?? 'm'];
   const strokeEmphasis = opts.strokeEmphasis ?? theme.strokeEmphasis;
+  const effects = opts.effects ?? EFFECTS;
+  const verticalMode = effects.verticalText ? (opts.verticalMode ?? 'auto') : 'off';
+  const tables = {
+    chorus: filterAnimations(theme.animations.chorus, effects),
+    fast: filterAnimations(theme.animations.fast, effects),
+    slow: filterAnimations(theme.animations.slow, effects),
+    normal: filterAnimations(theme.animations.normal, effects),
+  };
+  const shakes: Shake[] = [];
+  const addShake = (time: number) => {
+    if (!effects.cameraShake || theme.fx.shake <= 0) return;
+    if (shakes.some((s) => Math.abs(s.time - time) < 0.05)) return;
+    shakes.push({ time, strength: theme.fx.shake });
+  };
+  let prevChorus = false;
 
   const items: TimelineItem[] = [];
   let prevAnchor: Anchor = 'center';
@@ -147,13 +181,7 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     // 1書体だけの場合はウェイト差で強弱を付ける
     const weight = emphasis || (singleFont && f.isSectionStart) ? weights[weights.length - 1] : weights[0];
 
-    const table = emphasis
-      ? theme.animations.chorus
-      : f.tempo === 'fast'
-        ? theme.animations.fast
-        : f.tempo === 'slow'
-          ? theme.animations.slow
-          : theme.animations.normal;
+    const table = emphasis ? tables.chorus : f.tempo === 'fast' ? tables.fast : f.tempo === 'slow' ? tables.slow : tables.normal;
     let animation = pickWeighted(r, table);
     // 同じ演出の連続を1回だけ引き直して避ける
     if (animation === prevAnim) animation = pickWeighted(r, table);
@@ -172,10 +200,19 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
       r();
       deco = 'lines';
     }
+    // 無効なエフェクトは、乱数を消費した後で外す（他の演出の選ばれ方を変えない）
+    if ((deco === 'ring' && !effects.sectionRing) || (deco === 'lines' && !effects.diagonalLines)) deco = 'none';
+    // カメラシェイク: サビのセクションの最初の字幕と、セクション頭の波紋が出る時刻
+    if (emphasis && (!prevChorus || f.isSectionStart)) addShake(f.cue.start);
+    if (deco === 'ring') addShake(f.cue.start);
+    prevChorus = emphasis;
+    // シャイン・光の粒はサビ行にだけ、独立した乱数列で付ける
+    const shine = emphasis && effects.shine && rngFor(seed, 'shine', f.cue.index)() < theme.fx.shineRate;
+    const particles = emphasis && effects.particles && rngFor(seed, 'particles', f.cue.index)() < theme.fx.particleRate;
 
     const align = animation === 'phraseStack' && !emphasis && r() < 0.4 ? 'left' : 'center';
-    const camera = chooseCamera(f, theme, seed, size.camera);
-    const vertical = chooseVertical(f, theme, seed, opts.verticalMode ?? 'auto', verticalRun);
+    const camera = effects.cameraWork ? chooseCamera(f, theme, seed, size.camera) : null;
+    const vertical = chooseVertical(f, theme, seed, verticalMode, verticalRun);
     const side: Side = vertical ? chooseSide(f, seed, size.fit, prevSide) : 'center';
     verticalRun = vertical ? verticalRun + 1 : 0;
     prevSide = vertical ? side : null;
@@ -204,6 +241,8 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
       align,
       emphasis,
       deco,
+      shine,
+      particles,
       seed: hashString(`${seed}:${f.cue.index}`),
       energy: theme.energy,
     });
@@ -221,6 +260,10 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     background,
     glow: background === 'black' ? theme.glow : 0,
     backdrop: opts.backdrop ?? NO_BACKDROP,
+    motionBlur: effects.motionBlur && theme.motionBlur.samples > 1 && theme.motionBlur.shutter > 0 ? { ...theme.motionBlur } : NO_MOTION_BLUR,
+    outline: (opts.outline ?? false) && effects.outline,
+    shadow: (opts.shadow ?? false) && effects.dropShadow,
+    shakes: shakes.sort((a, b) => a.time - b.time),
     items,
   };
 }

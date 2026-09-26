@@ -6,7 +6,7 @@ import { BufferTarget, CanvasSource, Mp4OutputFormat, Output, canEncodeVideo } f
 import type { Timeline } from '../director/types';
 import { LocalizedError } from '../i18n/errors';
 import { ensureGlyphs } from '../fonts/loader';
-import { backdropAlphaAt, buildLayouts, renderFrame } from '../render/renderer';
+import { backdropAlphaAt, buildLayouts, lyricsVisibleAt, renderFrame } from '../render/renderer';
 import { CompositeCanceled, runComposite } from './composite';
 import type { FromWorker, ToWorker } from './protocol';
 
@@ -116,7 +116,7 @@ async function exportPng(timeline: Timeline, fontIds: string[], text: string) {
       }
       const t = i / fps;
       let buffer: ArrayBuffer;
-      if (timeline.items.some((it) => t >= it.start && t < it.end)) {
+      if (lyricsVisibleAt(timeline, t)) {
         renderFrame(ctx, timeline, layouts, t, { transparent: true, backdrop: true });
         buffer = await (await canvas.convertToBlob({ type: 'image/png' })).arrayBuffer();
       } else {

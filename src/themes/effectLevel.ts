@@ -20,6 +20,8 @@ export function applyEffectLevel(theme: Theme, level: EffectLevel): Theme {
         glow: 0,
         chorusScale: 1.1,
         verticalRate: 0,
+        motionBlur: { shutter: 0, samples: 1 },
+        fx: { shake: 0, shineRate: 0, particleRate: 0 },
       };
     case 'subtle':
       return {
@@ -35,6 +37,8 @@ export function applyEffectLevel(theme: Theme, level: EffectLevel): Theme {
         glow: 8,
         chorusScale: 1.15,
         verticalRate: 0.15,
+        motionBlur: { shutter: 0.25, samples: 3 },
+        fx: { shake: 0, shineRate: 0.3, particleRate: 0 },
       };
     case 'standard':
       return theme;
@@ -43,30 +47,34 @@ export function applyEffectLevel(theme: Theme, level: EffectLevel): Theme {
         ...theme,
         energy: 0.8,
         animations: {
-          normal: { scatter: 3, phraseStack: 3, echo: 2, slideMask: 2, fadeUp: 1, typewriter: 1 },
-          fast: { scaleBurst: 3, echo: 1, fadeUp: 1 },
+          normal: { scatter: 3, phraseStack: 3, echo: 2, slideMask: 2, fadeUp: 1, typewriter: 1, glitch: 1 },
+          fast: { scaleBurst: 3, echo: 1, fadeUp: 1, glitch: 1 },
           slow: { typewriter: 3, echo: 2, scatter: 2 },
-          chorus: { echo: 3, charPop: 2, wave: 2, scaleBurst: 2 },
+          chorus: { echo: 3, charPop: 2, wave: 2, scaleBurst: 2, glitch: 1 },
         },
         camera: { probability: 0.9, intensity: 1.15, moves: { orbit: 3, pushIn: 3, tiltUp: 2, drift: 2, pullOut: 1, swing: 1 } },
         glow: 26,
         chorusScale: 1.3,
         verticalRate: 0.45,
+        motionBlur: { shutter: 0.75, samples: 6 },
+        fx: { shake: 0.7, shineRate: 0.6, particleRate: 0.6 },
       };
     case 'ultra':
       return {
         ...theme,
         energy: 1,
         animations: {
-          normal: { echo: 3, scatter: 3, phraseStack: 2, typewriter: 1, slideMask: 1 },
-          fast: { scaleBurst: 3, echo: 2 },
+          normal: { echo: 3, scatter: 3, phraseStack: 2, typewriter: 1, slideMask: 1, glitch: 2 },
+          fast: { scaleBurst: 3, echo: 2, glitch: 2 },
           slow: { echo: 3, typewriter: 2, scatter: 2 },
-          chorus: { echo: 3, scaleBurst: 2, wave: 2, charPop: 2 },
+          chorus: { echo: 3, scaleBurst: 2, wave: 2, charPop: 2, glitch: 2 },
         },
         camera: { probability: 1, intensity: 1.4, moves: { orbit: 4, tiltUp: 3, pushIn: 2, swing: 2, drift: 1, pullOut: 1 } },
         glow: 34,
         chorusScale: 1.4,
         verticalRate: 0.55,
+        motionBlur: { shutter: 1, samples: 8 },
+        fx: { shake: 1, shineRate: 0.7, particleRate: 0.8 },
       };
   }
 }

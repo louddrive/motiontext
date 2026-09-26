@@ -79,6 +79,8 @@ export function App() {
       color: style.colorMode === 'single' ? style.color : undefined,
       sizeLevel: style.sizeLevel,
       verticalMode: style.verticalMode,
+      outline: style.outline,
+      shadow: style.shadow,
       // 背景の色レイヤーは合成と PNG 連番でだけ有効（MP4 では効かないので渡さない）
       backdrop:
         style.output === 'mp4'

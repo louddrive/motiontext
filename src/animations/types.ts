@@ -1,5 +1,6 @@
 import type { TimelineItem } from '../director/types';
-import type { Camera } from '../render/camera';
+import type { BackgroundMode } from '../themes/types';
+import type { GlyphStyle } from './draw';
 import type { Ctx2D, ItemLayout } from '../render/layout';
 
 export const ANIMATION_IDS = [
@@ -13,6 +14,7 @@ export const ANIMATION_IDS = [
   'wave',
   'fade',
   'echo',
+  'glitch',
 ] as const;
 
 export type AnimationId = (typeof ANIMATION_IDS)[number];
@@ -31,8 +33,10 @@ export interface AnimContext {
   outDur: number;
   /** 退場の進行度 0..1 */
   outP: number;
-  /** 疑似3Dカメラ（null なら平面のまま） */
-  cam: Camera | null;
+  /** 文字の描画設定（疑似3Dカメラ・縁取り・影・シャイン） */
+  gs: GlyphStyle;
+  /** 出力の背景（グリッチの色選びに使う） */
+  bg: BackgroundMode;
 }
 
 export type AnimationFn = (a: AnimContext) => void;

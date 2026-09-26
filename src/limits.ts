@@ -149,6 +149,17 @@ export function activeSeconds(items: { start: number; end: number }[]): number {
  * 1920x1080・背景透過。開発機（Chrome）での実測: 表示中フレームの平均は 標準 約190KB / 超エモ 約290KB（最大 約680KB）、
  * 空フレーム 約43KB、速度は表示中フレームで 毎秒約38〜58枚。
  */
+/**
+ * モーションブラーで増える書き出し時間の目安（秒）。字幕が表示されているフレームだけ、サンプル数に応じて描画が重くなる。
+ * 実測（1080p・Chrome）: 1サンプル増えるごとに、1フレームあたり約 1/120 秒。
+ */
+export const BLUR_SEC_PER_SAMPLE = 1 / 120;
+
+export function blurExtraSec(activeSec: number, fps: number, samples: number, pixels = 1920 * 1080): number {
+  if (samples <= 1) return 0;
+  return Math.ceil(activeSec * fps) * (samples - 1) * BLUR_SEC_PER_SAMPLE * (pixels / (1920 * 1080));
+}
+
 export const PNG_ESTIMATE = {
   frameKB: { low: 150, high: 350 },
   blankKB: 45,

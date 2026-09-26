@@ -70,6 +70,9 @@ export const ko: Record<MessageKey, string> = {
   'backdrop.mode.always': '항상',
   'backdrop.mp4Note': 'MP4에서는 사용할 수 없습니다. 편집 프로그램에서 MV의 밝기나 색을 조정해 주세요.',
   'backdrop.lowContrast': '글자가 색상 레이어에 묻힐 수 있습니다. 글자와 밝기가 다른 색을 고르거나 불투명도를 낮춰 주세요.',
+  'style.outline': '글자 테두리',
+  'style.shadow': '글자 그림자',
+  'style.outlineNote': "검은 배경 MP4를 '스크린' 합성하면 검은 테두리와 그림자는 사라집니다",
   'style.keyWarning': '이 색은 초록색에 가까워서 크로마 키로 배경을 지울 때 글자까지 함께 지워질 수 있습니다. 검은색 배경이나 다른 색을 권장합니다.',
   'style.darkWarning': '어두운 색은 "스크린" 합성에서 거의 보이지 않습니다. 밝은 색이나 초록색 배경을 권장합니다.',
 

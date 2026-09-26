@@ -1,0 +1,14 @@
+{
+  "motionBlur": true,
+  "outline": true,
+  "dropShadow": true,
+  "cameraShake": true,
+  "glitch": true,
+  "shine": true,
+  "particles": true,
+  "cameraWork": true,
+  "diagonalLines": true,
+  "sectionRing": true,
+  "echo": true,
+  "verticalText": true
+}

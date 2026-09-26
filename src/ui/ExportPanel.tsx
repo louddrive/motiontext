@@ -13,7 +13,7 @@ import {
 } from '../export/encoder';
 import { compositeFileName, estimateComposite } from '../export/compositeParams';
 import type { ExportFormat } from '../export/protocol';
-import { activeSeconds, estimatePngSequence, estimateSizeMB, formatTime, type Issue } from '../limits';
+import { activeSeconds, blurExtraSec, estimatePngSequence, estimateSizeMB, formatTime, type Issue } from '../limits';
 import { LocalizedError, type Localized } from '../i18n/errors';
 import { useI18n } from '../i18n/react';
 import { downloadBlob } from '../session/session';
@@ -139,11 +139,16 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
   }
 
   const portrait = timeline.height > timeline.width;
-  const pngEst = estimatePngSequence(timeline.duration, activeSeconds(timeline.items), timeline.fps, timeline.width * timeline.height);
+  const activeSec = activeSeconds(timeline.items);
+  const pixels = timeline.width * timeline.height;
+  const blurSec = (fps: number) => blurExtraSec(activeSec, fps, timeline.motionBlur.samples, pixels);
+  const pngEst = estimatePngSequence(timeline.duration, activeSec, timeline.fps, pixels);
+  const pngSec = pngEst.sec + blurSec(timeline.fps);
   const mp4Size = estimateSizeMB(timeline.duration, DEFAULT_BITRATE);
-  const mp4Sec = (timeline.duration * timeline.fps) / ESTIMATED_FPS;
+  const mp4Sec = (timeline.duration * timeline.fps) / ESTIMATED_FPS + blurSec(timeline.fps);
   // 合成の fps は MV を解析するまで分からないので 30fps で見積もる（60fps の MV は約2倍）
   const compEst = estimateComposite(media?.duration ?? timeline.duration, timeline.width, timeline.height, 30);
+  const compSec = compEst.sec + blurSec(30);
 
   return (
     <div className="export">
@@ -162,13 +167,13 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
           ? t('export.info.compositeLength', { len: formatTime(media?.duration ?? 0), w: timeline.width, h: timeline.height })
           : t('export.info.length', { len: formatTime(timeline.duration), w: timeline.width, h: timeline.height, fps: timeline.fps })}
         {composite
-          ? t('export.info.composite', { size: formatMB(compEst.mb), time: formatTime(Math.max(1, compEst.sec)) })
+          ? t('export.info.composite', { size: formatMB(compEst.mb), time: formatTime(Math.max(1, compSec)) })
           : png
             ? t('export.info.png', {
                 frames: pngEst.frames.toLocaleString('en-US'),
                 low: formatMB(pngEst.lowMB),
                 high: formatMB(pngEst.highMB),
-                time: formatTime(Math.max(1, pngEst.sec)),
+                time: formatTime(Math.max(1, pngSec)),
               })
             : t('export.info.mp4', { low: formatMB(mp4Size.low), high: formatMB(mp4Size.high), time: formatTime(Math.max(1, mp4Sec)) })}
         {t('export.info.note')}

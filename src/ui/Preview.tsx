@@ -4,6 +4,9 @@ import { ensureGlyphs } from '../fonts/loader';
 import { useI18n } from '../i18n/react';
 import { buildLayouts, renderFrame, type Layouts } from '../render/renderer';
 
+/** 再生中のプレビューのモーションブラーのサンプル数の上限 */
+const PREVIEW_BLUR_SAMPLES = 3;
+
 interface Props {
   timeline: Timeline;
   fontIds: string[];
@@ -79,6 +82,8 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
   // 描画ループ
   useEffect(() => {
     let raf = 0;
+    // 停止中に同じフレームを描き直さない（モーションブラーの描き重ねが書き出しの邪魔をしないように）
+    let last: { t: number; layouts: Layouts; samples: number | undefined } | null = null;
     const loop = () => {
       const ctx = canvasRef.current?.getContext('2d');
       const layouts = layoutsRef.current;
@@ -88,7 +93,13 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
         t = timeline.duration;
       }
       // 合成・PNG 連番のプレビューでは、書き出しと同じく背景の色レイヤーも描く
-      if (ctx && layouts) renderFrame(ctx, timeline, layouts, t, { transparent, backdrop: alphaPreview || compositePreview });
+      // 再生中はモーションブラーの描き重ねを減らして軽くする（停止中は書き出しと同じ見た目）
+      const playingNow = clockRef.current.playing || (showMv && videoRef.current ? !videoRef.current.paused : false);
+      const blurSamples = playingNow ? PREVIEW_BLUR_SAMPLES : undefined;
+      if (ctx && layouts && !(last && last.t === t && last.layouts === layouts && last.samples === blurSamples)) {
+        renderFrame(ctx, timeline, layouts, t, { transparent, backdrop: alphaPreview || compositePreview, blurSamples });
+        last = { t, layouts, samples: blurSamples };
+      }
       setTime(t);
       // 字幕の一覧の強調表示は、表示中の字幕が変わったときだけ更新する
       const id = activeItemId(timeline.items, t);

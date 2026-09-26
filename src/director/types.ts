@@ -37,6 +37,10 @@ export interface TimelineItem {
   align: 'center' | 'left';
   emphasis: boolean;
   deco: Deco;
+  /** シャイン（光のスイープ）を付けるか */
+  shine: boolean;
+  /** 光の粒を付けるか */
+  particles: boolean;
   seed: number;
   energy: number;
 }
@@ -91,5 +95,27 @@ export interface Timeline {
   background: BackgroundMode;
   glow: number;
   backdrop: Backdrop;
+  /** モーションブラー（samples が 1 なら無効） */
+  motionBlur: MotionBlur;
+  /** 文字の縁取り（色は字幕ごとの文字色から自動で決める） */
+  outline: boolean;
+  /** 文字のドロップシャドウ */
+  shadow: boolean;
+  /** カメラシェイクの開始時刻と強さ（時刻順） */
+  shakes: Shake[];
   items: TimelineItem[];
+}
+
+export interface MotionBlur {
+  /** フレーム間隔に対するシャッターの開き 0..1 */
+  shutter: number;
+  /** 1フレームの描き重ね数 */
+  samples: number;
+}
+
+export const NO_MOTION_BLUR: MotionBlur = { shutter: 0, samples: 1 };
+
+export interface Shake {
+  time: number;
+  strength: number;
 }

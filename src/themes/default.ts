@@ -26,4 +26,6 @@ export const defaultTheme: Theme = {
     moves: { pushIn: 3, orbit: 3, drift: 2, tiltUp: 2, pullOut: 1, swing: 1 },
   },
   glow: 18,
+  motionBlur: { shutter: 0.5, samples: 4 },
+  fx: { shake: 0.4, shineRate: 0.5, particleRate: 0.3 },
 };

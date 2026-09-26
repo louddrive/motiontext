@@ -74,6 +74,9 @@ export const en = {
   'backdrop.mode.always': 'Always',
   'backdrop.mp4Note': 'Not available for MP4. Adjust the MV’s brightness or color in your video editor.',
   'backdrop.lowContrast': 'The text may blend into the color layer. Choose a layer color that contrasts with the text, or lower the opacity.',
+  'style.outline': 'Outline',
+  'style.shadow': 'Drop shadow',
+  'style.outlineNote': 'Black outlines and shadows disappear with "Screen" blending of a black-background MP4',
   'style.keyWarning':
     'This color is close to green and may be removed together with the background by the chroma key. A black background or a different color is recommended.',
   'style.darkWarning':

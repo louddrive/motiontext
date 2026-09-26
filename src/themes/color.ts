@@ -26,3 +26,17 @@ export function isKeyUnsafe(hex: string): boolean {
   const { hue, sat } = hueSat(hex);
   return sat > 0.15 && hue >= 60 && hue <= 200;
 }
+
+/** 相対輝度 0..1（WCAG の定義） */
+export function luminance(hex: string): number {
+  const [r, g, b] = hexToRgb(hex).map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/** 縁取りの色: 明るい文字には黒、暗い文字には白 */
+export function outlineColor(hex: string): '#000000' | '#FFFFFF' {
+  return luminance(hex) >= 0.5 ? '#000000' : '#FFFFFF';
+}

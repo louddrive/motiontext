@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   LIMITS,
   activeSeconds,
+  blurExtraSec,
   checkSubtitleFileSize,
   estimatePngSequence,
   estimateSizeMB,
@@ -108,5 +109,16 @@ describe('validateExport / usableMvDuration', () => {
     const e = estimateSizeMB(60, 12_000_000);
     expect(e.low).toBeCloseTo(7.5);
     expect(e.high).toBeCloseTo(90);
+  });
+});
+
+describe('blurExtraSec', () => {
+  it('サンプル1なら0、サンプル数と字幕の表示秒数・画素数に比例して増える', () => {
+    expect(blurExtraSec(20, 30, 1)).toBe(0);
+    const a = blurExtraSec(20, 30, 4);
+    expect(a).toBeGreaterThan(0);
+    expect(blurExtraSec(20, 30, 7)).toBeCloseTo(a * 2);
+    expect(blurExtraSec(40, 30, 4)).toBeCloseTo(a * 2);
+    expect(blurExtraSec(20, 30, 4, 1920 * 1080 * 2)).toBeCloseTo(a * 2);
   });
 });

@@ -132,7 +132,7 @@ What each option in "3. Style" does. When in doubt, pick the "Recommended" value
 | Option | Choices | What it changes | Recommended |
 |---|---|---|---|
 | Aspect ratio | 16:9 (landscape) / 9:16 (portrait · Shorts / Reels / TikTok) | A landscape video or a vertical video for phones | 16:9 for a regular MV |
-| Effect level | None (readability first) / Subtle / Standard / Emotional / Ultra emotional | How intense the motion is. Higher levels add more 3D camera moves, vertical text and decorations | "Standard"–"Emotional" for Japanese audiences; "None" for English-speaking audiences or maximum readability |
+| Effect level | None (readability first) / Subtle / Standard / Emotional / Ultra emotional | How intense the motion is. Higher levels add more 3D camera moves, vertical text, decorations and motion blur | "Standard"–"Emotional" for Japanese audiences; "None" for English-speaking audiences or maximum readability |
 | Output | MP4 (CapCut, etc.) / PNG sequence · transparent (DaVinci Resolve, etc.) / Composite with MV / song (MP4 with audio) | The type of file to export | See [Choosing an output format](#choosing-an-output-format) |
 | Background | Black / Green | The MP4 background color. Set automatically for PNG sequences and composites | Black |
 | Text size | XS / S / M / L / XL (fill the screen) | Size of the lyrics. M is the standard size and L is about 1.5×. "XL" fills the screen | M |
@@ -140,12 +140,21 @@ What each option in "3. Style" does. When in doubt, pick the "Recommended" value
 | Emphasize kanji with many strokes | On / Off | Slightly enlarges the kanji word with the most strokes on each line (Japanese lyrics only) | On |
 | Vertical text | Auto / Off / Always (Japanese lines) | Sets Japanese lyrics vertically. "Auto" mixes vertical and horizontal lines | Auto |
 | Text color | Auto (theme colors) / Single color | The text color. "Single color" lets you pick one color | Auto |
+| Outline | On / Off | Adds a thin line around the text. White or black is picked automatically from the text color | On when overlaying on a bright MV |
+| Drop shadow | On / Off | Adds a soft shadow to the lower right of the text | On when overlaying on a bright MV |
 | Background color layer | Color (color picker) · opacity 0–80% · Always / Only while lyrics are shown | Lays a translucent color over the MV (under the lyrics). Use it when the lyrics are hard to read over a bright MV. Available only for "Composite with MV / song" and "PNG sequence" | Black · 30–50% · Only while lyrics are shown |
 
 Notes:
 
 - Only lines that are entirely Japanese become **vertical**. Lines containing Latin letters or digits stay horizontal.
 - With **"None"**, the text does not move; it simply fades in and out. Use it when readability comes first.
+- Higher **effect levels** add the following effects step by step:
+  - Motion blur: moving text blurs smoothly. It starts at "Subtle" and gets stronger at higher levels.
+  - Shine: a band of light sweeps once across chorus lyrics. It starts at "Subtle".
+  - Camera shake and light particles: the screen shakes briefly when a chorus starts, and particles of light rise around chorus lyrics. They start at "Standard".
+  - Glitch: lyrics enter with a red and cyan color split. Only "Emotional" and "Ultra emotional" use it.
+- The **outline** color is picked automatically: black for bright text, white for dark text.
+  - With "Screen" blending of a black-background MP4, black outlines and shadows disappear (black is treated as transparent). To overlay on a bright MV, use "Composite with MV / song" or "PNG sequence".
 - The **background color layer** can darken the MV with black, or add a mood with navy, sepia and so on. With "Only while lyrics are shown", the color fades in just before a cue appears and fades out just after it ends (it stays on if the gap between cues is under 1 second).
   - It is not available for MP4 (black is removed by "Screen" blending and green by the chroma key). Adjust the MV's brightness or color in your video editor instead.
   - For PNG sequences, the images include the translucent color behind the lyrics, so the MV gets tinted when you overlay them in DaVinci Resolve.
@@ -213,6 +222,7 @@ Notes:
 
 - It depends heavily on your computer. The estimated time left is shown while exporting.
 - Don't close or reload the page while exporting.
+- Higher effect levels take longer because of motion blur ("Ultra emotional" takes several times as long as "None"). Lower the effect level if you are in a hurry.
 
 ### I want to recreate a pattern I liked
 
@@ -265,6 +275,7 @@ npm run build    # type check + production build (serve dist/ as static files)
 - Lyrics-only MP4s are built in memory before saving, so a warning is shown over 10 minutes.
 - The production build blocks external connections with a CSP (meta tag in `index.html`). localStorage / IndexedDB / cookies / Service Workers are not used.
 - Limits are defined in `LIMITS` in [src/limits.ts](src/limits.ts).
+- Motion blur renders only the lyrics layer at several points in time and averages them (the background and color layer are not blurred). The preview uses fewer samples while playing.
 - UI text lives in the dictionaries in [src/i18n/messages/](src/i18n/messages/). English (`en.ts`) is the source; missing keys in other languages are caught by the type checker. Logic code (validation, export errors) returns keys and parameters instead of text, and the UI translates them.
 
 ### Structure
@@ -273,6 +284,7 @@ npm run build    # type check + production build (serve dist/ as static files)
 src/parsers    SRT/SBV parsers
 src/analysis   Features (tempo, sections, chorus detection, phrase segmentation, stroke counts, vertical-text check)
 src/director   Features + theme + seed → Timeline (deterministic)
+src/config     Loads the developer effect switches (effects.config.json)
 src/themes     Theme definitions and effect levels
 src/fonts      Bundled font catalog and loader (@fontsource, OFL-1.1)
 src/animations Animations and decorations
@@ -284,6 +296,33 @@ src/i18n       Localization (dictionaries: en / ja / zh-Hans / zh-Hant / ko, lan
 src/data       Generated data (kanji stroke counts)
 scripts        Data generation and license collection scripts
 ```
+
+### Turning effects on and off (effects.config.json)
+
+If the direction feels too busy, you can remove individual effects later. The switches are not shown to users. Only developers set them.
+
+- In [effects.config.json](effects.config.json) at the repository root, set a key to `false` to turn that effect off.
+- The file is bundled at build time, so pushing to `main` publishes the change automatically through Actions.
+- A missing key counts as enabled (`true`).
+- An unknown key or a value other than `true` / `false` makes the tests (`npm test`) fail, which stops the deploy. The public site then stays as it was.
+
+| Key | When set to false |
+|---|---|
+| `motionBlur` | No motion blur |
+| `outline` | No text outline (the checkbox is hidden from the style panel) |
+| `dropShadow` | No drop shadow (the checkbox is hidden from the style panel) |
+| `cameraShake` | No camera shake at chorus and section starts |
+| `glitch` | The glitch (color-split) animation is never picked |
+| `shine` | No shine sweep |
+| `particles` | No light particles |
+| `cameraWork` | No pseudo-3D camera moves |
+| `diagonalLines` | No diagonal lines on choruses |
+| `sectionRing` | No ripple at section starts |
+| `echo` | The echo (afterimage) animation is never picked |
+| `verticalText` | No vertical text (the "Vertical text" select is hidden from the style panel) |
+
+- Turning an effect off removes only that effect. The random picks stay in the same order, so with the same seed everything else looks the same.
+  - The exception is `glitch` and `echo`. They are removed from the list of candidate animations, so those lines get a different animation instead.
 
 ### Deployment (GitHub Pages)
 

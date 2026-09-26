@@ -47,4 +47,8 @@ export interface Theme {
   };
   /** 文字のグロー（黒背景モードのみ有効） */
   glow: number;
+  /** モーションブラー。shutter はフレーム間隔に対するシャッターの開き（0..1）、samples は1フレームの描き重ね数 */
+  motionBlur: { shutter: number; samples: number };
+  /** 追加エフェクトの強さ（shake: カメラシェイクの強さ、shineRate / particleRate: サビ行に付ける確率） */
+  fx: { shake: number; shineRate: number; particleRate: number };
 }

@@ -90,3 +90,53 @@ function drawDiagonalLines(ctx: Ctx2D, item: TimelineItem, t: number, outP: numb
     ctx.stroke();
   }
 }
+
+/** 光の粒の乱数に使うキー（グリフ番号・斜めラインと衝突しない値） */
+const PARTICLES_RAND_KEY = -2;
+
+/**
+ * 光の粒: 文字ブロックの周りから小さな光の粒が揺れながら舞い上がって消える（文字より背面に描く）。
+ * 粒ごとに周期を持って繰り返し、位置・速さ・出現時刻は item.seed から決定的に決める。
+ */
+export function drawParticles(
+  ctx: Ctx2D,
+  item: TimelineItem,
+  layout: ItemLayout,
+  t: number,
+  outP: number,
+  cam: Camera | null,
+): void {
+  if (!item.particles) return;
+  const { bbox } = layout;
+  const res = ctx.canvas.height / 1080;
+  const rand = glyphRand(item.seed, PARTICLES_RAND_KEY);
+  const count = 10 + Math.floor(rand() * 15);
+  const master = Math.min(1, t / 0.4) * (1 - easeInCubic(outP));
+  if (master <= 0) return;
+  ctx.save();
+  if (cam) applyCameraAt(ctx, cam, bbox.x + bbox.w / 2, bbox.y + bbox.h / 2);
+  ctx.fillStyle = item.color;
+  const padX = Math.max(40 * res, bbox.w * 0.1);
+  for (let i = 0; i < count; i++) {
+    const life = 1.2 + rand() * 1.0;
+    const period = life + rand() * 0.6;
+    const phase = rand() * period;
+    const x0 = bbox.x - padX + rand() * (bbox.w + padX * 2);
+    const y0 = bbox.y + bbox.h * (0.2 + rand() * 0.9);
+    const speed = (40 + rand() * 70) * res;
+    const sway = (4 + rand() * 8) * res;
+    const swayPhase = rand() * Math.PI * 2;
+    const radius = (2 + rand() * 3) * res;
+    // 最初の周期は途中から始めず、字幕の開始後に順に出てくるようにする
+    if (t < phase * 0.5) continue;
+    const age = (t + phase) % period;
+    if (age >= life) continue;
+    const k = age / life;
+    const a = Math.min(1, k / 0.15) * (k > 0.6 ? (1 - k) / 0.4 : 1);
+    ctx.globalAlpha = master * a * 0.9;
+    ctx.beginPath();
+    ctx.arc(x0 + Math.sin(age * 2.2 + swayPhase) * sway, y0 - speed * age, radius * (1 - 0.4 * k), 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}

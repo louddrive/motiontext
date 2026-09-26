@@ -71,6 +71,9 @@ export const ja: Record<MessageKey, string> = {
   'backdrop.mode.always': '常に',
   'backdrop.mp4Note': 'MP4 では使えません。編集ソフトで MV の明るさや色を調整してください。',
   'backdrop.lowContrast': '文字が色レイヤーに埋もれる可能性があります。文字と明るさの違う色にするか、濃さを下げてください。',
+  'style.outline': '文字の縁取り',
+  'style.shadow': '文字の影',
+  'style.outlineNote': '黒背景の MP4 をスクリーン合成すると、黒い縁取りと影は消えます',
   'style.keyWarning': 'この色は緑に近いため、クロマキーで文字ごと抜けてしまう可能性があります。黒背景か別の色を推奨します。',
   'style.darkWarning': '暗い色は「スクリーン」合成でほとんど見えなくなります。明るい色かグリーン背景を推奨します。',
 

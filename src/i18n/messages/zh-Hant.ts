@@ -70,6 +70,9 @@ export const zhHant: Record<MessageKey, string> = {
   'backdrop.mode.always': '一律',
   'backdrop.mp4Note': 'MP4 無法使用。請在剪輯軟體中調整 MV 的亮度或顏色。',
   'backdrop.lowContrast': '文字可能會被顏色圖層淹沒。請選擇與文字明暗不同的顏色，或降低不透明度。',
+  'style.outline': '文字描邊',
+  'style.shadow': '文字陰影',
+  'style.outlineNote': '黑色背景的 MP4 使用「濾色」混合時，黑色描邊與陰影會消失',
   'style.keyWarning': '此顏色接近綠色，進行色度去背時文字可能會一併被去除。建議使用黑色背景或其他顏色。',
   'style.darkWarning': '深色在「濾色」混合下幾乎看不見。建議使用明亮的顏色或綠色背景。',
 
