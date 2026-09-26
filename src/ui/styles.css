@@ -97,3 +97,6 @@ footer a { color: var(--muted); }
 .cue-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lang-select { margin-left: auto; font-size: 13px; padding: 4px 8px; }
 header .lang-select + button.danger { margin-left: 8px; }
+.backdrop-range { width: 140px; }
+.backdrop-value { min-width: 3em; font-variant-numeric: tabular-nums; }
+.disabled-text { opacity: 0.45; }

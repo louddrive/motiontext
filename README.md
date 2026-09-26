@@ -140,11 +140,16 @@ What each option in "3. Style" does. When in doubt, pick the "Recommended" value
 | Emphasize kanji with many strokes | On / Off | Slightly enlarges the kanji word with the most strokes on each line (Japanese lyrics only) | On |
 | Vertical text | Auto / Off / Always (Japanese lines) | Sets Japanese lyrics vertically. "Auto" mixes vertical and horizontal lines | Auto |
 | Text color | Auto (theme colors) / Single color | The text color. "Single color" lets you pick one color | Auto |
+| Background color layer | Color (color picker) · opacity 0–80% · Always / Only while lyrics are shown | Lays a translucent color over the MV (under the lyrics). Use it when the lyrics are hard to read over a bright MV. Available only for "Composite with MV / song" and "PNG sequence" | Black · 30–50% · Only while lyrics are shown |
 
 Notes:
 
 - Only lines that are entirely Japanese become **vertical**. Lines containing Latin letters or digits stay horizontal.
 - With **"None"**, the text does not move; it simply fades in and out. Use it when readability comes first.
+- The **background color layer** can darken the MV with black, or add a mood with navy, sepia and so on. With "Only while lyrics are shown", the color fades in just before a cue appears and fades out just after it ends (it stays on if the gap between cues is under 1 second).
+  - It is not available for MP4 (black is removed by "Screen" blending and green by the chroma key). Adjust the MV's brightness or color in your video editor instead.
+  - For PNG sequences, the images include the translucent color behind the lyrics, so the MV gets tinted when you overlay them in DaVinci Resolve.
+  - A note is shown if the layer and the text have similar brightness and the text may blend in.
 - A warning is shown if you pick a dark text color with a black background (it becomes nearly invisible when overlaid), or a greenish color with a green background.
 
 ---

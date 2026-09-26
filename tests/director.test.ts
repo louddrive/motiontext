@@ -118,6 +118,14 @@ describe('direct', () => {
     expect([...seen].sort()).toEqual(['lines', 'none', 'ring']);
   });
 
+  it('背景の色レイヤーは指定があれば Timeline に入り、無ければオフ（濃さ0）', () => {
+    expect(direct(features, { ...base, seed: 1 }).backdrop.opacity).toBe(0);
+    const backdrop = { opacity: 0.5, mode: 'always' as const, color: '#1A2A6C' };
+    expect(direct(features, { ...base, seed: 1, backdrop }).backdrop).toEqual(backdrop);
+    // 色レイヤーの有無で演出の選ばれ方は変わらない
+    expect(direct(features, { ...base, seed: 1, backdrop }).items).toEqual(direct(features, { ...base, seed: 1 }).items);
+  });
+
   it('長さは字幕末尾+0.5秒か MV 長の長い方', () => {
     expect(direct(features, { ...base, seed: 1 }).duration).toBe(20.5);
     expect(direct(features, { ...base, seed: 1, minDuration: 200 }).duration).toBe(200);

@@ -1,5 +1,6 @@
 import { ASPECTS, SIZE_LEVELS, VERTICAL_MODES, type Aspect, type SizeLevel, type VerticalMode } from '../director/types';
 import { SIZE_CONTRAST_LEVELS, type SizeContrast } from '../render/charClass';
+import { MAX_BACKDROP_OPACITY } from '../render/backdrop';
 import { isKeyUnsafe } from '../themes/color';
 import { EFFECT_LEVELS, type EffectLevel } from '../themes/effectLevel';
 import type { ExportFormat } from '../export/protocol';
@@ -19,6 +20,11 @@ export interface StyleSettings {
   verticalMode: VerticalMode;
   colorMode: 'auto' | 'single';
   color: string;
+  /** 背景（MV）の上・歌詞の下に重ねる色レイヤー。合成と PNG 連番で有効 */
+  backdropColor: string;
+  /** 0..0.8（0 はオフ） */
+  backdropOpacity: number;
+  backdropMode: 'always' | 'lyrics';
 }
 
 export const DEFAULT_STYLE: StyleSettings = {
@@ -32,6 +38,9 @@ export const DEFAULT_STYLE: StyleSettings = {
   verticalMode: 'auto',
   colorMode: 'auto',
   color: '#FFFFFF',
+  backdropColor: '#000000',
+  backdropOpacity: 0,
+  backdropMode: 'lyrics',
 };
 
 interface Props {
@@ -70,6 +79,11 @@ export function StylePanel({ value, onChange, pngSupported, compositeSupported, 
   const set = <K extends keyof StyleSettings>(k: K, v: StyleSettings[K]) => onChange({ ...value, [k]: v });
   const keyWarning = !png && !composite && value.background === 'green' && value.colorMode === 'single' && isKeyUnsafe(value.color);
   const darkWarning = !png && !composite && value.background === 'black' && value.colorMode === 'single' && luminance(value.color) < 0.25;
+  // 色レイヤーは合成と PNG 連番でだけ効く（MP4 は黒をスクリーン合成で消す／緑をキーで抜くため効かない）
+  const backdropEnabled = png || composite;
+  // 文字が色レイヤーに埋もれそうか（自動配色の文字は明るい色が中心なので、明るいレイヤーで判定する）
+  const textLum = value.colorMode === 'single' ? luminance(value.color) : 0.85;
+  const lowContrast = backdropEnabled && value.backdropOpacity >= 0.4 && Math.abs(textLum - luminance(value.backdropColor)) < 0.3;
 
   return (
     <div>
@@ -171,6 +185,42 @@ export function StylePanel({ value, onChange, pngSupported, compositeSupported, 
           </label>
         )}
       </div>
+      <div className="controls">
+        <div className="inline" role="group" aria-label={t('style.backdrop')} title={t('backdrop.title')}>
+          <span className={backdropEnabled ? '' : 'disabled-text'}>{t('style.backdrop')}</span>
+          <input
+            type="color"
+            aria-label={t('backdrop.color')}
+            disabled={!backdropEnabled}
+            value={value.backdropColor}
+            onChange={(e) => set('backdropColor', e.target.value.toUpperCase())}
+          />
+          <code className={backdropEnabled ? '' : 'disabled-text'}>{value.backdropColor}</code>
+          <input
+            type="range"
+            className="backdrop-range"
+            aria-label={t('backdrop.opacity')}
+            disabled={!backdropEnabled}
+            min={0}
+            max={MAX_BACKDROP_OPACITY}
+            step={0.05}
+            value={value.backdropOpacity}
+            onChange={(e) => set('backdropOpacity', Number(e.target.value))}
+          />
+          <span className={`backdrop-value ${backdropEnabled ? '' : 'disabled-text'}`}>{Math.round(value.backdropOpacity * 100)}%</span>
+          <select
+            aria-label={t('backdrop.timing')}
+            disabled={!backdropEnabled}
+            value={value.backdropMode}
+            onChange={(e) => set('backdropMode', e.target.value as StyleSettings['backdropMode'])}
+          >
+            <option value="lyrics">{t('backdrop.mode.lyrics')}</option>
+            <option value="always">{t('backdrop.mode.always')}</option>
+          </select>
+        </div>
+        {!backdropEnabled && <span className="hint">{t('backdrop.mp4Note')}</span>}
+      </div>
+      {lowContrast && <p className="error">{t('backdrop.lowContrast')}</p>}
       {keyWarning && <p className="error">{t('style.keyWarning')}</p>}
       {darkWarning && <p className="error">{t('style.darkWarning')}</p>}
     </div>

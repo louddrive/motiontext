@@ -6,7 +6,7 @@ import { BufferTarget, CanvasSource, Mp4OutputFormat, Output, canEncodeVideo } f
 import type { Timeline } from '../director/types';
 import { LocalizedError } from '../i18n/errors';
 import { ensureGlyphs } from '../fonts/loader';
-import { buildLayouts, renderFrame } from '../render/renderer';
+import { backdropAlphaAt, buildLayouts, renderFrame } from '../render/renderer';
 import { CompositeCanceled, runComposite } from './composite';
 import type { FromWorker, ToWorker } from './protocol';
 
@@ -103,7 +103,8 @@ async function exportPng(timeline: Timeline, fontIds: string[], text: string) {
     const layouts = buildLayouts(ctx, timeline);
 
     inFlight = 0;
-    let blank: ArrayBuffer | null = null;
+    // 字幕のないフレームは、色レイヤーの濃さごとに PNG を使い回す（濃さ0＝完全に透明な空フレーム）
+    const idleFrames = new Map<string, ArrayBuffer>();
     const total = Math.ceil(timeline.duration * fps);
     for (let i = 0; i < total; i++) {
       // 未保存フレームが上限に達したら、メイン側の保存完了（ack）を待つ
@@ -116,15 +117,18 @@ async function exportPng(timeline: Timeline, fontIds: string[], text: string) {
       const t = i / fps;
       let buffer: ArrayBuffer;
       if (timeline.items.some((it) => t >= it.start && t < it.end)) {
-        renderFrame(ctx, timeline, layouts, t, { transparent: true });
+        renderFrame(ctx, timeline, layouts, t, { transparent: true, backdrop: true });
         buffer = await (await canvas.convertToBlob({ type: 'image/png' })).arrayBuffer();
       } else {
-        // 字幕のない区間（間奏など）は空の PNG を使い回してエンコードを省く
-        if (!blank) {
-          ctx.clearRect(0, 0, width, height);
-          blank = await (await canvas.convertToBlob({ type: 'image/png' })).arrayBuffer();
+        // 字幕のない区間（間奏など）は、同じ濃さの PNG を使い回してエンコードを省く
+        const key = backdropAlphaAt(timeline, t).toFixed(3);
+        let idle = idleFrames.get(key);
+        if (!idle) {
+          renderFrame(ctx, timeline, layouts, t, { transparent: true, backdrop: true });
+          idle = await (await canvas.convertToBlob({ type: 'image/png' })).arrayBuffer();
+          idleFrames.set(key, idle);
         }
-        buffer = blank.slice(0);
+        buffer = idle.slice(0);
       }
       inFlight++;
       post({ type: 'frame', index: i, buffer }, [buffer]);

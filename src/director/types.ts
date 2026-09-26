@@ -71,6 +71,18 @@ export type Aspect = keyof typeof ASPECTS;
 /** fit モードで組むときの開始サイズ（ここから画面に収まるまで縮める） */
 export const FIT_MAX_FONT_SIZE = 420;
 
+/** 背景（MV）の上・歌詞の下に重ねる半透明の色レイヤー。合成と PNG 連番で使う */
+export interface Backdrop {
+  /** 不透明度 0..0.8。0 なら無効 */
+  opacity: number;
+  /** always: 常に / lyrics: 歌詞の表示中だけ（前後はふわっと切り替え） */
+  mode: 'always' | 'lyrics';
+  /** #RRGGBB */
+  color: string;
+}
+
+export const NO_BACKDROP: Backdrop = { opacity: 0, mode: 'lyrics', color: '#000000' };
+
 export interface Timeline {
   width: number;
   height: number;
@@ -78,5 +90,6 @@ export interface Timeline {
   duration: number;
   background: BackgroundMode;
   glow: number;
+  backdrop: Backdrop;
   items: TimelineItem[];
 }

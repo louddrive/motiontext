@@ -103,7 +103,7 @@ export async function runComposite(opts: {
       const drawLyrics = async (i: number) => {
         const t = i / fps;
         // 描いた MV（または黒背景）を消さずに歌詞だけを重ねる
-        renderFrame(ctx, timeline, layouts, t, { overlay: true });
+        renderFrame(ctx, timeline, layouts, t, { overlay: true, backdrop: true });
         await videoSource.add(t, 1 / fps);
         if (i % 10 === 0) onProgress(i, total);
       };

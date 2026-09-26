@@ -87,7 +87,8 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
         pause();
         t = timeline.duration;
       }
-      if (ctx && layouts) renderFrame(ctx, timeline, layouts, t, { transparent });
+      // 合成・PNG 連番のプレビューでは、書き出しと同じく背景の色レイヤーも描く
+      if (ctx && layouts) renderFrame(ctx, timeline, layouts, t, { transparent, backdrop: alphaPreview || compositePreview });
       setTime(t);
       // 字幕の一覧の強調表示は、表示中の字幕が変わったときだけ更新する
       const id = activeItemId(timeline.items, t);
@@ -100,7 +101,7 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeline, transparent, showMv]);
+  }, [timeline, transparent, showMv, alphaPreview, compositePreview]);
 
   function play() {
     const c = clockRef.current;

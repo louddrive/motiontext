@@ -7,7 +7,7 @@ import type { CameraMove } from '../render/camera';
 import { isKeyUnsafe } from '../themes/color';
 import type { BackgroundMode, Theme } from '../themes/types';
 import { hashString, pick, pickWeighted, rngFor } from './rng';
-import { FIT_MAX_FONT_SIZE, SIZE_LEVELS, type Anchor, type Deco, type Side, type SizeLevel, type Timeline, type TimelineItem, type VerticalMode } from './types';
+import { FIT_MAX_FONT_SIZE, NO_BACKDROP, SIZE_LEVELS, type Backdrop, type Anchor, type Deco, type Side, type SizeLevel, type Timeline, type TimelineItem, type VerticalMode } from './types';
 
 export interface DirectOptions {
   theme: Theme;
@@ -29,6 +29,8 @@ export interface DirectOptions {
   sizeLevel?: SizeLevel;
   /** 縦書きの使い方（既定: auto） */
   verticalMode?: VerticalMode;
+  /** 背景に重ねる色レイヤー（既定: なし） */
+  backdrop?: Backdrop;
 }
 
 export interface FontRoles {
@@ -218,6 +220,7 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     duration: Math.max(maxEnd + 0.5, opts.minDuration ?? 0),
     background,
     glow: background === 'black' ? theme.glow : 0,
+    backdrop: opts.backdrop ?? NO_BACKDROP,
     items,
   };
 }

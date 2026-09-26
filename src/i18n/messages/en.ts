@@ -65,6 +65,15 @@ export const en = {
   'style.color': 'Text color',
   'color.auto': 'Auto (theme colors)',
   'color.single': 'Single color',
+  'style.backdrop': 'Background color layer',
+  'backdrop.title': 'Lays a translucent color over the MV (under the lyrics) to make the lyrics easier to read',
+  'backdrop.color': 'Layer color',
+  'backdrop.opacity': 'Layer opacity',
+  'backdrop.timing': 'When to show the layer',
+  'backdrop.mode.lyrics': 'Only while lyrics are shown',
+  'backdrop.mode.always': 'Always',
+  'backdrop.mp4Note': 'Not available for MP4. Adjust the MV’s brightness or color in your video editor.',
+  'backdrop.lowContrast': 'The text may blend into the color layer. Choose a layer color that contrasts with the text, or lower the opacity.',
   'style.keyWarning':
     'This color is close to green and may be removed together with the background by the chroma key. A black background or a different color is recommended.',
   'style.darkWarning':
