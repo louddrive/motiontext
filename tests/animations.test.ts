@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { analyze } from '../src/analysis/features';
+import { drawUnderline, underlineSegments } from '../src/animations/deco';
 import { ANIMATIONS, bandDuration, bandSpan, outlineEchoSpread, slotReel, splitOffset, SLOT_DECOYS } from '../src/animations/registry';
 import { ANIMATION_IDS } from '../src/animations/types';
 import { direct, SHORT_CUE_SEC, SLOW_ANIMATIONS } from '../src/director/director';
@@ -152,5 +153,50 @@ describe('短い字幕', () => {
     const all = { ...theme, animations: { normal: { bandWipe: 1, slot: 1 }, fast: { bandWipe: 1, slot: 1 }, slow: { bandWipe: 1, slot: 1 }, chorus: { bandWipe: 1, slot: 1 } } };
     const t = direct(analyze(short), { theme: all, seed: 1, fontIds: ['noto-sans-jp'], background: 'black' });
     expect(t.items.every((i) => !SLOW_ANIMATIONS.has(i.animation))).toBe(true);
+  });
+});
+
+describe('線（下線・縦書きの右線）', () => {
+  it('横書きの行は文字の下に水平、縦書きの列は文字の右側に垂直に、行（列）ごとに引く', () => {
+    for (const [name, , layout] of layouts) {
+      const segs = underlineSegments(layout, 1);
+      expect(segs, name).toHaveLength(layout.lines.filter((l) => l.phrases.some((p) => p.glyphs.length)).length);
+      layout.lines.forEach((line, i) => {
+        const s = segs[i];
+        const glyphs = line.phrases.flatMap((p) => p.glyphs);
+        expect(s.width, name).toBeGreaterThan(0);
+        if (line.vertical) {
+          expect(s.x0, name).toBe(s.x1);
+          expect(s.y1, name).toBeGreaterThan(s.y0); // 上から下へ
+          for (const g of glyphs) expect(s.x0, name).toBeGreaterThan(g.cx + g.size / 2);
+        } else {
+          expect(s.y0, name).toBe(s.y1);
+          expect(s.x1, name).toBeGreaterThan(s.x0); // 左から右へ
+          for (const g of glyphs) expect(s.y0, name).toBeGreaterThan(g.y + g.baseOff);
+        }
+      });
+    }
+    // 縦横混在は縦の列と横の行が両方ある
+    const mixed = underlineSegments(layouts[2][2], 1);
+    expect(mixed.some((s) => s.x0 === s.x1)).toBe(true);
+    expect(mixed.some((s) => s.y0 === s.y1)).toBe(true);
+  });
+
+  it('カメラの有無 × 登場前・登場中・表示中・退場中で例外なく描ける', () => {
+    for (const [name, item, layout] of layouts) {
+      for (const cam of [null, cameraAt({ type: 'orbit', dir: 1, intensity: 1 }, 0.5, 3, W, H)]) {
+        for (const [t, outP] of [[0, 0], [0.3, 0], [1.5, 0], [2.9, 0.6], [3, 1]]) {
+          expect(() => drawUnderline(fakeCtx(), { ...item, underline: true }, layout, t, 0.5, outP, cam), name).not.toThrow();
+        }
+      }
+    }
+  });
+
+  it('演出レベルが上がると付きやすくなり、演出なしでは付かない', () => {
+    const many: Cue[] = Array.from({ length: 80 }, (_, i) => ({ index: i, start: i * 2, end: i * 2 + 1.5, text: `歌詞の行${i}` }));
+    const count = (level: (typeof EFFECT_LEVELS)[number]) =>
+      direct(analyze(many), { theme: applyEffectLevel(defaultTheme, level), seed: 1, fontIds: ['noto-sans-jp'], background: 'black' }).items.filter((i) => i.underline).length;
+    expect(count('none')).toBe(0);
+    expect(count('ultra')).toBeGreaterThan(count('subtle'));
   });
 });

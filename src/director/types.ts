@@ -50,6 +50,8 @@ export interface TimelineItem {
   shine: boolean;
   /** 光の粒を付けるか */
   particles: boolean;
+  /** 行ごとの線（横書きは下線、縦書きは列の右側の線）を登場に合わせて引くか */
+  underline: boolean;
   seed: number;
   energy: number;
 }

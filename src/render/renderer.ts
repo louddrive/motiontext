@@ -1,4 +1,4 @@
-import { drawDeco, drawParticles } from '../animations/deco';
+import { drawDeco, drawParticles, drawUnderline } from '../animations/deco';
 import type { GlyphStyle } from '../animations/draw';
 import { ANIMATIONS } from '../animations/registry';
 import type { Timeline } from '../director/types';
@@ -165,6 +165,7 @@ function drawLyrics(ctx: Ctx2D, timeline: Timeline, layouts: Layouts, t: number)
     };
     drawParticles(ctx, item, layout, lt, outP, cam);
     drawDeco(ctx, item, layout, lt, outP, cam);
+    drawUnderline(ctx, item, layout, lt, inDur, outP, cam);
     ANIMATIONS[item.animation]({ ctx, item, layout, t: lt, dur, inDur, outDur, outP, gs, bg: timeline.background });
     ctx.restore();
   }

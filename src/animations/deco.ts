@@ -140,3 +140,73 @@ export function drawParticles(
   }
   ctx.restore();
 }
+
+/** 線（下線・縦書きの右線）1本分の始点・終点（読む方向に start → end）と太さ */
+export interface UnderlineSegment {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+  width: number;
+}
+
+/**
+ * 行（列）ごとの線の位置。横書きの行は文字の下、縦書きの列は文字の右側に、実際の文字の範囲だけ引く。
+ * 縦横混在では行ごとの向きに従う。文字のない行は飛ばす。
+ */
+export function underlineSegments(layout: ItemLayout, res: number): UnderlineSegment[] {
+  const out: UnderlineSegment[] = [];
+  for (const line of layout.lines) {
+    const glyphs = line.phrases.flatMap((p) => p.glyphs);
+    if (!glyphs.length) continue;
+    const size = Math.max(...glyphs.map((g) => g.size));
+    const gap = size * 0.18;
+    const width = Math.max(2 * res, size * 0.04);
+    if (line.vertical) {
+      const x = Math.max(...glyphs.map((g) => g.cx + g.size / 2)) + gap;
+      const top = Math.min(...glyphs.map((g) => g.y - g.size / 2));
+      const bottom = Math.max(...glyphs.map((g) => g.y + g.size / 2));
+      out.push({ x0: x, y0: top, x1: x, y1: bottom, width });
+    } else {
+      const y = Math.max(...glyphs.map((g) => g.y + g.baseOff)) + gap;
+      const left = Math.min(...glyphs.map((g) => g.cx - g.w / 2));
+      const right = Math.max(...glyphs.map((g) => g.cx + g.w / 2));
+      out.push({ x0: left, y0: y, x1: right, y1: y, width });
+    }
+  }
+  return out;
+}
+
+/**
+ * 行（列）ごとの線: 登場に合わせて読む方向へ伸び（行ごとに少し時間差）、退場時は始点側から縮む（文字より背面に描く）。
+ */
+export function drawUnderline(
+  ctx: Ctx2D,
+  item: TimelineItem,
+  layout: ItemLayout,
+  t: number,
+  inDur: number,
+  outP: number,
+  cam: Camera | null,
+): void {
+  if (!item.underline) return;
+  const o = easeInCubic(outP);
+  if (o >= 1) return;
+  const segments = underlineSegments(layout, ctx.canvas.height / 1080);
+  ctx.save();
+  ctx.strokeStyle = item.color;
+  ctx.lineCap = 'butt';
+  segments.forEach((s, i) => {
+    const head = easeOutExpo(progress(t, 0.1 + i * 0.08, Math.max(0.35, inDur)));
+    if (head <= o) return;
+    ctx.save();
+    if (cam) applyCameraAt(ctx, cam, (s.x0 + s.x1) / 2, (s.y0 + s.y1) / 2);
+    ctx.lineWidth = s.width;
+    ctx.beginPath();
+    ctx.moveTo(s.x0 + (s.x1 - s.x0) * o, s.y0 + (s.y1 - s.y0) * o);
+    ctx.lineTo(s.x0 + (s.x1 - s.x0) * head, s.y0 + (s.y1 - s.y0) * head);
+    ctx.stroke();
+    ctx.restore();
+  });
+  ctx.restore();
+}

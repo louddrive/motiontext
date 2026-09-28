@@ -15,5 +15,6 @@
   "bandWipe": true,
   "slot": true,
   "split": true,
-  "outlineEcho": true
+  "outlineEcho": true,
+  "underline": true
 }

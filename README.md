@@ -156,6 +156,7 @@ Notes:
   - Glitch: lyrics enter with a red and cyan color split. Only "Emotional" and "Ultra emotional" use it.
   - Band wipe, slot and split: three entrance animations. A band in the lyric color sweeps across and leaves the text behind; characters roll like a slot machine reel and stop; the top and bottom halves of each character (left and right halves for vertical text) slide in from opposite sides and join. They start at "Standard".
   - Outline echo: outline-only copies of the text stack up in an offset trail and settle into the text. Only "Emotional" and "Ultra emotional" use it.
+  - Lines: as lyrics enter, a line draws itself under each horizontal line of text, or on the right of each vertical column. It is drawn at random for each lyric, not only choruses: 15% at "Subtle", 25% at "Standard", 35% at "Emotional" and 45% at "Ultra emotional".
   - Interlude progress: during an instrumental break of 5 seconds or more between lyrics, a bar or a ring and a counting-up percentage appear. It creeps up slowly at first, then rushes to 100% in about the last second, right before the next lyric starts. Whether it appears is drawn at random for each break: 30% at "Subtle", 50% at "Standard", 65% at "Emotional" and 80% at "Ultra emotional" (never before the first lyric).
 - The **outline** color is picked automatically: black for bright text, white for dark text.
   - With "Screen" blending of a black-background MP4, black outlines and shadows disappear (black is treated as transparent). To overlay on a bright MV, use "Composite with MV / song" or "PNG sequence".
@@ -329,6 +330,7 @@ If the direction feels too busy, you can remove individual effects later. The sw
 | `slot` | The slot animation is never picked |
 | `split` | The split animation is never picked |
 | `outlineEcho` | The outline echo animation is never picked |
+| `underline` | No lyric lines (underline for horizontal text, a line on the right of vertical columns) |
 
 - Turning an effect off removes only that effect. The random picks stay in the same order, so with the same seed everything else looks the same.
   - The exceptions are `glitch`, `echo`, `bandWipe`, `slot`, `split` and `outlineEcho`. They are removed from the list of candidate animations, so those lines get a different animation instead.

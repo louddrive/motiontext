@@ -270,6 +270,8 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     // シャイン・光の粒はサビ行にだけ、独立した乱数列で付ける
     const shine = emphasis && effects.shine && rngFor(seed, 'shine', f.cue.index)() < theme.fx.shineRate;
     const particles = emphasis && effects.particles && rngFor(seed, 'particles', f.cue.index)() < theme.fx.particleRate;
+    // 線（下線・縦書きの右線）はサビに限らず、独立した乱数列で付ける
+    const underline = effects.underline && rngFor(seed, 'underline', f.cue.index)() < theme.fx.underlineRate;
 
     const align = animation === 'phraseStack' && !emphasis && r() < 0.4 ? 'left' : 'center';
     const camera = effects.cameraWork ? chooseCamera(f, theme, seed, size.camera) : null;
@@ -309,6 +311,7 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
       deco,
       shine,
       particles,
+      underline,
       seed: hashString(`${seed}:${f.cue.index}`),
       energy: theme.energy,
     });

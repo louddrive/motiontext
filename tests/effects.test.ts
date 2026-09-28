@@ -119,6 +119,7 @@ describe('演出レベルとエフェクト', () => {
       expect(themes[k].fx.shineRate).toBeGreaterThan(themes[k - 1].fx.shineRate);
       expect(themes[k].fx.particleRate).toBeGreaterThanOrEqual(themes[k - 1].fx.particleRate);
       expect(themes[k].fx.interludeRate).toBeGreaterThan(themes[k - 1].fx.interludeRate);
+      expect(themes[k].fx.underlineRate).toBeGreaterThan(themes[k - 1].fx.underlineRate);
     }
     expect(blurAmount(run('ultra'))).toBeGreaterThan(blurAmount(run('subtle')));
   });
@@ -128,7 +129,7 @@ describe('演出レベルとエフェクト', () => {
     expect(t.motionBlur.samples).toBe(1);
     expect(t.shakes).toEqual([]);
     expect(t.interludes).toEqual([]);
-    expect(t.items.some((i) => i.shine || i.particles || i.animation === 'glitch')).toBe(false);
+    expect(t.items.some((i) => i.shine || i.particles || i.underline || i.animation === 'glitch')).toBe(false);
   });
 
   it('グリッチはエモい・超エモでだけ選ばれる', () => {
@@ -161,7 +162,7 @@ describe('演出レベルとエフェクト', () => {
 
   it('追加エフェクトを外しても、既存の演出の選ばれ方は変わらない', () => {
     const t = run('standard', { outline: true, shadow: true });
-    const off = run('standard', { effects: without('shine', 'particles', 'cameraShake', 'motionBlur') });
+    const off = run('standard', { effects: without('shine', 'particles', 'underline', 'cameraShake', 'motionBlur') });
     expect(t.items.map((i) => [i.animation, i.fontId, i.color, i.camera, i.deco, i.vertical])).toEqual(
       off.items.map((i) => [i.animation, i.fontId, i.color, i.camera, i.deco, i.vertical]),
     );
@@ -202,6 +203,7 @@ describe('エフェクトの有効・無効（effects.config.json）', () => {
       ['slot', (t) => t.items.every((i) => i.animation !== 'slot')],
       ['split', (t) => t.items.every((i) => i.animation !== 'split')],
       ['outlineEcho', (t) => t.items.every((i) => i.animation !== 'outlineEcho')],
+      ['underline', (t) => t.items.every((i) => !i.underline)],
     ];
     expect(cases.map(([k]) => k).sort()).toEqual([...EFFECT_FLAG_KEYS].sort());
     for (const [key, gone] of cases) {

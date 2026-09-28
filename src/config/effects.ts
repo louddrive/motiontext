@@ -21,6 +21,7 @@ export const EFFECT_FLAG_KEYS = [
   'slot',
   'split',
   'outlineEcho',
+  'underline',
 ] as const;
 
 export type EffectFlag = (typeof EFFECT_FLAG_KEYS)[number];
