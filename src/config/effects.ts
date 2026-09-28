@@ -16,6 +16,7 @@ export const EFFECT_FLAG_KEYS = [
   'sectionRing',
   'echo',
   'verticalText',
+  'interludeProgress',
 ] as const;
 
 export type EffectFlag = (typeof EFFECT_FLAG_KEYS)[number];

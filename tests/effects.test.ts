@@ -2,10 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { analyze } from '../src/analysis/features';
 import { glitchColors, GLITCH_CYAN } from '../src/animations/registry';
 import { ALL_EFFECTS, EFFECT_FLAG_KEYS, EFFECTS, parseEffectFlags, type EffectFlag } from '../src/config/effects';
-import { direct } from '../src/director/director';
-import type { Timeline } from '../src/director/types';
+import { direct, findInterludes } from '../src/director/director';
+import { INTERLUDE_MIN_GAP_SEC, type Timeline, type TimelineItem } from '../src/director/types';
 import type { Cue } from '../src/parsers/types';
 import { blurSampleTimes, SHAKE_SEC, shakeOffset, shineBand } from '../src/render/fx';
+import { INTERLUDE_FADE_SEC, interludeAt } from '../src/render/interlude';
+import { lyricsVisibleAt } from '../src/render/renderer';
 import { isKeyUnsafe, outlineColor } from '../src/themes/color';
 import { defaultTheme } from '../src/themes/default';
 import { EFFECT_LEVELS, applyEffectLevel, type EffectLevel } from '../src/themes/effectLevel';
@@ -18,6 +20,8 @@ const cues: Cue[] = Array.from({ length: 40 }, (_, i) => ({
   end: i * 3 + 2.6,
   text: i % 4 < 2 ? ['光を掴め', '夢を追え'][i % 2] : `歌詞の行${'一二三四五六七八九十'[i % 10]}${'春夏秋冬'[Math.floor(i / 10)]}`,
 }));
+// 最後に 6 秒の間奏を挟んだ 1 行（間奏の進み具合の表示用）
+cues.push({ index: 40, start: 39 * 3 + 2.6 + 6, end: 39 * 3 + 2.6 + 8, text: '最後の一行' });
 const features = analyze(cues);
 const run = (level: EffectLevel, extra: Partial<Parameters<typeof direct>[1]> = {}, seed = 3): Timeline =>
   direct(features, {
@@ -181,6 +185,7 @@ describe('エフェクトの有効・無効（effects.config.json）', () => {
       ['diagonalLines', (t) => t.items.every((i) => i.deco !== 'lines')],
       ['sectionRing', (t) => t.items.every((i) => i.deco !== 'ring')],
       ['verticalText', (t) => t.items.every((i) => !i.vertical)],
+      ['interludeProgress', (t) => t.interludes.length === 0],
     ];
     expect(cases.map(([k]) => k).sort()).toEqual([...EFFECT_FLAG_KEYS].sort());
     for (const [key, gone] of cases) {
@@ -213,5 +218,53 @@ describe('エフェクトの有効・無効（effects.config.json）', () => {
     expect(() => parseEffectFlags({ glitch: 'no' })).toThrow();
     expect(() => parseEffectFlags({ sparkle: true })).toThrow();
     expect(() => parseEffectFlags([])).toThrow();
+  });
+});
+
+describe('間奏の進み具合', () => {
+  const item = (id: number, start: number, end: number, color = '#FFFFFF') => ({ id, start, end, color }) as TimelineItem;
+
+  it('字幕の間が INTERLUDE_MIN_GAP_SEC 以上の区間だけを間奏にする。曲の冒頭は対象外', () => {
+    const iv = findInterludes([item(0, 10, 12), item(1, 12 + INTERLUDE_MIN_GAP_SEC - 0.01, 20), item(2, 25, 27, '#FFD166')], 1);
+    expect(iv).toHaveLength(1);
+    expect(iv[0]).toMatchObject({ start: 20, end: 25, color: '#FFD166' });
+  });
+
+  it('字幕が重なっている場合は、最も遅い終わりから数える', () => {
+    const iv = findInterludes([item(0, 0, 10), item(1, 2, 3), item(2, 12, 14)], 1);
+    expect(iv).toEqual([]);
+  });
+
+  it('見た目は横線と円の両方が選ばれ、同じパターン番号なら同じ', () => {
+    const items = Array.from({ length: 20 }, (_, i) => item(i, i * 10, i * 10 + 2));
+    const styles = new Set(findInterludes(items, 7).map((iv) => iv.style));
+    expect(styles).toEqual(new Set(['bar', 'ring']));
+    expect(findInterludes(items, 7)).toEqual(findInterludes(items, 7));
+  });
+
+  it('direct: 長い間奏に区間ができ、追加しても既存の演出の選ばれ方は変わらない', () => {
+    const on = run('standard');
+    const off = run('standard', { effects: without('interludeProgress') });
+    expect(on.interludes).toHaveLength(1);
+    expect(on.interludes[0].end).toBe(cues[40].start);
+    expect(on.items).toEqual(off.items);
+    expect(on.shakes).toEqual(off.shakes);
+  });
+
+  it('進み具合は開始で0、次の歌詞の直前でほぼ100%、次の歌詞の開始以降は表示しない', () => {
+    const iv = [{ start: 20, end: 30, style: 'bar' as const, color: '#FFFFFF' }];
+    expect(interludeAt(iv, 19.99)).toBeNull();
+    expect(interludeAt(iv, 20)).toMatchObject({ p: 0, alpha: 0 });
+    expect(interludeAt(iv, 20 + INTERLUDE_FADE_SEC)!.alpha).toBe(1);
+    expect(interludeAt(iv, 25)!.p).toBeCloseTo(0.5);
+    expect(interludeAt(iv, 29.99)!.p).toBeGreaterThan(0.99);
+    expect(interludeAt(iv, 30)).toBeNull();
+  });
+
+  it('間奏中のフレームは、書き出しで使い回さない（歌詞の層が写る扱い）', () => {
+    const t = run('none');
+    const { start, end } = t.interludes[0];
+    expect(lyricsVisibleAt(t, (start + end) / 2)).toBe(true);
+    expect(lyricsVisibleAt(run('none', { effects: without('interludeProgress') }), (start + end) / 2)).toBe(false);
   });
 });

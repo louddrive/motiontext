@@ -139,7 +139,8 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
   }
 
   const portrait = timeline.height > timeline.width;
-  const activeSec = activeSeconds(timeline.items);
+  // 間奏の進み具合を表示する区間も、フレームごとにエンコードされる
+  const activeSec = activeSeconds([...timeline.items, ...timeline.interludes]);
   const pixels = timeline.width * timeline.height;
   const blurSec = (fps: number) => blurExtraSec(activeSec, fps, timeline.motionBlur.samples, pixels);
   const pngEst = estimatePngSequence(timeline.duration, activeSec, timeline.fps, pixels);

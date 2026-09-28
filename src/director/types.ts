@@ -103,6 +103,8 @@ export interface Timeline {
   shadow: boolean;
   /** カメラシェイクの開始時刻と強さ（時刻順） */
   shakes: Shake[];
+  /** 歌詞のない長い間奏（時刻順）。次の歌詞までの進み具合を表示する */
+  interludes: Interlude[];
   items: TimelineItem[];
 }
 
@@ -118,4 +120,17 @@ export const NO_MOTION_BLUR: MotionBlur = { shutter: 0, samples: 1 };
 export interface Shake {
   time: number;
   strength: number;
+}
+
+/** 字幕の間がこの秒数以上あれば、間奏として進み具合を表示する */
+export const INTERLUDE_MIN_GAP_SEC = 5;
+
+export interface Interlude {
+  start: number;
+  /** 次の歌詞の開始時刻（ここで進み具合がちょうど 100% になる） */
+  end: number;
+  /** bar = 画面下部の細い横線 / ring = 画面中央の円 */
+  style: 'bar' | 'ring';
+  /** 次の歌詞の文字色 */
+  color: string;
 }

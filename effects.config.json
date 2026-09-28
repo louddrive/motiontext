@@ -10,5 +10,6 @@
   "diagonalLines": true,
   "sectionRing": true,
   "echo": true,
-  "verticalText": true
+  "verticalText": true,
+  "interludeProgress": true
 }

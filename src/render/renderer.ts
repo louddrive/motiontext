@@ -6,6 +6,7 @@ import { backdropAlpha, backdropFill, backdropIntervals, type Interval } from '.
 import { outlineColor } from '../themes/color';
 import { cameraAt } from './camera';
 import { blurSampleTimes, shakeOffset, shineBand } from './fx';
+import { drawInterlude, interludeAt } from './interlude';
 import { computeVerticalLayout } from './verticalLayout';
 import { computeLayout, type Ctx2D, type ItemLayout } from './layout';
 
@@ -73,10 +74,10 @@ function scratchFor(ctx: Ctx2D, width: number, height: number): BlurScratch {
 const hasActiveItem = (timeline: Timeline, from: number, to: number) =>
   timeline.items.some((item) => item.start <= to && item.end > from);
 
-/** 時刻 t のフレームに歌詞の層が写るか（モーションブラーで残る直前の字幕も含む） */
+/** 時刻 t のフレームに歌詞の層が写るか（モーションブラーで残る直前の字幕・間奏の進み具合の表示も含む） */
 export function lyricsVisibleAt(timeline: Timeline, t: number): boolean {
   const { shutter, samples } = timeline.motionBlur;
-  return hasActiveItem(timeline, samples > 1 ? t - shutter / timeline.fps : t, t);
+  return hasActiveItem(timeline, samples > 1 ? t - shutter / timeline.fps : t, t) || interludeAt(timeline.interludes, t) !== null;
 }
 
 /** 時刻 t(秒) のフレームを描く純関数（同じ入力なら同じ出力） */
@@ -121,6 +122,8 @@ export function renderFrame(ctx: Ctx2D, timeline: Timeline, layouts: Layouts, t:
     accCtx.globalAlpha = 1;
     ctx.drawImage(acc, 0, 0);
   }
+  // 間奏の進み具合は、ブレ・シェイクの対象外
+  drawInterlude(ctx, timeline, t);
   ctx.restore();
 }
 
