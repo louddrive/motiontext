@@ -1,5 +1,5 @@
 // 長い間奏の進み具合の表示（画面下部の横線／画面中央の円と、カウントアップするパーセンテージ）。
-// 次の歌詞の開始でちょうど 100% になる
+// 最初はゆっくり進み、最後の約1秒で一気に 100% に達して、その直後に次の歌詞が始まる
 import type { Interlude, Timeline } from '../director/types';
 import { cssFont } from '../fonts/catalog';
 import type { Ctx2D } from './layout';
@@ -11,6 +11,27 @@ export const INTERLUDE_FADE_SEC = 0.3;
 const TRACK_ALPHA = 0.2;
 /** パーセンテージの表示に使う文字（歌詞に含まれなくてもフォントを読み込んでおく） */
 export const INTERLUDE_GLYPHS = '0123456789%';
+
+/** 最後に一気に 100% へ進める秒数（100% で止めておく INTERLUDE_HOLD_SEC を含む） */
+export const INTERLUDE_RUSH_SEC = 1;
+/** 一気に進める直前までに到達している進み具合 */
+export const INTERLUDE_SLOW_SHARE = 0.77;
+/** 次の歌詞の直前に 100% のまま見せておく秒数（加速したまま終わると 100% が1フレームも写らないため） */
+export const INTERLUDE_HOLD_SEC = 0.1;
+
+/**
+ * 間奏の経過秒 elapsed（長さ length）での表示上の進み具合 0..1。
+ * 最後の INTERLUDE_RUSH_SEC 秒の手前までは INTERLUDE_SLOW_SHARE までゆっくり一定に進み、
+ * そこから加速しながら一気に 100% に達し、次の歌詞の直前の INTERLUDE_HOLD_SEC 秒は 100% のまま
+ */
+export function interludeProgress(elapsed: number, length: number): number {
+  const rush = Math.min(INTERLUDE_RUSH_SEC, length);
+  const slowLen = length - rush;
+  if (elapsed <= slowLen) return slowLen > 0 ? INTERLUDE_SLOW_SHARE * Math.max(0, elapsed / slowLen) : 0;
+  const rise = Math.max(rush - INTERLUDE_HOLD_SEC, 1e-6);
+  const u = Math.min(1, (elapsed - slowLen) / rise);
+  return INTERLUDE_SLOW_SHARE + (1 - INTERLUDE_SLOW_SHARE) * u * u;
+}
 
 export interface InterludeState {
   interlude: Interlude;
@@ -26,14 +47,14 @@ export function interludeAt(interludes: Interlude[], t: number): InterludeState 
     if (t >= iv.end) continue;
     return {
       interlude: iv,
-      p: progress(t, iv.start, iv.end - iv.start),
+      p: interludeProgress(t - iv.start, iv.end - iv.start),
       alpha: easeOutCubic(progress(t, iv.start, INTERLUDE_FADE_SEC)),
     };
   }
   return null;
 }
 
-/** 表示するパーセンテージ。最後の 1% の区間で 100 になり、その直後に次の歌詞が始まる */
+/** 表示するパーセンテージ（p が 0 を超えたら切り上げ。100 は p = 1 に届いた後の INTERLUDE_HOLD_SEC 秒に写る） */
 export const percentLabel = (p: number): number => Math.min(100, Math.max(0, Math.ceil(p * 100)));
 
 /**

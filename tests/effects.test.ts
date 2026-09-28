@@ -6,7 +6,7 @@ import { direct, findInterludes } from '../src/director/director';
 import { INTERLUDE_MIN_GAP_SEC, type Timeline, type TimelineItem } from '../src/director/types';
 import type { Cue } from '../src/parsers/types';
 import { blurSampleTimes, SHAKE_SEC, shakeOffset, shineBand } from '../src/render/fx';
-import { INTERLUDE_FADE_SEC, interludeAt, percentLabel } from '../src/render/interlude';
+import { INTERLUDE_FADE_SEC, INTERLUDE_HOLD_SEC, INTERLUDE_RUSH_SEC, INTERLUDE_SLOW_SHARE, interludeAt, interludeProgress, percentLabel } from '../src/render/interlude';
 import { lyricsVisibleAt } from '../src/render/renderer';
 import { isKeyUnsafe, outlineColor } from '../src/themes/color';
 import { defaultTheme } from '../src/themes/default';
@@ -278,14 +278,36 @@ describe('間奏の進み具合', () => {
     expect(on.shakes).toEqual(off.shakes);
   });
 
-  it('進み具合は開始で0、次の歌詞の直前でほぼ100%、次の歌詞の開始以降は表示しない', () => {
+  it('進み具合は開始で0、次の歌詞の直前で100%、次の歌詞の開始以降は表示しない', () => {
     const iv = [{ start: 20, end: 30, style: 'bar' as const, color: '#FFFFFF', fontId: 'noto-sans-jp', weight: 700 }];
     expect(interludeAt(iv, 19.99)).toBeNull();
     expect(interludeAt(iv, 20)).toMatchObject({ p: 0, alpha: 0 });
     expect(interludeAt(iv, 20 + INTERLUDE_FADE_SEC)!.alpha).toBe(1);
-    expect(interludeAt(iv, 25)!.p).toBeCloseTo(0.5);
-    expect(interludeAt(iv, 29.99)!.p).toBeGreaterThan(0.99);
+    expect(interludeAt(iv, 29.99)!.p).toBe(1);
     expect(interludeAt(iv, 30)).toBeNull();
+  });
+
+  it('最初はゆっくり進み、最後の約1秒で一気に100%に達し、次の歌詞の直前は100%のまま', () => {
+    const len = 10;
+    const slowEnd = len - INTERLUDE_RUSH_SEC;
+    expect(interludeProgress(0, len)).toBe(0);
+    expect(interludeProgress(slowEnd / 2, len)).toBeCloseTo(INTERLUDE_SLOW_SHARE / 2);
+    expect(interludeProgress(slowEnd, len)).toBeCloseTo(INTERLUDE_SLOW_SHARE);
+    // 100% に届いた後、次の歌詞まで INTERLUDE_HOLD_SEC 秒は 100%（30fps で数フレーム写る）
+    expect(interludeProgress(len - INTERLUDE_HOLD_SEC, len)).toBe(1);
+    expect(percentLabel(interludeProgress(len - INTERLUDE_HOLD_SEC + 1 / 30, len))).toBe(100);
+    // 最短の間奏（5秒）でも、最後の1秒の平均の進みはゆっくりの区間より速い
+    const minLen = INTERLUDE_MIN_GAP_SEC;
+    const slowRate = interludeProgress(minLen - INTERLUDE_RUSH_SEC, minLen) / (minLen - INTERLUDE_RUSH_SEC);
+    const rushRate = (1 - interludeProgress(minLen - INTERLUDE_RUSH_SEC, minLen)) / (INTERLUDE_RUSH_SEC - INTERLUDE_HOLD_SEC);
+    expect(rushRate).toBeGreaterThan(slowRate);
+    // 単調に増え、最後の1秒の方が進みが速い
+    let prev = 0;
+    for (let k = 0; k <= 1000; k++) {
+      const v = interludeProgress((k / 1000) * len, len);
+      expect(v).toBeGreaterThanOrEqual(prev);
+      prev = v;
+    }
   });
 
   it('間奏中のフレームは、書き出しで使い回さない（歌詞の層が写る扱い）', () => {
