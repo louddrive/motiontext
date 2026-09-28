@@ -9,10 +9,10 @@ export const defaultTheme: Theme = {
     accent: ['#FFD166', '#FF6FA8', '#8EC5FF', '#FFFFFF', '#FF9F5A'],
   },
   animations: {
-    normal: { fadeUp: 3, slideMask: 3, phraseStack: 2, scatter: 2, charPop: 1 },
-    fast: { scaleBurst: 3, fadeUp: 2, slideMask: 2 },
+    normal: { fadeUp: 3, slideMask: 3, phraseStack: 2, scatter: 2, charPop: 1, bandWipe: 3, slot: 1, split: 1 },
+    fast: { scaleBurst: 3, fadeUp: 2, slideMask: 2, slot: 2, bandWipe: 1 },
     slow: { typewriter: 3, phraseStack: 2, scatter: 2 },
-    chorus: { scaleBurst: 3, charPop: 3, wave: 2, phraseStack: 1 },
+    chorus: { scaleBurst: 3, charPop: 3, wave: 2, phraseStack: 1, split: 2, bandWipe: 2 },
   },
   baseFontSize: 88,
   chorusScale: 1.25,

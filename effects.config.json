@@ -11,5 +11,9 @@
   "sectionRing": true,
   "echo": true,
   "verticalText": true,
-  "interludeProgress": true
+  "interludeProgress": true,
+  "bandWipe": true,
+  "slot": true,
+  "split": true,
+  "outlineEcho": true
 }

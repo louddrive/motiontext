@@ -39,24 +39,61 @@ export const outlineWidth = (size: number) => Math.max(1.5, size * 0.035);
 const SHADOW_FILL = 'rgba(0,0,0,0.5)';
 
 /**
- * 1文字を変形付きで描く（中心を基準に変形し、ベースラインに下揃えで描画）。
- * 描く順番は 影 → 縁取り → 塗り → シャイン。fillStyle / グローの影は呼び出し側で設定済みの前提。
+ * 文字の中心へ変形（カメラ → 移動 → 回転 → 拡大）し、フォントを設定する。
+ * 描かない（透明・大きさ0）場合は null。null 以外のときは save 済みなので、呼び出し側で restore すること
  */
-export function drawGlyph(ctx: Ctx2D, g: GlyphBox, gs: GlyphStyle, xf: GlyphXf = {}): void {
+function placeGlyph(ctx: Ctx2D, g: GlyphBox, cam: Camera | null, xf: GlyphXf): { x: number; y: number; scale: number } | null {
   const alpha = xf.alpha ?? 1;
-  if (alpha <= 0.001) return;
+  if (alpha <= 0.001) return null;
   const scale = xf.scale ?? 1;
-  if (scale <= 0.001) return;
+  if (scale <= 0.001) return null;
   const x = g.cx + (xf.dx ?? 0);
   const y = g.y + (xf.dy ?? 0);
   ctx.save();
   ctx.globalAlpha *= Math.min(1, alpha);
-  if (gs.cam) applyCameraAt(ctx, gs.cam, x, y);
+  if (cam) applyCameraAt(ctx, cam, x, y);
   ctx.translate(x, y);
   const rot = (xf.rot ?? 0) + (g.rot ?? 0);
   if (rot) ctx.rotate(rot);
   if (scale !== 1) ctx.scale(scale, scale);
   ctx.font = g.font;
+  return { x, y, scale };
+}
+
+/** 1文字を縁取りの線だけで描く（線の色は呼び出し側の fillStyle）。グローは付けない */
+export function strokeGlyph(ctx: Ctx2D, g: GlyphBox, cam: Camera | null, xf: GlyphXf, lineWidth: number): void {
+  const placed = placeGlyph(ctx, g, cam, xf);
+  if (!placed) return;
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = ctx.fillStyle;
+  ctx.lineWidth = lineWidth / placed.scale;
+  ctx.lineJoin = 'round';
+  ctx.strokeText(g.ch, 0, g.baseOff);
+  ctx.restore();
+}
+
+/**
+ * クリップ範囲を設定する。範囲は (cx, cy) でのカメラの変形をかけて決め（文字と同じ近似）、変形そのものは元に戻す。
+ * 変形を単位行列に戻すと、シェイク等の呼び出し元の平行移動まで失われるため、保存した変形に戻す
+ */
+export function clipWith(ctx: Ctx2D, cam: Camera | null, cx: number, cy: number, path: (ctx: Ctx2D) => void): void {
+  const saved = ctx.getTransform();
+  if (cam) applyCameraAt(ctx, cam, cx, cy);
+  ctx.beginPath();
+  path(ctx);
+  ctx.clip();
+  ctx.setTransform(saved);
+}
+
+/**
+ * 1文字を変形付きで描く（中心を基準に変形し、ベースラインに下揃えで描画）。
+ * 描く順番は 影 → 縁取り → 塗り → シャイン。fillStyle / グローの影は呼び出し側で設定済みの前提。
+ */
+export function drawGlyph(ctx: Ctx2D, g: GlyphBox, gs: GlyphStyle, xf: GlyphXf = {}): void {
+  const placed = placeGlyph(ctx, g, gs.cam, xf);
+  if (!placed) return;
+  const { x, y, scale } = placed;
 
   if (gs.shadow || gs.outline || gs.shine) {
     const fill = ctx.fillStyle;

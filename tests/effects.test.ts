@@ -169,7 +169,12 @@ describe('演出レベルとエフェクト', () => {
 });
 
 describe('エフェクトの有効・無効（effects.config.json）', () => {
-  const base = () => run('ultra', { outline: true, shadow: true, theme: alwaysInterlude('ultra') });
+  // すべての演出が候補に入るテーマ（この字幕データは全行がサビと判定され、超エモのサビの表には slot がないため）
+  const allTheme = () => {
+    const theme = alwaysInterlude('ultra');
+    return { ...theme, animations: { ...theme.animations, chorus: { ...theme.animations.chorus, slot: 1 } } };
+  };
+  const base = () => run('ultra', { outline: true, shadow: true, theme: allTheme() });
   const keysOf = (t: Timeline) => t.items.map((i) => [i.fontId, i.color, i.anchor]);
 
   it('初期値ではすべて有効', () => {
@@ -193,10 +198,14 @@ describe('エフェクトの有効・無効（effects.config.json）', () => {
       ['sectionRing', (t) => t.items.every((i) => i.deco !== 'ring')],
       ['verticalText', (t) => t.items.every((i) => !i.vertical && !i.mixed)],
       ['interludeProgress', (t) => t.interludes.length === 0],
+      ['bandWipe', (t) => t.items.every((i) => i.animation !== 'bandWipe')],
+      ['slot', (t) => t.items.every((i) => i.animation !== 'slot')],
+      ['split', (t) => t.items.every((i) => i.animation !== 'split')],
+      ['outlineEcho', (t) => t.items.every((i) => i.animation !== 'outlineEcho')],
     ];
     expect(cases.map(([k]) => k).sort()).toEqual([...EFFECT_FLAG_KEYS].sort());
     for (const [key, gone] of cases) {
-      const t = run('ultra', { outline: true, shadow: true, theme: alwaysInterlude('ultra'), effects: without(key) });
+      const t = run('ultra', { outline: true, shadow: true, theme: allTheme(), effects: without(key) });
       expect(gone(on), key).toBe(false);
       expect(gone(t), key).toBe(true);
       // フォント・色・位置の選ばれ方は変わらない
@@ -206,7 +215,7 @@ describe('エフェクトの有効・無効（effects.config.json）', () => {
 
   it('装飾を無効にしても、他の装飾・演出の選ばれ方は変わらない', () => {
     const on = base();
-    const t = run('ultra', { outline: true, shadow: true, effects: without('diagonalLines') });
+    const t = run('ultra', { outline: true, shadow: true, theme: allTheme(), effects: without('diagonalLines') });
     t.items.forEach((it, i) => {
       expect(it.animation).toBe(on.items[i].animation);
       expect(it.deco).toBe(on.items[i].deco === 'lines' ? 'none' : on.items[i].deco);

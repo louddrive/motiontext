@@ -147,12 +147,16 @@ What each option in "3. Style" does. When in doubt, pick the "Recommended" value
 Notes:
 
 - Only lines that are entirely Japanese become **vertical**. Lines containing Latin letters or digits stay horizontal.
+  - When a one-line lyric that contains a space is picked for vertical text, it is split at the first space into a vertical part and a horizontal part (mixed layout). Which part is vertical, and whether it forms an L or a reversed L, is random. The XL text size never uses it.
 - With **"None"**, the text does not move; it simply fades in and out. Use it when readability comes first.
 - Higher **effect levels** add the following effects step by step:
   - Motion blur: moving text blurs smoothly. It starts at "Subtle" and gets stronger at higher levels.
   - Shine: a band of light sweeps once across chorus lyrics. It starts at "Subtle".
   - Camera shake and light particles: the screen shakes briefly when a chorus starts, and particles of light rise around chorus lyrics. They start at "Standard".
   - Glitch: lyrics enter with a red and cyan color split. Only "Emotional" and "Ultra emotional" use it.
+  - Band wipe, slot and split: three entrance animations. A band in the lyric color sweeps across and leaves the text behind; characters roll like a slot machine reel and stop; the top and bottom halves of each character (left and right halves for vertical text) slide in from opposite sides and join. They start at "Standard".
+  - Outline echo: outline-only copies of the text stack up in an offset trail and settle into the text. Only "Emotional" and "Ultra emotional" use it.
+  - Interlude progress: during an instrumental break of 5 seconds or more between lyrics, a bar or a ring and a counting-up percentage appear, reaching exactly 100% when the next lyric starts. Whether it appears is drawn at random for each break: 30% at "Subtle", 50% at "Standard", 65% at "Emotional" and 80% at "Ultra emotional" (never before the first lyric).
 - The **outline** color is picked automatically: black for bright text, white for dark text.
   - With "Screen" blending of a black-background MP4, black outlines and shadows disappear (black is treated as transparent). To overlay on a bright MV, use "Composite with MV / song" or "PNG sequence".
 - The **background color layer** can darken the MV with black, or add a mood with navy, sepia and so on. With "Only while lyrics are shown", the color fades in just before a cue appears and fades out just after it ends (it stays on if the gap between cues is under 1 second).
@@ -319,10 +323,15 @@ If the direction feels too busy, you can remove individual effects later. The sw
 | `diagonalLines` | No diagonal lines on choruses |
 | `sectionRing` | No ripple at section starts |
 | `echo` | The echo (afterimage) animation is never picked |
-| `verticalText` | No vertical text (the "Vertical text" select is hidden from the style panel) |
+| `verticalText` | No vertical text or mixed layout (the "Vertical text" select is hidden from the style panel) |
+| `interludeProgress` | No interlude progress display |
+| `bandWipe` | The band wipe animation is never picked |
+| `slot` | The slot animation is never picked |
+| `split` | The split animation is never picked |
+| `outlineEcho` | The outline echo animation is never picked |
 
 - Turning an effect off removes only that effect. The random picks stay in the same order, so with the same seed everything else looks the same.
-  - The exception is `glitch` and `echo`. They are removed from the list of candidate animations, so those lines get a different animation instead.
+  - The exceptions are `glitch`, `echo`, `bandWipe`, `slot`, `split` and `outlineEcho`. They are removed from the list of candidate animations, so those lines get a different animation instead.
 
 ### Deployment (GitHub Pages)
 

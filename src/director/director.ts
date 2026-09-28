@@ -1,7 +1,7 @@
 import type { CueFeature } from '../analysis/features';
 import { findStrokeEmphasis } from '../analysis/strokes';
 import type { AnimationId } from '../animations/types';
-import { EFFECTS, type EffectFlags } from '../config/effects';
+import { EFFECTS, type EffectFlag, type EffectFlags } from '../config/effects';
 import { splitPhrases } from '../analysis/segment';
 import { canTategaki, splitMixed } from '../analysis/tategaki';
 import { getFont } from '../fonts/catalog';
@@ -138,12 +138,27 @@ export function chooseMixed(f: CueFeature, seed: number, fit: boolean): { mixed:
   };
 }
 
+/** effects.config.json で候補から外せる演出と、そのフラグ */
+const ANIMATION_FLAGS: Partial<Record<AnimationId, EffectFlag>> = {
+  glitch: 'glitch',
+  echo: 'echo',
+  bandWipe: 'bandWipe',
+  slot: 'slot',
+  split: 'split',
+  outlineEcho: 'outlineEcho',
+};
+
+/** これより短い字幕には、SLOW_ANIMATIONS を使わない */
+export const SHORT_CUE_SEC = 0.8;
+/** 登場に時間がかかり、短い字幕では見せきれない演出 */
+export const SLOW_ANIMATIONS: ReadonlySet<AnimationId> = new Set<AnimationId>(['typewriter', 'phraseStack', 'bandWipe', 'slot']);
+
 /** 無効なエフェクトの演出を候補の表から外す。空になったら fadeUp にする */
 export function filterAnimations(table: WeightedList<AnimationId>, effects: EffectFlags): WeightedList<AnimationId> {
   const out: WeightedList<AnimationId> = {};
   for (const [id, w] of Object.entries(table) as [AnimationId, number][]) {
-    if (id === 'glitch' && !effects.glitch) continue;
-    if (id === 'echo' && !effects.echo) continue;
+    const flag = ANIMATION_FLAGS[id];
+    if (flag && !effects[flag]) continue;
     out[id] = w;
   }
   return Object.keys(out).length ? out : { fadeUp: 1 };
@@ -231,8 +246,8 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     let animation = pickWeighted(r, table);
     // 同じ演出の連続を1回だけ引き直して避ける
     if (animation === prevAnim) animation = pickWeighted(r, table);
-    // 表示時間が極端に短い字幕は文字送り系を避ける
-    if (f.duration < 0.8 && (animation === 'typewriter' || animation === 'phraseStack')) animation = 'fadeUp';
+    // 表示時間が極端に短い字幕は、文字送り系・帯ワイプ・スロットを避ける
+    if (f.duration < SHORT_CUE_SEC && SLOW_ANIMATIONS.has(animation)) animation = 'fadeUp';
 
     let anchor: Anchor = f.charCount > 22 ? 'lower' : 'center';
     // 前の字幕と表示が重なる場合は位置をずらす（画面いっぱいモードは常に中央）

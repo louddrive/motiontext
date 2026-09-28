@@ -1,6 +1,7 @@
 import {
   clamp01,
   easeInCubic,
+  easeInOutCubic,
   easeOutBack,
   easeOutCubic,
   easeOutExpo,
@@ -8,7 +9,8 @@ import {
   progress,
 } from '../render/easing';
 import { applyCameraAt } from '../render/camera';
-import { drawGlyph, glyphRand, PLAIN_STYLE } from './draw';
+import type { ItemLayout } from '../render/layout';
+import { clipWith, drawGlyph, glyphRand, outlineWidth, PLAIN_STYLE, strokeGlyph } from './draw';
 import type { BackgroundMode } from '../themes/types';
 import type { AnimationFn, AnimationId } from './types';
 
@@ -41,12 +43,9 @@ const slideMask: AnimationFn = ({ ctx, gs, layout, t, inDur, outP }) => {
     ctx.save();
     // 完全に表示されている間はマスク不要（カメラの近似誤差で端が欠けるのも防ぐ）
     if (e < 1 || o > 0) {
-      if (gs.cam) applyCameraAt(ctx, gs.cam, line.x + line.w / 2, line.y);
-      ctx.beginPath();
-      if (v) ctx.rect(line.x - 20, a0, line.w + 40, a1 - a0);
-      else ctx.rect(a0, line.y - h / 2 - 20, a1 - a0, h + 40);
-      ctx.clip();
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      clipWith(ctx, gs.cam, line.x + line.w / 2, line.y, (c) =>
+        v ? c.rect(line.x - 20, a0, line.w + 40, a1 - a0) : c.rect(a0, line.y - h / 2 - 20, a1 - a0, h + 40),
+      );
     }
     for (const p of line.phrases) for (const g of p.glyphs) drawGlyph(ctx, g, gs, v ? { dy: -50 * (1 - e) } : { dx: -50 * (1 - e) });
     ctx.restore();
@@ -209,6 +208,172 @@ const glitch: AnimationFn = ({ ctx, gs, layout, t, outP, item, bg }) => {
   }
 };
 
+/**
+ * 帯ワイプの帯の秒数。登場の秒数（inDur）に連動させると短すぎて帯が一瞬で消えるため、字幕の長さから決める
+ */
+export const bandDuration = (dur: number) => Math.min(1.1, Math.max(0.45, dur * 0.45));
+
+/**
+ * 帯ワイプの、行の頭からの割合（0..1）。head = 帯の先端、tail = 帯の後端（文字はここまで見える）。
+ * 先端は目で追える速さで伸び、途中から後端が追いかけ、dur 経過で帯は消えて文字が全部見える
+ */
+export function bandSpan(t: number, start: number, dur: number): { head: number; tail: number } {
+  return {
+    head: easeInOutCubic(progress(t, start, dur * 0.55)),
+    tail: easeInOutCubic(progress(t, start + dur * 0.4, dur * 0.6)),
+  };
+}
+
+/** 帯ワイプ: 字幕の色の帯が行を走り、帯が通った跡に文字が現れる（横書きは左から、縦書きは上から） */
+const bandWipe: AnimationFn = ({ ctx, gs, layout, t, dur, outP }) => {
+  const alpha = exitAlpha(outP);
+  const bandDur = bandDuration(dur);
+  layout.lines.forEach((line, li) => {
+    const { head, tail } = bandSpan(t, li * 0.12, bandDur);
+    if (head <= 0) return;
+    const v = line.vertical;
+    const cx = line.x + line.w / 2;
+    const cy = line.y;
+    const pad = 8;
+    const start = (v ? line.y - line.h / 2 : line.x) - pad;
+    const len = (v ? line.h : line.w) + pad * 2;
+    if (tail > 0) {
+      ctx.save();
+      if (tail < 1) {
+        clipWith(ctx, gs.cam, cx, cy, (c) =>
+          v
+            ? c.rect(line.x - line.w, start - 40, line.w * 3, len * tail + 40)
+            : c.rect(start - 40, cy - line.h * 1.5, len * tail + 40, line.h * 3),
+        );
+      }
+      for (const p of line.phrases) for (const g of p.glyphs) drawGlyph(ctx, g, gs, { alpha });
+      ctx.restore();
+    }
+    if (head > tail) {
+      // 帯（文字色）。グローは付けない
+      const thick = (v ? line.w : line.h) * 0.8;
+      ctx.save();
+      ctx.globalAlpha *= alpha;
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      if (gs.cam) applyCameraAt(ctx, gs.cam, cx, cy);
+      ctx.beginPath();
+      if (v) ctx.rect(cx - thick / 2, start + len * tail, thick, len * (head - tail));
+      else ctx.rect(start + len * tail, cy - thick / 2, len * (head - tail), thick);
+      ctx.fill();
+      ctx.restore();
+    }
+  });
+};
+
+/** スロットで本来の文字の前に流す文字の数 */
+export const SLOT_DECOYS = 3;
+
+/**
+ * スロットで流れる文字の並び（最後が本来の文字）。流す文字は同じ字幕の別の文字から選ぶ
+ * （読み込み済みのグリフだけを使い、別のフォントに置き換わらないようにする）。seed とグリフ番号から決定的
+ */
+export function slotReel(layout: ItemLayout, seed: number, index: number): string[] {
+  const target = layout.glyphs[index].ch;
+  const pool = [...new Set(layout.glyphs.map((g) => g.ch))];
+  const others = pool.filter((c) => c !== target);
+  const src = others.length ? others : pool;
+  const r = glyphRand(seed, -1000 - index);
+  return [...Array.from({ length: SLOT_DECOYS }, () => src[Math.floor(r() * src.length)]), target];
+}
+
+/** スロット: 文字の枠の中を別の文字が上から流れ、本来の文字で少し行き過ぎて止まる */
+const slot: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
+  const n = layout.glyphs.length;
+  const stagger = Math.min(0.04, (inDur * 0.8) / Math.max(n, 1));
+  const alpha = exitAlpha(outP);
+  for (const g of layout.glyphs) {
+    const e = progress(t, g.index * stagger, inDur * 1.1);
+    if (e <= 0) continue;
+    if (e >= 1) {
+      drawGlyph(ctx, g, gs, { alpha });
+      continue;
+    }
+    const reel = slotReel(layout, item.seed, g.index);
+    const cell = g.size * 1.1;
+    const half = Math.max(g.w, g.size) * 0.6;
+    // 枠の中央に来ている位置（0 = 先頭の文字、reel.length - 1 = 本来の文字）
+    const pos = easeOutBack(e) * (reel.length - 1);
+    ctx.save();
+    clipWith(ctx, gs.cam, g.cx, g.y, (c) => c.rect(g.cx - half, g.y - cell / 2, half * 2, cell));
+    reel.forEach((ch, k) => {
+      const dy = (pos - k) * cell;
+      if (Math.abs(dy) >= cell) return;
+      // 流す文字は縦書き用の回転を引き継がない
+      drawGlyph(ctx, k === reel.length - 1 ? g : { ...g, ch, rot: 0 }, gs, { dy, alpha });
+    });
+    ctx.restore();
+  }
+};
+
+/** スプリットの半分ずつのずれ（登場の終わりで0） */
+export const splitOffset = (e: number, size: number, energy: number) => (1 - easeOutCubic(e)) * size * 1.6 * (0.6 + energy);
+
+/** スプリット: 字の上半分と下半分（縦書きは左半分と右半分）が逆方向から来て合体する */
+const split: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
+  const n = layout.glyphs.length;
+  const stagger = Math.min(0.04, (inDur * 0.8) / Math.max(n, 1));
+  const alpha = exitAlpha(outP);
+  // クリップ範囲は、ずれる方向には十分に長く取る
+  const far = 1e4;
+  for (const g of layout.glyphs) {
+    const e = progress(t, g.index * stagger, inDur);
+    if (e <= 0) continue;
+    const a = Math.min(1, e * 2) * alpha;
+    // 合体した後はクリップせずに描く（つなぎ目にグローの切れ目を残さない）
+    if (e >= 1) {
+      drawGlyph(ctx, g, gs, { alpha: a });
+      continue;
+    }
+    const d = splitOffset(e, g.size, item.energy);
+    const v = layout.lines[g.line].vertical;
+    const r = g.size * 2;
+    for (const side of [-1, 1] as const) {
+      ctx.save();
+      clipWith(ctx, gs.cam, g.cx, g.y, (c) =>
+        v ? c.rect(side < 0 ? g.cx - r : g.cx, g.y - far, r, far * 2) : c.rect(g.cx - far, side < 0 ? g.y - r : g.y, far * 2, r),
+      );
+      drawGlyph(ctx, g, gs, v ? { dy: side * d, alpha: a } : { dx: side * d, alpha: a });
+      ctx.restore();
+    }
+  }
+};
+
+/** アウトラインの反復の向きの乱数に使うキー（グリフ番号・装飾と衝突しない値） */
+const OUTLINE_ECHO_KEY = -3;
+
+/** アウトラインの反復の広がり（0 = 本体に収束）。登場時に縮み、退場時にもう一度広がる */
+export const outlineEchoSpread = (e: number, o: number) => Math.max(1 - e, o);
+
+/** アウトラインの反復: 縁取りだけの複製が斜め方向にずれて重なり、本体に収束しながら消える */
+const outlineEcho: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
+  const r = glyphRand(item.seed, OUTLINE_ECHO_KEY);
+  const angle = Math.PI / 4 + Math.floor(r() * 4) * (Math.PI / 2);
+  const ux = Math.cos(angle);
+  const uy = Math.sin(angle);
+  const copies = item.energy >= 0.9 ? 4 : 3;
+  const o = easeInCubic(outP);
+  for (const g of layout.glyphs) {
+    const delay = g.index * 0.02;
+    const e = easeOutCubic(progress(t, delay, inDur * 1.2));
+    const spread = outlineEchoSpread(e, o);
+    const appear = progress(t, delay, 0.15);
+    if (spread > 0.01) {
+      for (let k = copies; k >= 1; k--) {
+        const d = k * g.size * 0.14 * spread * (0.6 + item.energy);
+        const a = 0.7 * (1 - (k - 1) / copies) * clamp01(spread * 3) * appear;
+        strokeGlyph(ctx, g, gs.cam, { dx: ux * d, dy: uy * d, alpha: a }, outlineWidth(g.size) * 1.2);
+      }
+    }
+    drawGlyph(ctx, g, gs, { alpha: e * exitAlpha(outP) });
+  }
+};
+
 export const ANIMATIONS: Record<AnimationId, AnimationFn> = {
   glitch,
   fade,
@@ -221,4 +386,8 @@ export const ANIMATIONS: Record<AnimationId, AnimationFn> = {
   typewriter,
   scaleBurst,
   wave,
+  bandWipe,
+  slot,
+  split,
+  outlineEcho,
 };

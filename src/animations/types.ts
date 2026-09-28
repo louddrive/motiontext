@@ -15,6 +15,10 @@ export const ANIMATION_IDS = [
   'fade',
   'echo',
   'glitch',
+  'bandWipe',
+  'slot',
+  'split',
+  'outlineEcho',
 ] as const;
 
 export type AnimationId = (typeof ANIMATION_IDS)[number];
