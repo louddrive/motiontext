@@ -4,7 +4,7 @@
 import { clamp01, lerp } from './easing';
 import type { Ctx2D } from './layout';
 
-export const CAMERA_MOVES = ['pushIn', 'pullOut', 'orbit', 'tiltUp', 'drift', 'swing'] as const;
+export const CAMERA_MOVES = ['pushIn', 'pullOut', 'orbit', 'drift', 'swing'] as const;
 export type CameraMoveType = (typeof CAMERA_MOVES)[number];
 
 /** 字幕1つ分のカメラの動き（director が決める） */
@@ -59,11 +59,6 @@ export function cameraAt(move: CameraMove, t: number, dur: number, width: number
     case 'orbit':
       cam.rotY = d * lerp(-28, 28, e) * k * DEG;
       cam.dolly = -0.05 * f * Math.sin(Math.PI * e) * k;
-      break;
-    case 'tiltUp':
-      // 上側が奥へ倒れた状態から起き上がる
-      cam.rotX = -lerp(45, 4, e) * k * DEG;
-      cam.dolly = lerp(0.05 * f, -0.04 * f, e) * k;
       break;
     case 'drift':
       cam.rotY = d * lerp(18, -18, e) * k * DEG;

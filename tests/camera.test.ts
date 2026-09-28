@@ -48,6 +48,16 @@ describe('cameraAt', () => {
     expect(s1).toBeGreaterThan(s0);
   });
 
+  it('文字が奥へ大きく倒れる動き（tiltUp）は使わない（字形がつぶれて見えるため）', () => {
+    expect(CAMERA_MOVES).not.toContain('tiltUp');
+    // 残る動きの上下の傾きは小さい（drift の ±10° 程度まで）
+    for (const type of CAMERA_MOVES) {
+      for (const t of [0, 1, 2]) {
+        expect(Math.abs(cameraAt({ type, dir: 1, intensity: 1 }, t, 2, W, H).rotX)).toBeLessThanOrEqual((10 * Math.PI) / 180 + 1e-9);
+      }
+    }
+  });
+
   it('dir で左右が反転する', () => {
     const a = cameraAt({ type: 'orbit', dir: 1, intensity: 1 }, 0, 2, W, H);
     const b = cameraAt({ type: 'orbit', dir: -1, intensity: 1 }, 0, 2, W, H);

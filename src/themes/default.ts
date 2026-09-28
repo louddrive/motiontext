@@ -23,7 +23,7 @@ export const defaultTheme: Theme = {
   camera: {
     probability: 0.7,
     intensity: 1,
-    moves: { pushIn: 3, orbit: 3, drift: 2, tiltUp: 2, pullOut: 1, swing: 1 },
+    moves: { pushIn: 3, orbit: 3, drift: 2, pullOut: 1, swing: 1 },
   },
   glow: 18,
   motionBlur: { shutter: 0.5, samples: 4 },
