@@ -31,8 +31,8 @@ const slideMask: AnimationFn = ({ ctx, gs, layout, t, inDur, outP }) => {
     const e = easeOutExpo(progress(t, li * 0.12, inDur * 1.2));
     const o = easeInCubic(outP);
     const h = line.h;
-    // 横書き: 左から右へ開き、左から閉じる / 縦書き: 上から下へ開き、上から閉じる
-    const v = layout.vertical;
+    // 横書き: 左から右へ開き、左から閉じる / 縦書き: 上から下へ開き、上から閉じる（縦横混在は行ごと）
+    const v = line.vertical;
     const start = v ? line.y - h / 2 : line.x;
     const len = v ? h : line.w;
     const a0 = start - 8 + (len + 16) * o;
@@ -63,8 +63,9 @@ const phraseStack: AnimationFn = ({ ctx, gs, layout, t, dur, inDur, outP, item }
     const d = dir * 90 * (0.5 + item.energy) * (1 - easeOutBack(e));
     const alpha = easeOutCubic(e) * exitAlpha(outP);
     // 縦書きは文節が上下から、横書きは左右から入る
+    const v = layout.lines[p.line].vertical;
     for (const g of p.glyphs) {
-      drawGlyph(ctx, g, gs, layout.vertical ? { dy: d, dx: 12 * easeInCubic(outP), alpha } : { dx: d, dy: -12 * easeInCubic(outP), alpha });
+      drawGlyph(ctx, g, gs, v ? { dy: d, dx: 12 * easeInCubic(outP), alpha } : { dx: d, dy: -12 * easeInCubic(outP), alpha });
     }
   }
 };
@@ -120,7 +121,7 @@ const scaleBurst: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
   const spacing = 1 + 0.6 * (1 - e);
   for (const g of layout.glyphs) {
     // 中心からの距離を字間ごと拡大 → 収束（縦書きは縦方向の字間）
-    const v = layout.vertical;
+    const v = layout.lines[g.line].vertical;
     const dx = (g.cx - cx) * ((v ? 1 : spacing) * s - 1);
     const dy = (g.y - cy) * ((v ? spacing : 1) * s - 1);
     drawGlyph(ctx, g, gs, { dx, dy, scale: s, alpha: clamp01(e * 1.5) * (1 - o) });
@@ -133,7 +134,7 @@ const wave: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
     const e = easeOutCubic(progress(t, g.index * 0.035, inDur));
     const w = Math.sin(t * 5 - g.index * 0.55) * amp * e;
     // 縦書きは左右に揺らす
-    const xf = layout.vertical ? { dx: w, dy: 44 * (1 - e) } : { dy: 44 * (1 - e) + w };
+    const xf = layout.lines[g.line].vertical ? { dx: w, dy: 44 * (1 - e) } : { dy: 44 * (1 - e) + w };
     drawGlyph(ctx, g, gs, { ...xf, alpha: e * exitAlpha(outP) });
   }
 };

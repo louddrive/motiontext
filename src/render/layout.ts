@@ -40,6 +40,8 @@ export interface LineBox {
   w: number;
   h: number;
   phrases: PhraseBox[];
+  /** 縦書きの列か（縦横混在では行ごとに異なる） */
+  vertical: boolean;
 }
 
 export interface ItemLayout {
@@ -50,7 +52,7 @@ export interface ItemLayout {
   phrases: PhraseBox[];
   glyphs: GlyphBox[];
   bbox: { x: number; y: number; w: number; h: number };
-  /** 縦書き（lines は右から左への列、x/w は列の左端と幅、y/h は列の中心と長さ） */
+  /** 全体が縦書き（lines は右から左への列、x/w は列の左端と幅、y/h は列の中心と長さ）。縦横混在は false で、向きは行ごとの LineBox.vertical */
   vertical: boolean;
 }
 
@@ -159,12 +161,16 @@ function buildRows(ctx: Ctx2D, item: TimelineItem, size: number, maxW: number): 
   return rows;
 }
 
-export function computeLayout(ctx: Ctx2D, item: TimelineItem, width: number, height: number): ItemLayout {
+/** 自動で縮める前の基準サイズ */
+export const startSizeOf = (item: TimelineItem) => (item.fit ? item.fontSize : Math.round(item.fontSize * kanjiBoost(item.kanaRatio)));
+
+/** 横書きで組む。fixedSize を指定すると、画面に収まるかの調整をせずにそのサイズで組む（縦横混在用） */
+export function computeLayout(ctx: Ctx2D, item: TimelineItem, width: number, height: number, fixedSize?: number): ItemLayout {
   // 画面いっぱいモードは余白を詰め、行数も多めに許す
   const maxW = width * (item.fit ? 0.92 : 0.84);
   const maxH = height * (item.fit ? 0.86 : 0.6);
   const maxLines = item.fit ? 4 : MAX_LINES;
-  const startSize = item.fit ? item.fontSize : Math.round(item.fontSize * kanjiBoost(item.kanaRatio));
+  const startSize = fixedSize ?? startSizeOf(item);
 
   const tryRows = (size: number): Row[] | null => {
     const rows = buildRows(ctx, item, size, maxW);
@@ -175,7 +181,7 @@ export function computeLayout(ctx: Ctx2D, item: TimelineItem, width: number, hei
 
   // 開始サイズで収まればそのまま。収まらなければ収まる最大サイズを二分探索する
   let size = startSize;
-  let rows = tryRows(size);
+  let rows = fixedSize ? buildRows(ctx, item, size, maxW) : tryRows(size);
   if (!rows) {
     let lo = MIN_SIZE;
     let hi = startSize - 1;
@@ -214,7 +220,7 @@ export function computeLayout(ctx: Ctx2D, item: TimelineItem, width: number, hei
     const cy = rowTop + row.h / 2;
     // 行内で最大の文字を中央に置き、全文字をそのベースラインに下揃えする
     const baseline = cy + row.maxSize * CENTER_FROM_BASELINE;
-    const lineBox: LineBox = { x: x0, y: cy, w: row.w, h: row.h, phrases: [] };
+    const lineBox: LineBox = { x: x0, y: cy, w: row.w, h: row.h, phrases: [], vertical: false };
     let px = x0;
     for (const sp of row.phrases) {
       const pb: PhraseBox = { x: px, w: sp.w, y: cy, line: li, index: phrases.length, glyphs: [] };

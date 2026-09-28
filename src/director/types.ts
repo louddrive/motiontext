@@ -8,6 +8,13 @@ export type Anchor = 'center' | 'lower' | 'upper';
 export type Deco = 'none' | 'ring' | 'lines';
 export type Side = 'center' | 'left' | 'right';
 
+export interface MixedLayout {
+  /** 縦書きにする行（0 or 1） */
+  verticalLine: 0 | 1;
+  /** L = 縦の列を左に置き、その下端から横書きが右へ続く / reverseL = 縦の列を右に置き、横書きをその左下に置く */
+  shape: 'L' | 'reverseL';
+}
+
 export interface TimelineItem {
   id: number;
   start: number;
@@ -32,6 +39,8 @@ export interface TimelineItem {
   vertical: boolean;
   /** 縦書きの横方向の配置（横書きは常に center） */
   side: Side;
+  /** 縦横混在（lines の2行のうち1行を縦書き、もう1行を横書きで組む）。null は混在なし */
+  mixed: MixedLayout | null;
   color: string;
   anchor: Anchor;
   align: 'center' | 'left';

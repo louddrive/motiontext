@@ -7,6 +7,7 @@ import { outlineColor } from '../themes/color';
 import { cameraAt } from './camera';
 import { blurSampleTimes, shakeOffset, shineBand } from './fx';
 import { drawInterlude, interludeAt } from './interlude';
+import { computeMixedLayout } from './mixedLayout';
 import { computeVerticalLayout } from './verticalLayout';
 import { computeLayout, type Ctx2D, type ItemLayout } from './layout';
 
@@ -18,9 +19,11 @@ export type Layouts = Map<number, ItemLayout>;
 export function buildLayouts(ctx: Ctx2D, timeline: Timeline): Layouts {
   const map: Layouts = new Map();
   for (const item of timeline.items) {
-    const layout = item.vertical
-      ? computeVerticalLayout(item, timeline.width, timeline.height)
-      : computeLayout(ctx, item, timeline.width, timeline.height);
+    const layout = item.mixed
+      ? computeMixedLayout(ctx, item, timeline.width, timeline.height)
+      : item.vertical
+        ? computeVerticalLayout(item, timeline.width, timeline.height)
+        : computeLayout(ctx, item, timeline.width, timeline.height);
     map.set(item.id, layout);
   }
   return map;

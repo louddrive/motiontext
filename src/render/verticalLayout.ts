@@ -4,12 +4,12 @@
 import { graphemes } from '../analysis/segment';
 import type { TimelineItem } from '../director/types';
 import { cssFont } from '../fonts/catalog';
-import { kanjiBoost } from './charClass';
 import {
   CENTER_FROM_BASELINE,
   LINE_GAP,
   MIN_SIZE,
   lineScales,
+  startSizeOf,
   type GlyphBox,
   type ItemLayout,
   type LineBox,
@@ -95,12 +95,13 @@ function buildColumns(item: TimelineItem, size: number, maxLen: number): Column[
   return cols;
 }
 
-export function computeVerticalLayout(item: TimelineItem, width: number, height: number): ItemLayout {
+/** 縦書きで組む。fixedSize を指定すると、画面に収まるかの調整をせずにそのサイズで組む（縦横混在用） */
+export function computeVerticalLayout(item: TimelineItem, width: number, height: number, fixedSize?: number): ItemLayout {
   const maxLen = height * (item.fit ? 0.86 : 0.74);
   const maxW = width * (item.fit ? 0.92 : 0.84);
   const stagger = (size: number) => size * 0.9;
   const totalLen = (cols: Column[], size: number) => Math.max(...cols.map((c, i) => c.len + i * stagger(size)));
-  const startSize = item.fit ? item.fontSize : Math.round(item.fontSize * kanjiBoost(item.kanaRatio));
+  const startSize = fixedSize ?? startSizeOf(item);
 
   const tryCols = (size: number): Column[] | null => {
     const cols = buildColumns(item, size, maxLen);
@@ -112,7 +113,7 @@ export function computeVerticalLayout(item: TimelineItem, width: number, height:
 
   // 開始サイズで収まればそのまま。収まらなければ収まる最大サイズを二分探索する
   let size = startSize;
-  let cols = tryCols(size);
+  let cols = fixedSize ? buildColumns(item, size, maxLen) : tryCols(size);
   if (!cols) {
     let lo = MIN_SIZE;
     let hi = startSize - 1;
@@ -151,7 +152,7 @@ export function computeVerticalLayout(item: TimelineItem, width: number, height:
     x -= colW;
     const cx = x + colW / 2;
     const colTop = top + ci * stagger(size);
-    const line: LineBox = { x, y: colTop + col.len / 2, w: colW, h: col.len, phrases: [] };
+    const line: LineBox = { x, y: colTop + col.len / 2, w: colW, h: col.len, phrases: [], vertical: true };
     let y = colTop;
     for (const vp of col.phrases) {
       const pb: PhraseBox = { x, w: colW, y: y + vp.len / 2, line: ci, index: phrases.length, glyphs: [] };

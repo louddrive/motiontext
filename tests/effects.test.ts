@@ -184,7 +184,7 @@ describe('エフェクトの有効・無効（effects.config.json）', () => {
       ['cameraWork', (t) => t.items.every((i) => i.camera === null)],
       ['diagonalLines', (t) => t.items.every((i) => i.deco !== 'lines')],
       ['sectionRing', (t) => t.items.every((i) => i.deco !== 'ring')],
-      ['verticalText', (t) => t.items.every((i) => !i.vertical)],
+      ['verticalText', (t) => t.items.every((i) => !i.vertical && !i.mixed)],
       ['interludeProgress', (t) => t.interludes.length === 0],
     ];
     expect(cases.map(([k]) => k).sort()).toEqual([...EFFECT_FLAG_KEYS].sort());

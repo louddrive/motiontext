@@ -223,7 +223,7 @@ interface CueListProps {
 const CueList = memo(function CueList({ items, activeId, onSeek }: CueListProps) {
   const { t } = useI18n();
   const rows = useMemo(
-    () => items.map((it) => ({ id: it.id, start: it.start, text: it.lines.map((phrases) => phrases.join('')).join(' / ') })),
+    () => items.map((it) => ({ id: it.id, start: it.start, text: it.lines.map((phrases) => phrases.join('')).join(it.mixed ? '　' : ' / ') })),
     [items],
   );
   // onSeek は毎回新しい関数になるので ref で最新を使い、一覧の再描画を activeId の変化だけに抑える

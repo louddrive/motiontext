@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { analyze } from '../src/analysis/features';
-import { canTategaki } from '../src/analysis/tategaki';
+import { canTategaki, splitMixed } from '../src/analysis/tategaki';
 import { MAX_VERTICAL_RUN, direct } from '../src/director/director';
 import type { Cue } from '../src/parsers/types';
 import { defaultTheme } from '../src/themes/default';
@@ -110,6 +110,81 @@ describe('縦書きの割り当て', () => {
   it('縦書きの有無で他の演出選択は変わらない', () => {
     const a = run({ verticalMode: 'off' }).items.map((i) => [i.animation, i.camera, i.color]);
     const b = run({ verticalMode: 'always' }).items.map((i) => [i.animation, i.camera, i.color]);
+    expect(b).toEqual(a);
+  });
+});
+
+describe('splitMixed', () => {
+  it('最初の空白（全角・半角）で2つの塊に分ける', () => {
+    expect(splitMixed(['規格に合わせて　比較を消し去り'])).toEqual(['規格に合わせて', '比較を消し去り']);
+    expect(splitMixed(['夜明けの街 歩いていく'])).toEqual(['夜明けの街', '歩いていく']);
+    expect(splitMixed(['ひとつ　ふたつ　みっつ'])).toEqual(['ひとつ', 'ふたつ　みっつ']);
+    expect(splitMixed(['　前後の空白は　無視する　'])).toEqual(['前後の空白は', '無視する']);
+  });
+
+  it('空白がない・複数行・1文字だけの塊は対象外', () => {
+    expect(splitMixed(['空白のない歌詞'])).toBeNull();
+    expect(splitMixed(['一行目　です', '二行目'])).toBeNull();
+    expect(splitMixed(['あ　いつまでも'])).toBeNull();
+  });
+});
+
+describe('縦横混在', () => {
+  const spaced: Cue[] = Array.from({ length: 24 }, (_, i) => ({
+    index: i,
+    start: i * 3,
+    end: i * 3 + 2.5,
+    text: i % 3 === 2 ? '空白のない歌詞の行' : `規格に合わせて${'一二三四五六七八'[i % 8]}　比較を消し去り`,
+  }));
+  const spacedFeatures = analyze(spaced);
+  const runSpaced = (opts: Partial<Parameters<typeof direct>[1]> = {}) =>
+    direct(spacedFeatures, { theme: defaultTheme, seed: 21, fontIds: ['noto-sans-jp'], background: 'black', ...opts });
+
+  it('always: 空白を含む行は縦横混在、含まない行は全体が縦書き', () => {
+    for (const it of runSpaced({ verticalMode: 'always' }).items) {
+      if (spaced[it.id].text.includes('　')) {
+        expect(it.mixed).not.toBeNull();
+        expect(it.vertical).toBe(false);
+        expect(it.side).toBe('center');
+        expect(it.lines.map((p) => p.join(''))).toEqual(splitMixed([spaced[it.id].text]));
+        expect(it.emphasisRanges).toHaveLength(2);
+      } else {
+        expect(it.mixed).toBeNull();
+        expect(it.vertical).toBe(true);
+      }
+    }
+  });
+
+  it('縦にする塊と配置の形は、どちらも両方の値が選ばれる', () => {
+    const lines = new Set<number>();
+    const shapes = new Set<string>();
+    for (const seed of [1, 2, 3, 4, 5]) {
+      for (const it of runSpaced({ seed, verticalMode: 'always' }).items) {
+        if (!it.mixed) continue;
+        lines.add(it.mixed.verticalLine);
+        shapes.add(it.mixed.shape);
+      }
+    }
+    expect(lines).toEqual(new Set([0, 1]));
+    expect(shapes).toEqual(new Set(['L', 'reverseL']));
+  });
+
+  it('off・画面いっぱいモードでは混在にしない。auto では縦書きの連続制限に数える', () => {
+    expect(runSpaced({ verticalMode: 'off' }).items.every((i) => !i.mixed)).toBe(true);
+    expect(runSpaced({ verticalMode: 'always', sizeLevel: 'xl' }).items.every((i) => !i.mixed)).toBe(true);
+    for (const seed of [1, 2, 3, 21, 99]) {
+      const t = runSpaced({ seed, theme: applyEffectLevel(defaultTheme, 'ultra') });
+      let runLen = 0;
+      for (const it of t.items) {
+        runLen = it.vertical || it.mixed ? runLen + 1 : 0;
+        expect(runLen).toBeLessThanOrEqual(MAX_VERTICAL_RUN);
+      }
+    }
+  });
+
+  it('混在の有無で他の演出選択は変わらない', () => {
+    const a = runSpaced({ verticalMode: 'off' }).items.map((i) => [i.animation, i.camera, i.color]);
+    const b = runSpaced({ verticalMode: 'always' }).items.map((i) => [i.animation, i.camera, i.color]);
     expect(b).toEqual(a);
   });
 });

@@ -2,14 +2,15 @@ import type { CueFeature } from '../analysis/features';
 import { findStrokeEmphasis } from '../analysis/strokes';
 import type { AnimationId } from '../animations/types';
 import { EFFECTS, type EffectFlags } from '../config/effects';
-import { canTategaki } from '../analysis/tategaki';
+import { splitPhrases } from '../analysis/segment';
+import { canTategaki, splitMixed } from '../analysis/tategaki';
 import { getFont } from '../fonts/catalog';
 import { LocalizedError } from '../i18n/errors';
 import type { CameraMove } from '../render/camera';
 import { isKeyUnsafe } from '../themes/color';
 import type { BackgroundMode, Theme, WeightedList } from '../themes/types';
 import { hashString, pick, pickWeighted, rngFor } from './rng';
-import { FIT_MAX_FONT_SIZE, INTERLUDE_MIN_GAP_SEC, NO_BACKDROP, type Interlude, NO_MOTION_BLUR, SIZE_LEVELS, type Shake, type Backdrop, type Anchor, type Deco, type Side, type SizeLevel, type Timeline, type TimelineItem, type VerticalMode } from './types';
+import { FIT_MAX_FONT_SIZE, INTERLUDE_MIN_GAP_SEC, NO_BACKDROP, type Interlude, type MixedLayout, NO_MOTION_BLUR, SIZE_LEVELS, type Shake, type Backdrop, type Anchor, type Deco, type Side, type SizeLevel, type Timeline, type TimelineItem, type VerticalMode } from './types';
 
 export interface DirectOptions {
   theme: Theme;
@@ -119,6 +120,22 @@ export function chooseSide(f: CueFeature, seed: number, fit: boolean, prevSide: 
   const side = pick(r, ['center', 'left', 'right'] as const);
   if (side === 'center' && f.overlapsPrev) return r() < 0.5 ? 'left' : 'right';
   return side;
+}
+
+/**
+ * 縦書きに選ばれた字幕のうち、空白を挟む1行の字幕を縦横混在にする。
+ * どちらの塊を縦にするかと配置の形は、既存の演出選択に影響しないよう独立した乱数列で選ぶ。
+ */
+export function chooseMixed(f: CueFeature, seed: number, fit: boolean): { mixed: MixedLayout; lines: string[][] } | null {
+  // 画面いっぱいモードは1つの塊を大きく見せる表現なので混在にしない
+  if (fit) return null;
+  const parts = splitMixed(f.cue.text.split('\n'));
+  if (!parts) return null;
+  const r = rngFor(seed, 'mixed', f.cue.index);
+  return {
+    mixed: { verticalLine: r() < 0.5 ? 0 : 1, shape: r() < 0.5 ? 'L' : 'reverseL' },
+    lines: parts.map(splitPhrases),
+  };
 }
 
 /** 無効なエフェクトの演出を候補の表から外す。空になったら fadeUp にする */
@@ -231,16 +248,20 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
 
     const align = animation === 'phraseStack' && !emphasis && r() < 0.4 ? 'left' : 'center';
     const camera = effects.cameraWork ? chooseCamera(f, theme, seed, size.camera) : null;
-    const vertical = chooseVertical(f, theme, seed, verticalMode, verticalRun);
+    const verticalPick = chooseVertical(f, theme, seed, verticalMode, verticalRun);
+    const mix = verticalPick ? chooseMixed(f, seed, size.fit) : null;
+    const vertical = verticalPick && !mix;
+    const lines = mix ? mix.lines : f.lines;
     const side: Side = vertical ? chooseSide(f, seed, size.fit, prevSide) : 'center';
-    verticalRun = vertical ? verticalRun + 1 : 0;
+    // 縦横混在も縦書きの連続として数える
+    verticalRun = verticalPick ? verticalRun + 1 : 0;
     prevSide = vertical ? side : null;
 
     items.push({
       id: f.cue.index,
       start: f.cue.start,
       end: f.cue.end,
-      lines: f.lines,
+      lines,
       animation,
       fontId,
       weight,
@@ -251,8 +272,9 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
       camera,
       vertical,
       side,
+      mixed: mix?.mixed ?? null,
       kanaRatio: opts.kanaRatio ?? theme.kanaRatio,
-      emphasisRanges: f.lines.map((phrases) => (strokeEmphasis ? findStrokeEmphasis(phrases.join('')) : null)),
+      emphasisRanges: lines.map((phrases) => (strokeEmphasis ? findStrokeEmphasis(phrases.join('')) : null)),
       emphasisScale: theme.emphasisScale,
       // 単色指定があっても乱数の消費順は変えない（色だけ変えて演出が変わらないように）
       color: opts.color ?? (emphasis ? sectionAccent : sectionText),
