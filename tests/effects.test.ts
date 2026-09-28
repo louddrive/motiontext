@@ -6,7 +6,7 @@ import { direct, findInterludes } from '../src/director/director';
 import { INTERLUDE_MIN_GAP_SEC, type Timeline, type TimelineItem } from '../src/director/types';
 import type { Cue } from '../src/parsers/types';
 import { blurSampleTimes, SHAKE_SEC, shakeOffset, shineBand } from '../src/render/fx';
-import { INTERLUDE_FADE_SEC, interludeAt } from '../src/render/interlude';
+import { INTERLUDE_FADE_SEC, interludeAt, percentLabel } from '../src/render/interlude';
 import { lyricsVisibleAt } from '../src/render/renderer';
 import { isKeyUnsafe, outlineColor } from '../src/themes/color';
 import { defaultTheme } from '../src/themes/default';
@@ -31,6 +31,11 @@ const run = (level: EffectLevel, extra: Partial<Parameters<typeof direct>[1]> = 
     background: 'black',
     ...extra,
   });
+// 間奏の進み具合を必ず表示するテーマ（表示の抽選に左右されずに確かめるため）
+const alwaysInterlude = (level: EffectLevel) => {
+  const theme = applyEffectLevel(defaultTheme, level);
+  return { ...theme, fx: { ...theme.fx, interludeRate: 1 } };
+};
 const without = (...keys: EffectFlag[]) => ({ ...ALL_EFFECTS, ...Object.fromEntries(keys.map((k) => [k, false])) });
 
 describe('outlineColor', () => {
@@ -113,6 +118,7 @@ describe('演出レベルとエフェクト', () => {
       expect(themes[k].fx.shake).toBeGreaterThanOrEqual(themes[k - 1].fx.shake);
       expect(themes[k].fx.shineRate).toBeGreaterThan(themes[k - 1].fx.shineRate);
       expect(themes[k].fx.particleRate).toBeGreaterThanOrEqual(themes[k - 1].fx.particleRate);
+      expect(themes[k].fx.interludeRate).toBeGreaterThan(themes[k - 1].fx.interludeRate);
     }
     expect(blurAmount(run('ultra'))).toBeGreaterThan(blurAmount(run('subtle')));
   });
@@ -121,6 +127,7 @@ describe('演出レベルとエフェクト', () => {
     const t = run('none');
     expect(t.motionBlur.samples).toBe(1);
     expect(t.shakes).toEqual([]);
+    expect(t.interludes).toEqual([]);
     expect(t.items.some((i) => i.shine || i.particles || i.animation === 'glitch')).toBe(false);
   });
 
@@ -162,7 +169,7 @@ describe('演出レベルとエフェクト', () => {
 });
 
 describe('エフェクトの有効・無効（effects.config.json）', () => {
-  const base = () => run('ultra', { outline: true, shadow: true });
+  const base = () => run('ultra', { outline: true, shadow: true, theme: alwaysInterlude('ultra') });
   const keysOf = (t: Timeline) => t.items.map((i) => [i.fontId, i.color, i.anchor]);
 
   it('初期値ではすべて有効', () => {
@@ -189,7 +196,7 @@ describe('エフェクトの有効・無効（effects.config.json）', () => {
     ];
     expect(cases.map(([k]) => k).sort()).toEqual([...EFFECT_FLAG_KEYS].sort());
     for (const [key, gone] of cases) {
-      const t = run('ultra', { outline: true, shadow: true, effects: without(key) });
+      const t = run('ultra', { outline: true, shadow: true, theme: alwaysInterlude('ultra'), effects: without(key) });
       expect(gone(on), key).toBe(false);
       expect(gone(t), key).toBe(true);
       // フォント・色・位置の選ばれ方は変わらない
@@ -222,29 +229,40 @@ describe('エフェクトの有効・無効（effects.config.json）', () => {
 });
 
 describe('間奏の進み具合', () => {
-  const item = (id: number, start: number, end: number, color = '#FFFFFF') => ({ id, start, end, color }) as TimelineItem;
+  const item = (id: number, start: number, end: number, color = '#FFFFFF') =>
+    ({ id, start, end, color, fontId: 'dela-gothic-one' }) as TimelineItem;
 
   it('字幕の間が INTERLUDE_MIN_GAP_SEC 以上の区間だけを間奏にする。曲の冒頭は対象外', () => {
-    const iv = findInterludes([item(0, 10, 12), item(1, 12 + INTERLUDE_MIN_GAP_SEC - 0.01, 20), item(2, 25, 27, '#FFD166')], 1);
+    const iv = findInterludes([item(0, 10, 12), item(1, 12 + INTERLUDE_MIN_GAP_SEC - 0.01, 20), item(2, 25, 27, '#FFD166')], 1, 1);
     expect(iv).toHaveLength(1);
-    expect(iv[0]).toMatchObject({ start: 20, end: 25, color: '#FFD166' });
+    expect(iv[0]).toMatchObject({ start: 20, end: 25, color: '#FFD166', fontId: 'dela-gothic-one', weight: 400 });
   });
 
   it('字幕が重なっている場合は、最も遅い終わりから数える', () => {
-    const iv = findInterludes([item(0, 0, 10), item(1, 2, 3), item(2, 12, 14)], 1);
+    const iv = findInterludes([item(0, 0, 10), item(1, 2, 3), item(2, 12, 14)], 1, 1);
     expect(iv).toEqual([]);
   });
 
   it('見た目は横線と円の両方が選ばれ、同じパターン番号なら同じ', () => {
     const items = Array.from({ length: 20 }, (_, i) => item(i, i * 10, i * 10 + 2));
-    const styles = new Set(findInterludes(items, 7).map((iv) => iv.style));
+    const styles = new Set(findInterludes(items, 7, 1).map((iv) => iv.style));
     expect(styles).toEqual(new Set(['bar', 'ring']));
-    expect(findInterludes(items, 7)).toEqual(findInterludes(items, 7));
+    expect(findInterludes(items, 7, 1)).toEqual(findInterludes(items, 7, 1));
+  });
+
+  it('表示するかどうかは確率で選ぶ（同じパターン番号なら同じ）', () => {
+    const items = Array.from({ length: 41 }, (_, i) => item(i, i * 10, i * 10 + 2));
+    expect(findInterludes(items, 7, 1)).toHaveLength(40);
+    expect(findInterludes(items, 7, 0)).toHaveLength(0);
+    const half = findInterludes(items, 7, 0.5);
+    expect(half.length).toBeGreaterThan(8);
+    expect(half.length).toBeLessThan(32);
+    expect(findInterludes(items, 7, 0.5)).toEqual(half);
   });
 
   it('direct: 長い間奏に区間ができ、追加しても既存の演出の選ばれ方は変わらない', () => {
-    const on = run('standard');
-    const off = run('standard', { effects: without('interludeProgress') });
+    const on = run('standard', { theme: alwaysInterlude('standard') });
+    const off = run('standard', { theme: alwaysInterlude('standard'), effects: without('interludeProgress') });
     expect(on.interludes).toHaveLength(1);
     expect(on.interludes[0].end).toBe(cues[40].start);
     expect(on.items).toEqual(off.items);
@@ -252,7 +270,7 @@ describe('間奏の進み具合', () => {
   });
 
   it('進み具合は開始で0、次の歌詞の直前でほぼ100%、次の歌詞の開始以降は表示しない', () => {
-    const iv = [{ start: 20, end: 30, style: 'bar' as const, color: '#FFFFFF' }];
+    const iv = [{ start: 20, end: 30, style: 'bar' as const, color: '#FFFFFF', fontId: 'noto-sans-jp', weight: 700 }];
     expect(interludeAt(iv, 19.99)).toBeNull();
     expect(interludeAt(iv, 20)).toMatchObject({ p: 0, alpha: 0 });
     expect(interludeAt(iv, 20 + INTERLUDE_FADE_SEC)!.alpha).toBe(1);
@@ -262,9 +280,20 @@ describe('間奏の進み具合', () => {
   });
 
   it('間奏中のフレームは、書き出しで使い回さない（歌詞の層が写る扱い）', () => {
-    const t = run('none');
+    const t = run('none', { theme: alwaysInterlude('none') });
     const { start, end } = t.interludes[0];
     expect(lyricsVisibleAt(t, (start + end) / 2)).toBe(true);
-    expect(lyricsVisibleAt(run('none', { effects: without('interludeProgress') }), (start + end) / 2)).toBe(false);
+    expect(lyricsVisibleAt(run('none'), (start + end) / 2)).toBe(false);
+  });
+
+  it('パーセンテージは 0 から 100 まで単調に増え、最後の 1% で 100 になる', () => {
+    expect([0, 0.5, 0.991, 1].map(percentLabel)).toEqual([0, 50, 100, 100]);
+    expect(percentLabel(0.989)).toBe(99);
+    let prev = 0;
+    for (let k = 0; k <= 1000; k++) {
+      const v = percentLabel(k / 1000);
+      expect(v).toBeGreaterThanOrEqual(prev);
+      prev = v;
+    }
   });
 });

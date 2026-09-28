@@ -152,16 +152,26 @@ export function filterAnimations(table: WeightedList<AnimationId>, effects: Effe
 /**
  * 歌詞のない長い間奏を探す。前の字幕の終わり（重なりを考慮した最大の end）から次の字幕の開始までが
  * INTERLUDE_MIN_GAP_SEC 以上の区間。曲の冒頭（最初の字幕より前）は対象外。
- * 見た目は、既存の演出選択に影響しないよう独立した乱数列で選ぶ。
+ * 表示するかどうか（確率 rate）と見た目は、既存の演出選択に影響しないよう独立した乱数列で選ぶ。
  */
-export function findInterludes(items: TimelineItem[], seed: number): Interlude[] {
+export function findInterludes(items: TimelineItem[], seed: number, rate: number): Interlude[] {
   const sorted = [...items].sort((a, b) => a.start - b.start);
   const out: Interlude[] = [];
   let lastEnd: number | null = null;
   for (const item of sorted) {
     if (lastEnd !== null && item.start - lastEnd >= INTERLUDE_MIN_GAP_SEC) {
-      const style = rngFor(seed, 'interlude', item.id)() < 0.5 ? 'bar' : 'ring';
-      out.push({ start: lastEnd, end: item.start, style, color: item.color });
+      const r = rngFor(seed, 'interlude', item.id);
+      if (r() < rate) {
+        const weights = getFont(item.fontId).weights;
+        out.push({
+          start: lastEnd,
+          end: item.start,
+          style: r() < 0.5 ? 'bar' : 'ring',
+          color: item.color,
+          fontId: item.fontId,
+          weight: weights[weights.length - 1],
+        });
+      }
     }
     lastEnd = Math.max(lastEnd ?? item.end, item.end);
   }
@@ -305,7 +315,7 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     outline: (opts.outline ?? false) && effects.outline,
     shadow: (opts.shadow ?? false) && effects.dropShadow,
     shakes: shakes.sort((a, b) => a.time - b.time),
-    interludes: effects.interludeProgress ? findInterludes(items, seed) : [],
+    interludes: effects.interludeProgress ? findInterludes(items, seed, theme.fx.interludeRate) : [],
     items,
   };
 }

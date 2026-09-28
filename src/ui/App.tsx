@@ -11,6 +11,7 @@ import { usableMvDuration, validateExport, validateSubtitles } from '../limits';
 import { DEFAULT_FONT_IDS } from '../fonts/catalog';
 import type { ParseResult } from '../parsers/types';
 import { SIZE_CONTRAST_LEVELS } from '../render/charClass';
+import { INTERLUDE_GLYPHS } from '../render/interlude';
 import { createObjectUrl, revokeAll, revokeObjectUrl } from '../session/session';
 import { defaultTheme } from '../themes/default';
 import { applyEffectLevel } from '../themes/effectLevel';
@@ -57,7 +58,8 @@ export function App() {
   const [resetKey, setResetKey] = useState(0);
   const [notice, setNotice] = useState<Notice | null>(null);
 
-  const text = useMemo(() => loaded?.result.cues.map((c) => c.text).join('\n') ?? '', [loaded]);
+  // フォントを読み込む文字。間奏のパーセンテージの数字も、歌詞に含まれなくても同じ書体で出るよう加える
+  const text = useMemo(() => (loaded ? `${loaded.result.cues.map((c) => c.text).join('\n')}\n${INTERLUDE_GLYPHS}` : ''), [loaded]);
   // タイミング調整を反映した字幕（演出の生成と書き出しの検証に使う）
   const cues = useMemo(() => (loaded ? shiftCues(loaded.result.cues, offsetSec) : []), [loaded, offsetSec]);
   const sample = loaded?.result.cues.find((c) => c.text.length >= 4)?.text.split('\n')[0] ?? t('font.sample');

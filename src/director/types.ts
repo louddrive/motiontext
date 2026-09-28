@@ -142,4 +142,7 @@ export interface Interlude {
   style: 'bar' | 'ring';
   /** 次の歌詞の文字色 */
   color: string;
+  /** パーセンテージの書体（次の歌詞の書体の最も太いウェイト） */
+  fontId: string;
+  weight: number;
 }
