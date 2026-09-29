@@ -42,7 +42,21 @@ export const FONT_CATALOG: FontDef[] = [
   { id: 'noto-serif-tc', label: 'Noto Serif TC', pkg: 'noto-serif-tc', role: 'body', script: 'zh-Hant', weights: [400, 700], mood: ['elegant', 'calm'], license: 'OFL-1.1' },
 ];
 
-export const DEFAULT_FONT_IDS = ['noto-sans-jp', 'dela-gothic-one'];
+/** 通常行・強調行に使う書体（同じ書体なら太さの差で強弱を付ける） */
+export interface FontChoice {
+  body: string;
+  display: string;
+}
+
+/** 歌詞の言語ごとの既定の書体。韓国語・中国語は強調向けの書体がないので、同じ書体の太さの差で強弱を付ける */
+export const DEFAULT_FONTS_BY_SCRIPT: Record<FontScript, FontChoice> = {
+  ja: { body: 'noto-sans-jp', display: 'dela-gothic-one' },
+  ko: { body: 'noto-sans-kr', display: 'noto-sans-kr' },
+  'zh-Hans': { body: 'noto-sans-sc', display: 'noto-sans-sc' },
+  'zh-Hant': { body: 'noto-sans-tc', display: 'noto-sans-tc' },
+};
+
+export const DEFAULT_FONTS: FontChoice = DEFAULT_FONTS_BY_SCRIPT.ja;
 
 /**
  * 収録外の文字を描くためのフォールバック。言語ごとの Noto Sans を JP → KR → SC → TC の順に試す。

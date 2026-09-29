@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { analyze } from '../analysis/features';
+import { detectScript } from '../analysis/script';
 import { shiftCues } from '../analysis/timing';
 import { direct } from '../director/director';
 import { ASPECTS } from '../director/types';
@@ -8,7 +9,7 @@ import { LANGUAGES, LANGUAGE_NAMES, isLang, type MessageKey } from '../i18n';
 import type { Localized } from '../i18n/errors';
 import { useI18n } from '../i18n/react';
 import { usableMvDuration, validateExport, validateSubtitles } from '../limits';
-import { DEFAULT_FONT_IDS } from '../fonts/catalog';
+import { DEFAULT_FONTS, DEFAULT_FONTS_BY_SCRIPT, type FontChoice, type FontScript } from '../fonts/catalog';
 import type { ParseResult } from '../parsers/types';
 import { SIZE_CONTRAST_LEVELS } from '../render/charClass';
 import { INTERLUDE_GLYPHS } from '../render/interlude';
@@ -18,7 +19,7 @@ import { applyEffectLevel } from '../themes/effectLevel';
 import { CueList } from './CueList';
 import { DropZone } from './DropZone';
 import { ExportPanel } from './ExportPanel';
-import { FontPicker } from './FontPicker';
+import { FontSelect } from './FontSelect';
 import { IssueList } from './IssueList';
 import { Preview, type PreviewHandle } from './Preview';
 import { SeedControls, TimingControls } from './PreviewControls';
@@ -49,7 +50,17 @@ interface Notice {
 export function App() {
   const { t, tl, lang, setLang } = useI18n();
   const [loaded, setLoaded] = useState<Loaded | null>(null);
-  const [fontIds, setFontIds] = useState<string[]>(DEFAULT_FONT_IDS);
+  const [fonts, setFonts] = useState<FontChoice>(DEFAULT_FONTS);
+  /** 利用者が書体を選んだか（選んでいれば、字幕の読み込み時に歌詞の言語に合わせて切り替えない） */
+  const [fontsTouched, setFontsTouched] = useState(false);
+  /** 読み込んだ歌詞の言語（書体の並び順と自動切替に使う） */
+  const [lyricScript, setLyricScript] = useState<FontScript | null>(null);
+  /** 歌詞の言語に合わせて書体を自動で切り替えたとき、その言語（案内の表示用） */
+  const [autoScript, setAutoScript] = useState<FontScript | null>(null);
+  // 読み込む書体（通常行と強調行が同じなら1つ）
+  const fontIds = useMemo(() => [...new Set([fonts.body, fonts.display])], [fonts]);
+  // 書体の一覧で先頭に並べる言語。字幕の読み込み前は UI の言語（英語なら日本語）
+  const listScript: FontScript = lyricScript ?? (lang === 'en' ? 'ja' : lang);
   const [seed, setSeed] = useState(randomSeed);
   /** 「1つ前に戻す」用のパターン番号（seed）の履歴 */
   const [seedHistory, setSeedHistory] = useState<number[]>([]);
@@ -75,6 +86,7 @@ export function App() {
       theme: applyEffectLevel(defaultTheme, style.effectLevel),
       seed,
       fontIds,
+      fontRoles: fonts,
       // PNG 連番は透過で書き出すので、配色ルールは黒背景相当（グロー有効・緑系も可）にする
       background: style.output === 'png' ? 'black' : style.background,
       width: ASPECTS[style.aspect].width,
@@ -94,7 +106,7 @@ export function App() {
           ? undefined
           : { opacity: style.backdropOpacity, mode: style.backdropMode, color: style.backdropColor },
     });
-  }, [loaded, cues, seed, fontIds, mv?.duration, style]);
+  }, [loaded, cues, seed, fontIds, fonts, mv?.duration, style]);
 
   const subtitleIssues = useMemo(() => (loaded ? validateSubtitles(loaded.result.cues) : []), [loaded]);
   const exportIssues = useMemo(() => {
@@ -124,13 +136,34 @@ export function App() {
     revokeAll();
     setLoaded(null);
     setMv(null);
-    setFontIds(DEFAULT_FONT_IDS);
+    setFonts(DEFAULT_FONTS);
+    setFontsTouched(false);
+    setLyricScript(null);
+    setAutoScript(null);
     setSeed(randomSeed());
     setSeedHistory([]);
     setOffsetSec(0);
     setStyle(DEFAULT_STYLE);
     setResetKey((k) => k + 1); // ファイル入力等を再マウントして選択状態も消す
     setNotice(message);
+  }
+
+  function onSubtitleLoaded(fileName: string, result: ParseResult) {
+    setNotice(null);
+    setLoaded({ fileName, result });
+    const script = detectScript(result.cues.map((c) => c.text).join('\n'), lang);
+    setLyricScript(script);
+    // 書体を選んでいなければ、歌詞の言語の既定の書体にする
+    if (!fontsTouched) {
+      setFonts(DEFAULT_FONTS_BY_SCRIPT[script]);
+      setAutoScript(script === 'ja' ? null : script);
+    }
+  }
+
+  function changeFont(role: keyof FontChoice, id: string) {
+    setFonts((f) => ({ ...f, [role]: id }));
+    setFontsTouched(true);
+    setAutoScript(null);
   }
 
   function loadMv(file: File | undefined) {
@@ -199,12 +232,7 @@ export function App() {
               )}
             </div>
           ) : (
-            <DropZone
-              onLoaded={(fileName, result) => {
-                setNotice(null);
-                setLoaded({ fileName, result });
-              }}
-            />
+            <DropZone onLoaded={onSubtitleLoaded} />
           )}
           <div className="controls">
             <label className="file-btn">
@@ -221,7 +249,17 @@ export function App() {
         </Section>
 
         <Section title={t('sec.fonts')}>
-          <FontPicker selected={fontIds} onChange={setFontIds} sample={sample} />
+          <p className="hint">{t('font.hint')}</p>
+          <FontSelect role="body" label={t('font.body')} value={fonts.body} onChange={(id) => changeFont('body', id)} sample={sample} script={listScript} />
+          <FontSelect
+            role="display"
+            label={t('font.display')}
+            value={fonts.display}
+            onChange={(id) => changeFont('display', id)}
+            sample={sample}
+            script={listScript}
+          />
+          {autoScript && <p className="hint">{t('font.autoSelected', { lang: LANGUAGE_NAMES[autoScript] })}</p>}
         </Section>
 
         {timeline && (

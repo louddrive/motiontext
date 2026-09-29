@@ -165,6 +165,27 @@ describe('assignFontRoles', () => {
   });
 });
 
+describe('fontRoles', () => {
+  it('区分に関係なく、通常行と強調行に指定した書体を使う', () => {
+    const t = direct(features, { ...base, fontIds: ['dela-gothic-one', 'noto-serif-jp'], fontRoles: { body: 'dela-gothic-one', display: 'noto-serif-jp' }, seed: 1 });
+    const emphasis = t.items.filter((i) => i.emphasis);
+    const normal = t.items.filter((i) => !i.emphasis);
+    expect(emphasis.length).toBeGreaterThan(0);
+    expect(normal.length).toBeGreaterThan(0);
+    expect(new Set(emphasis.map((i) => i.fontId))).toEqual(new Set(['noto-serif-jp']));
+    expect(new Set(normal.map((i) => i.fontId))).toEqual(new Set(['dela-gothic-one']));
+    // 通常向けの書体を強調に使うと、太いウェイトになる
+    expect(emphasis[0].weight).toBe(700);
+  });
+
+  it('両方に同じ書体を指定すると、1書体だけを選んだときと同じ結果になる', () => {
+    const one = direct(features, { ...base, fontIds: ['noto-sans-kr'], seed: 3 });
+    const same = direct(features, { ...base, fontIds: ['noto-sans-kr'], fontRoles: { body: 'noto-sans-kr', display: 'noto-sans-kr' }, seed: 3 });
+    expect(same).toEqual(one);
+    expect(same.items.find((i) => i.emphasis)!.weight).toBe(900);
+  });
+});
+
 describe('isKeyUnsafe', () => {
   it('緑〜シアンを検出し、白やピンクは許可する', () => {
     expect(isKeyUnsafe('#00FF00')).toBe(true);

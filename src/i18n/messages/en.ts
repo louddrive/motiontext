@@ -20,11 +20,13 @@ export const en = {
   'subtitle.warnings': '{count} warnings',
 
   // フォント
-  'font.hint':
-    'You can select more than one. {body} fonts are used for regular lines, and {display} fonts are used automatically for emphasized lines such as the chorus (if you only pick one type, it is used for both).',
+  'font.hint': 'Choose a font for regular lines and one for emphasized lines such as the chorus. Badges show the recommended use. If you pick the same font for both, emphasis is shown with a heavier weight.',
   'font.role.body': 'Regular',
   'font.role.display': 'Emphasis',
   'font.sample': 'Sample lyrics',
+  'font.body': 'Regular lines',
+  'font.display': 'Emphasized lines (chorus, etc.)',
+  'font.autoSelected': 'Fonts were chosen to match the lyrics language ({lang}).',
 
   // スタイル
   'style.aspect': 'Aspect ratio',

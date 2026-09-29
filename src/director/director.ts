@@ -16,6 +16,8 @@ export interface DirectOptions {
   theme: Theme;
   seed: number;
   fontIds: string[];
+  /** 通常行・強調行の書体を明示する（指定時は fontIds の役割による振り分けより優先。同じ書体なら1書体扱い） */
+  fontRoles?: { body: string; display: string };
   background: BackgroundMode;
   width?: number;
   height?: number;
@@ -198,10 +200,12 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
   const width = opts.width ?? 1920;
   const height = opts.height ?? 1080;
   const fps = opts.fps ?? 30;
-  const roles = assignFontRoles(opts.fontIds);
+  const roles: FontRoles = opts.fontRoles
+    ? { body: [opts.fontRoles.body], display: [opts.fontRoles.display] }
+    : assignFontRoles(opts.fontIds);
   const textColors = usablePalette(theme.palette.text, background);
   const accentColors = usablePalette(theme.palette.accent, background);
-  const singleFont = opts.fontIds.length === 1;
+  const singleFont = opts.fontRoles ? opts.fontRoles.body === opts.fontRoles.display : opts.fontIds.length === 1;
   const size = SIZE_LEVELS[opts.sizeLevel ?? 'm'];
   const strokeEmphasis = opts.strokeEmphasis ?? theme.strokeEmphasis;
   const effects = opts.effects ?? EFFECTS;

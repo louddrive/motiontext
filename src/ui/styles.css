@@ -56,14 +56,29 @@ button.danger { border-color: var(--danger); color: var(--danger); }
 .loaded { font-size: 14px; overflow-wrap: anywhere; }
 .loaded details { margin-top: 6px; font-size: 13px; color: var(--muted); }
 
-.font-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
-.font-card {
-  display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; padding: 8px 10px; border: 1px solid var(--line);
-  border-radius: 8px; cursor: pointer; background: var(--panel);
+/* 書体のドロップダウン（選択肢をその書体の見本付きで表示） */
+.font-select { margin-bottom: 10px; }
+.font-select-box { position: relative; }
+.font-select-label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+.font-select-trigger {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'name caret' 'sample caret';
+  align-items: center; gap: 2px 8px; width: 100%; text-align: left; padding: 8px 10px;
 }
-.font-card.on { border-color: var(--accent); }
+.font-select-trigger::after { content: '▾'; grid-area: caret; color: var(--muted); }
+.font-select-trigger[aria-expanded='true'] { border-color: var(--accent); }
+.font-select-name { grid-area: name; font-size: 13px; }
+.font-select-trigger .font-select-sample { grid-area: sample; }
+.font-select-sample { display: block; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity .2s; }
+.font-select-list {
+  position: absolute; z-index: 10; left: 0; right: 0; top: calc(100% + 4px); max-height: 320px; overflow-y: auto;
+  background: var(--panel); border: 1px solid var(--muted); border-radius: 8px; padding: 4px 0; box-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+}
+.font-select-list.up { top: auto; bottom: calc(100% + 4px); }
+.font-select-group { font-size: 11px; color: var(--muted); padding: 8px 10px 2px; letter-spacing: .04em; }
+.font-select-option { padding: 6px 10px; cursor: pointer; border-left: 3px solid transparent; }
+.font-select-option.active { background: #22262d; }
+.font-select-option[aria-selected='true'] { border-left-color: var(--accent); }
 .font-meta { font-size: 13px; display: flex; gap: 6px; align-items: center; }
-.font-sample { grid-column: 1 / -1; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity .2s; }
 .badge { font-size: 11px; padding: 1px 6px; border-radius: 10px; border: 1px solid var(--line); color: var(--muted); }
 .badge.display { color: var(--accent); border-color: var(--accent); }
 

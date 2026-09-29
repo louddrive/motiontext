@@ -18,10 +18,13 @@ export const zhHans: Record<MessageKey, string> = {
   'subtitle.loaded': '{name}（{format} / {count} 条）',
   'subtitle.warnings': '警告 {count} 条',
 
-  'font.hint': '可多选。{body}字体用于普通歌词，{display}字体会自动用于副歌等需要强调的行（只选择其中一种时，将由该字体兼顾）。',
+  'font.hint': '分别选择普通行和副歌等强调行所用的字体。标签表示推荐用途。两者选择同一字体时，将以粗细差异区分强弱。',
   'font.role.body': '普通行',
   'font.role.display': '强调',
   'font.sample': '示例歌词 Lyrics',
+  'font.body': '普通行',
+  'font.display': '强调行（副歌等）',
+  'font.autoSelected': '已根据歌词语言（{lang}）选择字体。',
 
   'style.aspect': '画面比例',
   'aspect.landscape': '16:9（横屏）',
