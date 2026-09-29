@@ -16,6 +16,7 @@ import { INTERLUDE_GLYPHS } from '../render/interlude';
 import { createObjectUrl, revokeAll, revokeObjectUrl } from '../session/session';
 import { defaultTheme } from '../themes/default';
 import { applyEffectLevel } from '../themes/effectLevel';
+import { APP_VERSION_LABEL } from '../version';
 import { CueList } from './CueList';
 import { DropZone } from './DropZone';
 import { ExportPanel } from './ExportPanel';
@@ -312,6 +313,7 @@ export function App() {
             </button>
           )}
           <footer>
+            <p>{APP_VERSION_LABEL}</p>
             <p>{t('footer.privacy')}</p>
             <p>
               {t('footer.licenses')}{' '}
