@@ -40,5 +40,7 @@ export default defineConfig({
   },
   test: {
     include: ['tests/**/*.test.ts'],
+    // vitest は既定で CSS を空にするため、フォントの CSS（unicode-range の解析をテストする）だけは中身を読む
+    css: { include: [/@fontsource\//] },
   },
 });
