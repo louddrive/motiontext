@@ -10,7 +10,7 @@ You can overlay the result on your own MV (music video).
 - **Free, nothing to install**: just open it in your browser.
 - **Fully automatic**: motion, layout, colors and vertical text are chosen for you. Don't like it? Regenerate with one click.
 - **Your data never leaves your computer**: subtitles and MVs are processed only inside your browser.
-- **5 languages**: the interface is available in English, 日本語, 简体中文, 繁體中文 and 한국어 (language menu at the top right).
+- **5 languages**: the interface is available in English, 日本語, 简体中文, 繁體中文 and 한국어 (language menu at the top left).
 
 ---
 
@@ -64,51 +64,54 @@ So I never forget your smile
 
 ## Getting started (5 steps)
 
-The page is divided into five sections, "1. Subtitle file" to "5. Export". Work from top to bottom.
+Settings and controls are on the left, and the preview is on the right. The left side is divided into sections, "1. Subtitles & audio" to "5. Export". Work from top to bottom. Click a section heading to collapse or expand it.
 
-> The interface language is chosen from your browser's language settings (English unless it is Japanese, Chinese or Korean). You can change it with the language menu at the top right.
+> The interface language is chosen from your browser's language settings (English unless it is Japanese, Chinese or Korean). You can change it with the language menu at the top left.
 > The chosen language is added to the URL (e.g. `?lang=en`), so a bookmark opens in the same language next time (nothing is saved in the browser).
 
-### Step 1: Load a subtitle file ("1. Subtitle file")
+### Step 1: Load a subtitle file ("1. Subtitles & audio")
 
 1. Drag and drop your subtitle file onto the box that says "**Drop an SRT / SBV file**". You can also click the box to choose a file.
-2. Once loaded, the file name and the number of cues are shown, and the sections from "2." onward appear.
+2. Once loaded, the file name and the number of cues are shown, the preview appears on the right, and the sections from "3." onward appear on the left.
+
+- Use "**Load MV / audio (optional, for preview)**" to see how the lyrics look over your MV or song.
+  - The "Overlay on MV" checkbox below the preview turns the overlay on and off.
+  - The length of the loaded MV / song is also used as the export length.
+- If the subtitles and the MV are out of sync, shift all subtitles with "**Subtitle timing**".
+  - "+0.1 s" shows the subtitles later, "-0.1 s" earlier. You can also type a value (up to ±30 seconds).
+  - "Reset to 0" undoes the shift. The subtitle file itself is not modified.
 
 > If a timestamp looks like a typo, it is shown as "Note:". Please check it.
 
 ### Step 2: Choose fonts ("2. Fonts")
 
-- Check the fonts you want to use. **You can select more than one.**
-- Fonts come in two types: "**Regular**" and "**Emphasis**".
-  - Regular fonts are used for normal lyrics.
-  - Emphasis fonts are used automatically for lines you want to stand out, such as the chorus.
+- Choose one font for "**Regular lines**" and one for "**Emphasized lines (chorus, etc.)**".
+- Click a box to open the font list. Each font shows your lyrics in that font. You can also use ↑ ↓ to move and Enter to choose.
+- The badges in the list ("Regular" / "Emphasis") show the recommended use. Either box can use any font.
+- If you choose the same font for both, emphasis is shown with a heavier weight.
 - If unsure, keep the defaults, "Noto Sans JP" and "Dela Gothic One".
 
-> The bundled fonts are Japanese fonts. They also cover English. Some Korean (Hangul) and Simplified Chinese characters are not included and are drawn with your system's fonts instead.
+> Japanese, Korean and Chinese (Simplified / Traditional) fonts are bundled, and they also cover English. Characters missing from a font are drawn with another bundled font.
+> When you load subtitles, the lyrics language is detected. If you have not chosen fonts yet, fonts for that language are selected automatically (for example, Noto Sans KR for Korean). If the detection is wrong, choose the fonts again.
 
 ### Step 3: Choose a style ("3. Style")
 
 - Choose the aspect ratio, effect level, text size and more.
-- Every change is reflected in the preview right away.
+- Every change is reflected in the preview on the right right away.
+- Less frequently used options are under "**Advanced settings**".
 - See [Settings](#settings) for what each option does. **The defaults are fine to start with.**
-
-### Step 4: Check the preview ("4. Preview")
-
-- Press "**Play**" to watch the animation. Drag the bar to jump to any time.
-- You can also use the keyboard (when you are not typing in a text field):
-  - Space: play / pause
-  - ← →: back / forward 1 second
-  - Shift + ← →: back / forward 0.1 seconds
 - Press "**Regenerate**" to create a different animation pattern for the same subtitles. Press it as many times as you like.
   - "**Undo**" goes back to the previous pattern (up to 100 steps).
   - "**Pattern No.**" is the number of the current pattern. Write it down, and later type it into the field and press Enter to reproduce the same pattern (with the same subtitles and settings).
-- Use "**Load MV / audio (optional, for preview)**" to see how the lyrics look over your MV or song.
-  - The "Overlay on MV" checkbox turns the overlay on and off.
-  - The length of the loaded MV / song is also used as the export length.
-- If the subtitles and the MV are out of sync, shift all subtitles with "**Subtitle timing**".
-  - "+0.1 s" shows the subtitles later, "-0.1 s" earlier. You can also type a value (up to ±30 seconds).
-  - "Reset to 0" undoes the shift. The subtitle file itself is not modified.
-- Open the "**Subtitle list**" to see all cues in time order. Click a row to jump to that cue. The cue being played is highlighted.
+
+### Step 4: Check the preview (right side)
+
+- Press "**Play**" to watch the animation. Drag the bar to jump to any time.
+- You can also use the keyboard (when you are not typing in a text field or using a list):
+  - Space: play / pause
+  - ← →: back / forward 1 second
+  - Shift + ← →: back / forward 0.1 seconds
+- Open "**4. Subtitle list**" on the left to see all cues in time order. Click a row to jump to that cue. The cue being played is highlighted.
 
 ### Step 5: Export ("5. Export")
 
@@ -120,7 +123,7 @@ The page is divided into five sections, "1. Subtitle file" to "5. Export". Work 
 3. Overlay the exported file on your MV in your video editor (see [Choosing an output format](#choosing-an-output-format)).
 
 > After exporting, the page stays as it is, so you can also export in another format (for example, both MP4 and a PNG sequence).
-> When you are done, click "**Clear data**" at the top right or close the page.
+> When you are done, click "**Clear data**" at the bottom of the left side or close the page.
 > To clear the data automatically, check "Clear app data (subtitles, MV, results) after exporting" before exporting.
 
 ---
@@ -198,7 +201,7 @@ Notes:
 
 - Exports a **finished video with audio**, with the lyrics over the loaded MV.
 - If you load a song (audio only), the video shows the lyrics on a black background.
-- To choose this format, first load an MV or song with "Load MV / audio (optional, for preview)" in "4. Preview".
+- To choose this format, first load an MV or song with "Load MV / audio (optional, for preview)" in "1. Subtitles & audio".
 - If the MV's aspect ratio differs from the output, the MV is scaled to fill the screen and the overflow is cropped.
 - The frame rate (frames per second, fps) follows the MV (up to 60).
 - The audio is kept as-is whenever possible (no quality change).
