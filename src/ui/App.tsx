@@ -59,7 +59,7 @@ export function App() {
   /** 歌詞の言語に合わせて書体を自動で切り替えたとき、その言語（案内の表示用） */
   const [autoScript, setAutoScript] = useState<FontScript | null>(null);
   // 読み込む書体（通常行と強調行が同じなら1つ）
-  const fontIds = useMemo(() => [...new Set([fonts.body, fonts.display])], [fonts]);
+  const fontIds = useMemo(() => [...new Set([fonts.body, fonts.display ?? fonts.body])], [fonts]);
   // 書体の一覧で先頭に並べる言語。字幕の読み込み前は UI の言語（英語なら日本語）
   const listScript: FontScript = lyricScript ?? (lang === 'en' ? 'ja' : lang);
   const [seed, setSeed] = useState(randomSeed);
@@ -161,8 +161,8 @@ export function App() {
     }
   }
 
-  function changeFont(role: keyof FontChoice, id: string) {
-    setFonts((f) => ({ ...f, [role]: id }));
+  function changeFont(next: Partial<FontChoice>) {
+    setFonts((f) => ({ ...f, ...next }));
     setFontsTouched(true);
     setAutoScript(null);
   }
@@ -251,12 +251,21 @@ export function App() {
 
         <Section title={t('sec.fonts')}>
           <p className="hint">{t('font.hint')}</p>
-          <FontSelect role="body" label={t('font.body')} value={fonts.body} onChange={(id) => changeFont('body', id)} sample={sample} script={listScript} />
+          <FontSelect
+            role="body"
+            label={t('font.body')}
+            value={fonts.body}
+            onChange={(id) => id && changeFont({ body: id })}
+            sample={sample}
+            script={listScript}
+          />
+          {/* 強調は任意（指定しないと、強調行も通常行と同じ書体・太さで描く） */}
           <FontSelect
             role="display"
+            optional
             label={t('font.display')}
             value={fonts.display}
-            onChange={(id) => changeFont('display', id)}
+            onChange={(id) => changeFont({ display: id })}
             sample={sample}
             script={listScript}
           />

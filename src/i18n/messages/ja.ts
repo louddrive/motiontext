@@ -18,13 +18,15 @@ export const ja: Record<MessageKey, string> = {
   'subtitle.loaded': '{name}（{format} / {count} 件）',
   'subtitle.warnings': '警告 {count} 件',
 
-  'font.hint': '通常の行と、サビなどの強調する行に使う書体をそれぞれ選びます。バッジは推奨の用途です。同じ書体を選ぶと、太さの差で強弱を付けます。',
+  'font.hint': '通常の行の書体は必須、サビなどの強調する行の書体は任意です。バッジは推奨の用途です。強調に通常と同じ書体を選ぶと、太さの差で強弱を付けます。',
   'font.role.body': '通常行向け',
   'font.role.display': '強調向け',
   'font.sample': '歌詞のサンプル Lyrics',
   'font.body': '通常の行',
-  'font.display': '強調の行（サビなど）',
+  'font.display': '強調の行（サビなど・任意）',
   'font.autoSelected': '歌詞の言語（{lang}）に合わせて書体を選びました。',
+  'font.none': '指定しない',
+  'font.noneDesc': '強調の行も通常と同じ書体・太さで表示します',
 
   'style.aspect': '画面比率',
   'aspect.landscape': '16:9（横）',

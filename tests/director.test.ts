@@ -184,6 +184,20 @@ describe('fontRoles', () => {
     expect(same).toEqual(one);
     expect(same.items.find((i) => i.emphasis)!.weight).toBe(900);
   });
+
+  it('強調の書体を指定しないと、強調行も通常行と同じ書体・同じ太さになる', () => {
+    const t = direct(features, { ...base, fontIds: ['noto-sans-jp'], fontRoles: { body: 'noto-sans-jp', display: null }, seed: 1 });
+    expect(t.items.some((i) => i.emphasis)).toBe(true);
+    expect(new Set(t.items.map((i) => i.fontId))).toEqual(new Set(['noto-sans-jp']));
+    // 強調行・セクション先頭の行も太くしない
+    expect(new Set(t.items.map((i) => i.weight))).toEqual(new Set([400]));
+  });
+
+  it('強調の書体を指定しなくても、動きの演出は変わらない', () => {
+    const plain = direct(features, { ...base, fontIds: ['noto-sans-jp'], fontRoles: { body: 'noto-sans-jp', display: null }, seed: 5 });
+    const same = direct(features, { ...base, fontIds: ['noto-sans-jp'], fontRoles: { body: 'noto-sans-jp', display: 'noto-sans-jp' }, seed: 5 });
+    expect(plain.items.map((i) => [i.animation, i.emphasis])).toEqual(same.items.map((i) => [i.animation, i.emphasis]));
+  });
 });
 
 describe('isKeyUnsafe', () => {

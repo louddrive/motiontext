@@ -18,13 +18,15 @@ export const ko: Record<MessageKey, string> = {
   'subtitle.loaded': '{name} ({format} / {count}개)',
   'subtitle.warnings': '경고 {count}개',
 
-  'font.hint': '일반 줄과 후렴 등 강조할 줄에 쓸 글꼴을 각각 선택합니다. 배지는 권장 용도입니다. 같은 글꼴을 고르면 굵기 차이로 강약을 줍니다.',
+  'font.hint': '일반 줄의 글꼴은 필수이고, 후렴 등 강조할 줄의 글꼴은 선택입니다. 배지는 권장 용도입니다. 강조에 일반 줄과 같은 글꼴을 고르면 굵기 차이로 강약을 줍니다.',
   'font.role.body': '일반 줄용',
   'font.role.display': '강조용',
   'font.sample': '가사 샘플 Lyrics',
   'font.body': '일반 줄',
-  'font.display': '강조할 줄 (후렴 등)',
+  'font.display': '강조할 줄 (후렴 등·선택)',
   'font.autoSelected': '가사 언어({lang})에 맞춰 글꼴을 선택했습니다.',
+  'font.none': '지정 안 함',
+  'font.noneDesc': '강조할 줄도 일반 줄과 같은 글꼴·굵기로 표시합니다',
 
   'style.aspect': '화면 비율',
   'aspect.landscape': '16:9 (가로)',

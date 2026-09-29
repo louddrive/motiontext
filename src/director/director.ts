@@ -16,8 +16,11 @@ export interface DirectOptions {
   theme: Theme;
   seed: number;
   fontIds: string[];
-  /** 通常行・強調行の書体を明示する（指定時は fontIds の役割による振り分けより優先。同じ書体なら1書体扱い） */
-  fontRoles?: { body: string; display: string };
+  /**
+   * 通常行・強調行の書体を明示する（指定時は fontIds の役割による振り分けより優先）。
+   * 同じ書体なら1書体扱い（太さの差で強弱）。display が null なら強調行も通常行と同じ書体・太さ
+   */
+  fontRoles?: { body: string; display: string | null };
   background: BackgroundMode;
   width?: number;
   height?: number;
@@ -200,12 +203,13 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
   const width = opts.width ?? 1920;
   const height = opts.height ?? 1080;
   const fps = opts.fps ?? 30;
-  const roles: FontRoles = opts.fontRoles
-    ? { body: [opts.fontRoles.body], display: [opts.fontRoles.display] }
-    : assignFontRoles(opts.fontIds);
+  const fr = opts.fontRoles;
+  const roles: FontRoles = fr ? { body: [fr.body], display: [fr.display ?? fr.body] } : assignFontRoles(opts.fontIds);
+  // 強調の書体を指定しないときは、強調行も通常行と同じ書体・同じ太さで描く（動きなどの演出は残す）
+  const plainWeight = fr?.display === null;
   const textColors = usablePalette(theme.palette.text, background);
   const accentColors = usablePalette(theme.palette.accent, background);
-  const singleFont = opts.fontRoles ? opts.fontRoles.body === opts.fontRoles.display : opts.fontIds.length === 1;
+  const singleFont = fr ? fr.body === fr.display : opts.fontIds.length === 1;
   const size = SIZE_LEVELS[opts.sizeLevel ?? 'm'];
   const strokeEmphasis = opts.strokeEmphasis ?? theme.strokeEmphasis;
   const effects = opts.effects ?? EFFECTS;
@@ -244,7 +248,7 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     const fontId = emphasis ? displayFont : bodyFont;
     const weights = getFont(fontId).weights;
     // 1書体だけの場合はウェイト差で強弱を付ける
-    const weight = emphasis || (singleFont && f.isSectionStart) ? weights[weights.length - 1] : weights[0];
+    const weight = !plainWeight && (emphasis || (singleFont && f.isSectionStart)) ? weights[weights.length - 1] : weights[0];
 
     const table = emphasis ? tables.chorus : f.tempo === 'fast' ? tables.fast : f.tempo === 'slow' ? tables.slow : tables.normal;
     let animation = pickWeighted(r, table);

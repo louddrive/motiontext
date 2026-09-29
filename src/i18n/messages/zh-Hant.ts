@@ -18,13 +18,15 @@ export const zhHant: Record<MessageKey, string> = {
   'subtitle.loaded': '{name}（{format} / {count} 則）',
   'subtitle.warnings': '警告 {count} 則',
 
-  'font.hint': '分別選擇一般行與副歌等強調行所用的字型。標籤表示建議用途。兩者選擇同一字型時，將以粗細差異區分強弱。',
+  'font.hint': '一般行的字型為必選，副歌等強調行的字型為選填。標籤表示建議用途。強調行選擇與一般行相同的字型時，將以粗細差異區分強弱。',
   'font.role.body': '一般行',
   'font.role.display': '強調',
   'font.sample': '範例歌詞 Lyrics',
   'font.body': '一般行',
-  'font.display': '強調行（副歌等）',
+  'font.display': '強調行（副歌等·選填）',
   'font.autoSelected': '已依歌詞語言（{lang}）選擇字型。',
+  'font.none': '不指定',
+  'font.noneDesc': '強調行也使用與一般行相同的字型與粗細',
 
   'style.aspect': '畫面比例',
   'aspect.landscape': '16:9（橫向）',

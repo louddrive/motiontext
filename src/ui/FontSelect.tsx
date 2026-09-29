@@ -8,8 +8,11 @@ interface Props {
   /** このドロップダウンで選ぶ役割（並び順と見本の太さに使う） */
   role: FontRole;
   label: string;
-  value: string;
-  onChange: (id: string) => void;
+  /** 選択中の書体（optional のときは null で「指定しない」） */
+  value: string | null;
+  onChange: (id: string | null) => void;
+  /** 「指定しない」を選べるようにする */
+  optional?: boolean;
   /** 見本に使う文字列（歌詞の一部） */
   sample: string;
   /** 先頭に並べる言語（歌詞の言語） */
@@ -32,7 +35,7 @@ function roleWeight(def: FontDef, role: FontRole): number {
  * 書体のドロップダウン。各選択肢をその書体で描いた見本付きで表示する。
  * 標準の <select> では選択肢に書体を反映できないブラウザがあるため、WAI-ARIA の Select-Only Combobox として作る。
  */
-export function FontSelect({ role, label, value, onChange, sample, script }: Props) {
+export function FontSelect({ role, label, value, onChange, optional = false, sample, script }: Props) {
   const { t } = useI18n();
   const baseId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -54,14 +57,15 @@ export function FontSelect({ role, label, value, onChange, sample, script }: Pro
       }))
       .filter((g) => g.fonts.length > 0);
   }, [script, role]);
-  const options = useMemo(() => groups.flatMap((g) => g.fonts), [groups]);
+  // 選択肢の並び（null は「指定しない」。キー操作と aria-activedescendant はこの番号を使う）
+  const options = useMemo<(FontDef | null)[]>(() => [...(optional ? [null] : []), ...groups.flatMap((g) => g.fonts)], [groups, optional]);
   const optionId = (i: number) => `${baseId}-opt-${i}`;
 
   // 見本の文字が変わったら読み込み直す
   useEffect(() => setReady(new Set()), [sample]);
   useEffect(() => {
     let alive = true;
-    const ids = everOpened ? FONT_CATALOG.map((f) => f.id) : [value];
+    const ids = everOpened ? FONT_CATALOG.map((f) => f.id) : value ? [value] : [];
     for (const id of ids) {
       ensureGlyphs(document.fonts, [id], sample)
         .then(() => alive && setReady((prev) => (prev.has(id) ? prev : new Set(prev).add(id))))
@@ -92,14 +96,16 @@ export function FontSelect({ role, label, value, onChange, sample, script }: Pro
     const rect = rootRef.current?.getBoundingClientRect();
     // 下に十分な余白がなく、上の方が広いときは上向きに開く
     setUp(!!rect && window.innerHeight - rect.bottom < 340 && rect.top > window.innerHeight - rect.bottom);
-    setActive(Math.max(0, options.findIndex((f) => f.id === value)));
+    setActive(Math.max(0, options.findIndex((f) => (f?.id ?? null) === value)));
     setOpen(true);
     setEverOpened(true);
   }
 
   function choose(i: number) {
-    const f = options[i];
-    if (f && f.id !== value) onChange(f.id);
+    if (i >= 0 && i < options.length) {
+      const id = options[i]?.id ?? null;
+      if (id !== value) onChange(id);
+    }
     setOpen(false);
   }
 
@@ -141,7 +147,7 @@ export function FontSelect({ role, label, value, onChange, sample, script }: Pro
     }
   }
 
-  const current = getFont(value);
+  const current = value ? getFont(value) : null;
   const sampleStyle = (f: FontDef) => ({
     fontFamily: familyCss(f.id),
     fontWeight: roleWeight(f, role),
@@ -168,14 +174,32 @@ export function FontSelect({ role, label, value, onChange, sample, script }: Pro
           onKeyDown={onKeyDown}
         >
           <span className="font-select-name" id={`${baseId}-value`}>
-            {current.label}
+            {current ? current.label : t('font.none')}
           </span>
-          <span className="font-select-sample" style={sampleStyle(current)}>
-            {sample}
-          </span>
+          {current ? (
+            <span className="font-select-sample" style={sampleStyle(current)}>
+              {sample}
+            </span>
+          ) : (
+            <span className="font-select-desc">{t('font.noneDesc')}</span>
+          )}
         </button>
         {open && (
           <div className={`font-select-list ${up ? 'up' : ''}`} role="listbox" id={`${baseId}-list`} aria-labelledby={`${baseId}-label`}>
+            {optional && (
+              <div
+                id={optionId(++index)}
+                role="option"
+                aria-selected={value === null}
+                className={`font-select-option ${active === 0 ? 'active' : ''}`}
+                onMouseDown={(e) => e.preventDefault()}
+                onMouseEnter={() => setActive(0)}
+                onClick={() => choose(0)}
+              >
+                <span className="font-meta">{t('font.none')}</span>
+                <span className="font-select-desc">{t('font.noneDesc')}</span>
+              </div>
+            )}
             {groups.map((g) => (
               <div role="group" key={g.script} aria-labelledby={`${baseId}-g-${g.script}`}>
                 <div className="font-select-group" role="presentation" id={`${baseId}-g-${g.script}`}>

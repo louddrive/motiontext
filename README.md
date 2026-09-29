@@ -85,11 +85,13 @@ Settings and controls are on the left, and the preview is on the right. The left
 
 ### Step 2: Choose fonts ("2. Fonts")
 
-- Choose one font for "**Regular lines**" and one for "**Emphasized lines (chorus, etc.)**".
+- Choose a font for "**Regular lines**" (required).
+- Choose a font for "**Emphasized lines (chorus, etc.; optional)**" only if you want the chorus and similar lines to stand out with a different font.
+  - It starts as "**Not specified**": emphasized lines use the same font and weight as regular lines (the animation is not affected).
+  - If you choose the same font as for regular lines, emphasis is shown with a heavier weight.
 - Click a box to open the font list. Each font shows your lyrics in that font. You can also use ↑ ↓ to move and Enter to choose.
 - The badges in the list ("Regular" / "Emphasis") show the recommended use. Either box can use any font.
-- If you choose the same font for both, emphasis is shown with a heavier weight.
-- If unsure, keep the defaults, "Noto Sans JP" and "Dela Gothic One".
+- If unsure, keep the defaults (Regular lines: "Noto Sans JP", Emphasized lines: "Not specified").
 
 > Japanese, Korean and Chinese (Simplified / Traditional) fonts are bundled, and they also cover English. Characters missing from a font are drawn with another bundled font.
 > When you load subtitles, the lyrics language is detected. If you have not chosen fonts yet, fonts for that language are selected automatically (for example, Noto Sans KR for Korean). If the detection is wrong, choose the fonts again.
