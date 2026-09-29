@@ -6,11 +6,12 @@ export const zhHans: Record<MessageKey, string> = {
   'app.language': '语言',
   'app.wipe': '清除数据',
   'app.wiped': '数据已清除。',
-  'sec.subtitle': '1. 字幕文件',
+  'sec.subtitle': '1. 字幕与音频',
   'sec.fonts': '2. 字体',
   'sec.style': '3. 样式',
-  'sec.preview': '4. 预览',
+  'sec.preview': '预览',
   'sec.export': '5. 导出',
+  'sec.cueList': '4. 字幕列表',
 
   'drop.title': '拖放 SRT / SBV 文件',
   'drop.sub': '或点击选择（文件仅在浏览器内处理，不会上传）',
@@ -72,6 +73,7 @@ export const zhHans: Record<MessageKey, string> = {
   'backdrop.lowContrast': '文字可能会被颜色图层淹没。请选择与文字明暗不同的颜色，或降低不透明度。',
   'style.outline': '文字描边',
   'style.shadow': '文字阴影',
+  'style.advanced': '高级设置',
   'style.outlineNote': '黑色背景的 MP4 使用“滤色”混合时，黑色描边和阴影会消失',
   'style.keyWarning': '此颜色接近绿色，进行色度抠图时文字可能会被一起抠掉。建议使用黑色背景或其他颜色。',
   'style.darkWarning': '深色在“滤色”混合下几乎看不见。建议使用明亮的颜色或绿色背景。',
@@ -95,7 +97,8 @@ export const zhHans: Record<MessageKey, string> = {
   'preview.pause': '暂停',
   'preview.overlay': '叠加在 MV 上显示',
   'preview.keys': '快捷键：空格＝播放／暂停，← →＝移动 1 秒，Shift＋← →＝移动 0.1 秒',
-  'preview.cueList': '字幕列表（点击跳转到该时间）· {count} 条',
+  'preview.cueList': '点击跳转到该时间 · {count} 条',
+  'preview.empty': '在左侧载入字幕文件后，这里会显示预览。',
 
   'export.unsupported': '此浏览器不支持使用 WebCodecs 导出视频。请使用最新版的 Chrome 或 Edge。',
   'export.hint.composite':

@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useImperativeHandle, useRef, useState, type Ref } from 'react';
 import type { Timeline, TimelineItem } from '../director/types';
 import { ensureGlyphs } from '../fonts/loader';
 import { useI18n } from '../i18n/react';
@@ -17,12 +17,21 @@ interface Props {
   alphaPreview?: boolean;
   /** 合成書き出し用: MV を画面いっぱい（cover）に表示し、歌詞を透過で重ねる（出力と同じ見え方） */
   compositePreview?: boolean;
+  /** 表示中の字幕が変わったとき（字幕の一覧の強調表示用） */
+  onActiveChange?: (id: number | null) => void;
+  ref?: Ref<PreviewHandle>;
 }
 
-/** キー操作を横取りしない要素（文字入力・選択肢・ボタン等。スペースでの押下と二重にならないように） */
+/** 外から操作するための口（字幕の一覧のクリックでの移動） */
+export interface PreviewHandle {
+  seek: (t: number) => void;
+}
+
+/** キー操作を横取りしない要素（文字入力・選択肢・ボタン・折りたたみの見出し・一覧選択等。スペースでの押下と二重にならないように） */
 function isTypingTarget(el: EventTarget | null): boolean {
   if (!(el instanceof HTMLElement)) return false;
   if (el instanceof HTMLInputElement) return el.type !== 'range';
+  if (el.tagName === 'SUMMARY' || el.closest('[role="listbox"]')) return true;
   return el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement || el instanceof HTMLButtonElement || el.isContentEditable;
 }
 
@@ -33,14 +42,15 @@ function activeItemId(items: TimelineItem[], t: number): number | null {
   return id;
 }
 
-function fmt(t: number) {
+/** 再生位置の表示（m:ss.s） */
+export function formatClock(t: number) {
   const m = Math.floor(t / 60);
   const s = (t % 60).toFixed(1).padStart(4, '0');
   return `${m}:${s}`;
 }
 
-export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, compositePreview = false }: Props) {
-  const { t, lang } = useI18n();
+export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, compositePreview = false, onActiveChange, ref }: Props) {
+  const { t } = useI18n();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const layoutsRef = useRef<Layouts | null>(null);
@@ -49,8 +59,10 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
   const [overlay, setOverlay] = useState(true);
-  const [activeId, setActiveId] = useState<number | null>(null);
   const activeRef = useRef<number | null>(null);
+  // 描画ループから最新のコールバックを呼ぶため ref で持つ
+  const onActiveChangeRef = useRef(onActiveChange);
+  onActiveChangeRef.current = onActiveChange;
 
   const showMv = !!mvUrl && overlay;
   // 黒背景は CSS のスクリーン合成で CapCut の「スクリーン」と同じ見え方にする。グリーンは透過描画で近似
@@ -105,7 +117,7 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
       const id = activeItemId(timeline.items, t);
       if (id !== activeRef.current) {
         activeRef.current = id;
-        setActiveId(id);
+        onActiveChangeRef.current?.(id);
       }
       raf = requestAnimationFrame(loop);
     };
@@ -136,6 +148,10 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
     c.startedAt = performance.now();
     if (videoRef.current) videoRef.current.currentTime = t;
   }
+  // seek は timeline.duration を参照するので、公開する口からは ref 経由で最新の seek を呼ぶ
+  const seekRef = useRef(seek);
+  seekRef.current = seek;
+  useImperativeHandle(ref, () => ({ seek: (target: number) => seekRef.current(target) }), []);
 
   // キーボード操作: スペース=再生／停止、←→=1秒、Shift+←→=0.1秒（最新の関数を参照するため ref 経由）
   const keyHandlerRef = useRef<(e: KeyboardEvent) => void>(() => {});
@@ -189,7 +205,7 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
           onChange={(e) => seek(Number(e.target.value))}
         />
         <span className="time">
-          {fmt(time)} / {fmt(timeline.duration)}
+          {formatClock(time)} / {formatClock(timeline.duration)}
         </span>
         {mvUrl && (
           <label className="inline">
@@ -206,42 +222,6 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
         )}
       </div>
       <p className="hint keys">{t('preview.keys')}</p>
-      <CueList items={timeline.items} activeId={activeId} onSeek={seek} lang={lang} />
     </div>
   );
 }
-
-interface CueListProps {
-  items: TimelineItem[];
-  /** 言語の切り替えで再描画するため（memo の比較に使う） */
-  lang: string;
-  activeId: number | null;
-  onSeek: (t: number) => void;
-}
-
-/** 字幕の一覧。クリックでその字幕の開始時刻へ移動する（再生中の字幕を強調） */
-const CueList = memo(function CueList({ items, activeId, onSeek }: CueListProps) {
-  const { t } = useI18n();
-  const rows = useMemo(
-    () => items.map((it) => ({ id: it.id, start: it.start, text: it.lines.map((phrases) => phrases.join('')).join(it.mixed ? '　' : ' / ') })),
-    [items],
-  );
-  // onSeek は毎回新しい関数になるので ref で最新を使い、一覧の再描画を activeId の変化だけに抑える
-  const seekRef = useRef(onSeek);
-  seekRef.current = onSeek;
-  return (
-    <details className="cue-list">
-      <summary>{t('preview.cueList', { count: rows.length })}</summary>
-      <ol>
-        {rows.map((r) => (
-          <li key={r.id} className={r.id === activeId ? 'active' : ''}>
-            <button type="button" onClick={() => seekRef.current(r.start)}>
-              <span className="cue-time">{fmt(r.start)}</span>
-              <span className="cue-text">{r.text}</span>
-            </button>
-          </li>
-        ))}
-      </ol>
-    </details>
-  );
-}, (a, b) => a.items === b.items && a.activeId === b.activeId && a.lang === b.lang);

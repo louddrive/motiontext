@@ -6,11 +6,12 @@ export const ko: Record<MessageKey, string> = {
   'app.language': '언어',
   'app.wipe': '데이터 삭제',
   'app.wiped': '데이터를 삭제했습니다.',
-  'sec.subtitle': '1. 자막 파일',
+  'sec.subtitle': '1. 자막·음원',
   'sec.fonts': '2. 글꼴',
   'sec.style': '3. 스타일',
-  'sec.preview': '4. 미리보기',
+  'sec.preview': '미리보기',
   'sec.export': '5. 내보내기',
+  'sec.cueList': '4. 자막 목록',
 
   'drop.title': 'SRT / SBV 파일을 끌어다 놓기',
   'drop.sub': '또는 클릭하여 선택 (파일은 브라우저 안에서만 처리되며 업로드되지 않습니다)',
@@ -72,6 +73,7 @@ export const ko: Record<MessageKey, string> = {
   'backdrop.lowContrast': '글자가 색상 레이어에 묻힐 수 있습니다. 글자와 밝기가 다른 색을 고르거나 불투명도를 낮춰 주세요.',
   'style.outline': '글자 테두리',
   'style.shadow': '글자 그림자',
+  'style.advanced': '고급 설정',
   'style.outlineNote': "검은 배경 MP4를 '스크린' 합성하면 검은 테두리와 그림자는 사라집니다",
   'style.keyWarning': '이 색은 초록색에 가까워서 크로마 키로 배경을 지울 때 글자까지 함께 지워질 수 있습니다. 검은색 배경이나 다른 색을 권장합니다.',
   'style.darkWarning': '어두운 색은 "스크린" 합성에서 거의 보이지 않습니다. 밝은 색이나 초록색 배경을 권장합니다.',
@@ -95,7 +97,8 @@ export const ko: Record<MessageKey, string> = {
   'preview.pause': '일시정지',
   'preview.overlay': 'MV 위에 겹쳐 보기',
   'preview.keys': '단축키: 스페이스＝재생／일시정지, ← →＝1초 이동, Shift＋← →＝0.1초 이동',
-  'preview.cueList': '자막 목록 (클릭하면 해당 시간으로 이동) · {count}개',
+  'preview.cueList': '클릭하면 해당 시간으로 이동 · {count}개',
+  'preview.empty': '왼쪽에서 자막 파일을 불러오면 여기에 미리보기가 표시됩니다.',
 
   'export.unsupported': '이 브라우저는 WebCodecs를 이용한 동영상 내보내기를 지원하지 않습니다. 최신 버전의 Chrome 또는 Edge를 사용해 주세요.',
   'export.hint.composite':

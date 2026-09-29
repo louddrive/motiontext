@@ -6,11 +6,12 @@ export const ja: Record<MessageKey, string> = {
   'app.language': '言語',
   'app.wipe': 'データを破棄',
   'app.wiped': 'データを破棄しました。',
-  'sec.subtitle': '1. 字幕ファイル',
+  'sec.subtitle': '1. 字幕・音源',
   'sec.fonts': '2. フォント',
   'sec.style': '3. スタイル',
-  'sec.preview': '4. プレビュー',
+  'sec.preview': 'プレビュー',
   'sec.export': '5. 書き出し',
+  'sec.cueList': '4. 字幕の一覧',
 
   'drop.title': 'SRT / SBV ファイルをドロップ',
   'drop.sub': 'またはクリックして選択（ファイルはブラウザ内でのみ処理され、送信されません）',
@@ -73,6 +74,7 @@ export const ja: Record<MessageKey, string> = {
   'backdrop.lowContrast': '文字が色レイヤーに埋もれる可能性があります。文字と明るさの違う色にするか、濃さを下げてください。',
   'style.outline': '文字の縁取り',
   'style.shadow': '文字の影',
+  'style.advanced': '詳細設定',
   'style.outlineNote': '黒背景の MP4 をスクリーン合成すると、黒い縁取りと影は消えます',
   'style.keyWarning': 'この色は緑に近いため、クロマキーで文字ごと抜けてしまう可能性があります。黒背景か別の色を推奨します。',
   'style.darkWarning': '暗い色は「スクリーン」合成でほとんど見えなくなります。明るい色かグリーン背景を推奨します。',
@@ -96,7 +98,8 @@ export const ja: Record<MessageKey, string> = {
   'preview.pause': '一時停止',
   'preview.overlay': 'MVに重ねて表示',
   'preview.keys': 'キー操作: スペース＝再生／停止、← →＝1秒移動、Shift＋← →＝0.1秒移動',
-  'preview.cueList': '字幕の一覧（クリックでその時刻へ移動）・{count} 件',
+  'preview.cueList': 'クリックでその時刻へ移動・{count} 件',
+  'preview.empty': '左側で字幕ファイルを読み込むと、ここにプレビューが表示されます。',
 
   'export.unsupported': 'このブラウザは WebCodecs による動画書き出しに対応していません。Chrome または Edge の最新版をご利用ください。',
   'export.hint.composite':

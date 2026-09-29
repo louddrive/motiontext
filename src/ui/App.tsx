@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { analyze } from '../analysis/features';
 import { shiftCues } from '../analysis/timing';
 import { direct } from '../director/director';
@@ -15,12 +15,14 @@ import { INTERLUDE_GLYPHS } from '../render/interlude';
 import { createObjectUrl, revokeAll, revokeObjectUrl } from '../session/session';
 import { defaultTheme } from '../themes/default';
 import { applyEffectLevel } from '../themes/effectLevel';
+import { CueList } from './CueList';
 import { DropZone } from './DropZone';
 import { ExportPanel } from './ExportPanel';
 import { FontPicker } from './FontPicker';
 import { IssueList } from './IssueList';
-import { Preview } from './Preview';
+import { Preview, type PreviewHandle } from './Preview';
 import { SeedControls, TimingControls } from './PreviewControls';
+import { Section } from './Section';
 import { DEFAULT_STYLE, StylePanel, type StyleSettings } from './StylePanel';
 
 interface Loaded {
@@ -57,6 +59,9 @@ export function App() {
   const [mv, setMv] = useState<Mv | null>(null);
   const [resetKey, setResetKey] = useState(0);
   const [notice, setNotice] = useState<Notice | null>(null);
+  /** プレビューで表示中の字幕（サイドバーの字幕の一覧で強調する） */
+  const [activeId, setActiveId] = useState<number | null>(null);
+  const previewRef = useRef<PreviewHandle>(null);
 
   // フォントを読み込む文字。間奏のパーセンテージの数字も、歌詞に含まれなくても同じ書体で出るよう加える
   const text = useMemo(() => (loaded ? `${loaded.result.cues.map((c) => c.text).join('\n')}\n${INTERLUDE_GLYPHS}` : ''), [loaded]);
@@ -148,145 +153,154 @@ export function App() {
   const baseName = loaded?.fileName.replace(/\.[^.]+$/, '') || 'lyrics';
 
   return (
-    <div className="app" key={resetKey}>
-      <header>
-        <h1>motiontext</h1>
-        <span className="tag">{t('app.tagline')}</span>
-        <select
-          className="lang-select"
-          aria-label={t('app.language')}
-          value={lang}
-          onChange={(e) => {
-            if (isLang(e.target.value)) setLang(e.target.value);
-          }}
-        >
-          {LANGUAGES.map((l) => (
-            <option key={l} value={l}>
-              {LANGUAGE_NAMES[l]}
-            </option>
-          ))}
-        </select>
-        {loaded && (
-          <button className="danger" onClick={() => wipe({ msg: { key: 'app.wiped' } })}>
-            {t('app.wipe')}
-          </button>
-        )}
-      </header>
-
-      {notice && (
-        <p className="notice" onClick={() => setNotice(null)}>
-          {notice.wrap ? t(notice.wrap, { message: tl(notice.msg) }) : tl(notice.msg)}
-        </p>
-      )}
-
-      <section>
-        <h2>{t('sec.subtitle')}</h2>
-        {loaded ? (
-          <div className="loaded">
-            <span>
-              {t('subtitle.loaded', { name: loaded.fileName, format: loaded.result.format.toUpperCase(), count: loaded.result.cues.length })}
-            </span>
-            <IssueList issues={subtitleIssues} />
-            {loaded.result.warnings.length > 0 && (
-              <details>
-                <summary>{t('subtitle.warnings', { count: loaded.result.warnings.length })}</summary>
-                <ul>
-                  {loaded.result.warnings.slice(0, 50).map((w, i) => (
-                    <li key={i}>{tl(w)}</li>
-                  ))}
-                </ul>
-              </details>
-            )}
-          </div>
-        ) : (
-          <DropZone
-            onLoaded={(fileName, result) => {
-              setNotice(null);
-              setLoaded({ fileName, result });
+    <div className="app layout" key={resetKey}>
+      <aside className="sidebar">
+        <header>
+          <h1>motiontext</h1>
+          <select
+            className="lang-select"
+            aria-label={t('app.language')}
+            value={lang}
+            onChange={(e) => {
+              if (isLang(e.target.value)) setLang(e.target.value);
             }}
-          />
+          >
+            {LANGUAGES.map((l) => (
+              <option key={l} value={l}>
+                {LANGUAGE_NAMES[l]}
+              </option>
+            ))}
+          </select>
+          <span className="tag">{t('app.tagline')}</span>
+        </header>
+
+        {notice && (
+          <p className="notice" onClick={() => setNotice(null)}>
+            {notice.wrap ? t(notice.wrap, { message: tl(notice.msg) }) : tl(notice.msg)}
+          </p>
         )}
-      </section>
 
-      <section>
-        <h2>{t('sec.fonts')}</h2>
-        <FontPicker selected={fontIds} onChange={setFontIds} sample={sample} />
-      </section>
-
-      {timeline && (
-        <>
-          <section>
-            <h2>{t('sec.style')}</h2>
-            <StylePanel
-              value={style}
-              onChange={setStyle}
-              pngSupported={isPngSequenceSupported()}
-              compositeSupported={isCompositeSupported()}
-              hasMedia={!!mv && usableMvDuration(mv.duration) !== undefined}
-            />
-          </section>
-
-          <section>
-            <h2>{t('sec.preview')}</h2>
-            <div className="controls">
-              <SeedControls
-                seed={seed}
-                canUndo={seedHistory.length > 0}
-                onRegenerate={() => changeSeed(randomSeed())}
-                onUndo={undoSeed}
-                onSeedInput={changeSeed}
-              />
-              <label className="file-btn">
-                {t('mv.load')}
-                <input type="file" accept="video/*,audio/*" hidden onChange={(e) => loadMv(e.target.files?.[0])} />
-              </label>
-              {mv && (
-                <span className="hint">
-                  {t('mv.loaded', { name: mv.name, sec: mv.duration.toFixed(1) })}
-                </span>
+        <Section title={t('sec.subtitle')}>
+          {loaded ? (
+            <div className="loaded">
+              <span>
+                {t('subtitle.loaded', { name: loaded.fileName, format: loaded.result.format.toUpperCase(), count: loaded.result.cues.length })}
+              </span>
+              <IssueList issues={subtitleIssues} />
+              {loaded.result.warnings.length > 0 && (
+                <details>
+                  <summary>{t('subtitle.warnings', { count: loaded.result.warnings.length })}</summary>
+                  <ul>
+                    {loaded.result.warnings.slice(0, 50).map((w, i) => (
+                      <li key={i}>{tl(w)}</li>
+                    ))}
+                  </ul>
+                </details>
               )}
             </div>
+          ) : (
+            <DropZone
+              onLoaded={(fileName, result) => {
+                setNotice(null);
+                setLoaded({ fileName, result });
+              }}
+            />
+          )}
+          <div className="controls">
+            <label className="file-btn">
+              {t('mv.load')}
+              <input type="file" accept="video/*,audio/*" hidden onChange={(e) => loadMv(e.target.files?.[0])} />
+            </label>
+            {mv && <span className="hint">{t('mv.loaded', { name: mv.name, sec: mv.duration.toFixed(1) })}</span>}
+          </div>
+          {loaded && (
             <div className="controls">
               <TimingControls offsetSec={offsetSec} onChange={setOffsetSec} />
             </div>
-            <Preview
-              timeline={timeline}
-              fontIds={fontIds}
-              text={text}
-              mvUrl={mv?.url ?? null}
-              alphaPreview={style.output === 'png'}
-              compositePreview={style.output === 'composite'}
-            />
-          </section>
+          )}
+        </Section>
 
-          <section>
-            <h2>{t('sec.export')}</h2>
-            <ExportPanel
-              timeline={timeline}
-              fontIds={fontIds}
-              text={text}
-              baseName={baseName}
-              format={style.output}
-              media={mv ? { file: mv.file, duration: mv.duration } : null}
-              issues={exportIssues}
-              onExported={(autoWipe, message) => {
-                if (autoWipe) wipe({ msg: message, wrap: 'export.done.wiped' });
-                else setNotice({ msg: message, wrap: 'export.done.keep' });
-              }}
-            />
-          </section>
-        </>
-      )}
+        <Section title={t('sec.fonts')}>
+          <FontPicker selected={fontIds} onChange={setFontIds} sample={sample} />
+        </Section>
 
-      <footer>
-        <p>{t('footer.privacy')}</p>
-        <p>
-          {t('footer.licenses')}{' '}
-          <a href={`${import.meta.env.BASE_URL}THIRD_PARTY_LICENSES.txt`} target="_blank" rel="noopener noreferrer">
-            {t('footer.licenseLink')}
-          </a>
-        </p>
-      </footer>
+        {timeline && (
+          <>
+            <Section title={t('sec.style')}>
+              <div className="controls">
+                <SeedControls
+                  seed={seed}
+                  canUndo={seedHistory.length > 0}
+                  onRegenerate={() => changeSeed(randomSeed())}
+                  onUndo={undoSeed}
+                  onSeedInput={changeSeed}
+                />
+              </div>
+              <StylePanel
+                value={style}
+                onChange={setStyle}
+                pngSupported={isPngSequenceSupported()}
+                compositeSupported={isCompositeSupported()}
+                hasMedia={!!mv && usableMvDuration(mv.duration) !== undefined}
+              />
+            </Section>
+
+            <Section title={t('sec.cueList')} defaultOpen={false}>
+              <CueList items={timeline.items} activeId={activeId} onSeek={(sec) => previewRef.current?.seek(sec)} lang={lang} />
+            </Section>
+
+            <Section title={t('sec.export')}>
+              <ExportPanel
+                timeline={timeline}
+                fontIds={fontIds}
+                text={text}
+                baseName={baseName}
+                format={style.output}
+                media={mv ? { file: mv.file, duration: mv.duration } : null}
+                issues={exportIssues}
+                onExported={(autoWipe, message) => {
+                  if (autoWipe) wipe({ msg: message, wrap: 'export.done.wiped' });
+                  else setNotice({ msg: message, wrap: 'export.done.keep' });
+                }}
+              />
+            </Section>
+          </>
+        )}
+
+        <div className="sidebar-end">
+          {loaded && (
+            <button className="danger" onClick={() => wipe({ msg: { key: 'app.wiped' } })}>
+              {t('app.wipe')}
+            </button>
+          )}
+          <footer>
+            <p>{t('footer.privacy')}</p>
+            <p>
+              {t('footer.licenses')}{' '}
+              <a href={`${import.meta.env.BASE_URL}THIRD_PARTY_LICENSES.txt`} target="_blank" rel="noopener noreferrer">
+                {t('footer.licenseLink')}
+              </a>
+            </p>
+          </footer>
+        </div>
+      </aside>
+
+      <main className="main" aria-label={t('sec.preview')}>
+        {timeline ? (
+          <Preview
+            ref={previewRef}
+            timeline={timeline}
+            fontIds={fontIds}
+            text={text}
+            mvUrl={mv?.url ?? null}
+            alphaPreview={style.output === 'png'}
+            compositePreview={style.output === 'composite'}
+            onActiveChange={setActiveId}
+          />
+        ) : (
+          <p className="main-empty">{t('preview.empty')}</p>
+        )}
+      </main>
     </div>
   );
 }

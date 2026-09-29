@@ -6,11 +6,12 @@ export const en = {
   'app.language': 'Language',
   'app.wipe': 'Clear data',
   'app.wiped': 'Data cleared.',
-  'sec.subtitle': '1. Subtitle file',
+  'sec.subtitle': '1. Subtitles & audio',
   'sec.fonts': '2. Fonts',
   'sec.style': '3. Style',
-  'sec.preview': '4. Preview',
+  'sec.preview': 'Preview',
   'sec.export': '5. Export',
+  'sec.cueList': '4. Subtitle list',
 
   // 字幕ファイル
   'drop.title': 'Drop an SRT / SBV file',
@@ -76,6 +77,7 @@ export const en = {
   'backdrop.lowContrast': 'The text may blend into the color layer. Choose a layer color that contrasts with the text, or lower the opacity.',
   'style.outline': 'Outline',
   'style.shadow': 'Drop shadow',
+  'style.advanced': 'Advanced settings',
   'style.outlineNote': 'Black outlines and shadows disappear with "Screen" blending of a black-background MP4',
   'style.keyWarning':
     'This color is close to green and may be removed together with the background by the chroma key. A black background or a different color is recommended.',
@@ -102,7 +104,8 @@ export const en = {
   'preview.pause': 'Pause',
   'preview.overlay': 'Overlay on MV',
   'preview.keys': 'Keys: Space = play / pause, ← → = move 1 s, Shift + ← → = move 0.1 s',
-  'preview.cueList': 'Subtitle list (click to jump) · {count} cues',
+  'preview.cueList': 'Click a line to jump to its time · {count} cues',
+  'preview.empty': 'Load a subtitle file on the left to see the preview here.',
 
   // 書き出し
   'export.unsupported': 'This browser does not support video export with WebCodecs. Please use the latest Chrome or Edge.',

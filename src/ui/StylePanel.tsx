@@ -95,67 +95,87 @@ export function StylePanel({ value, onChange, pngSupported, compositeSupported, 
   const lowContrast = backdropEnabled && value.backdropOpacity >= 0.4 && Math.abs(textLum - luminance(value.backdropColor)) < 0.3;
 
   return (
-    <div>
-      <div className="controls">
-        <label>
-          {t('style.aspect')}
-          <select value={value.aspect} onChange={(e) => set('aspect', e.target.value as Aspect)}>
-            {(Object.keys(ASPECTS) as Aspect[]).map((k) => (
-              <option key={k} value={k}>
-                {t(ASPECT_KEYS[k])}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {t('style.effect')}
-          <select value={value.effectLevel} onChange={(e) => set('effectLevel', e.target.value as EffectLevel)}>
-            {EFFECT_LEVELS.map((k) => (
-              <option key={k} value={k}>
-                {t(EFFECT_KEYS[k])}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {t('style.output')}
-          <select value={value.output} onChange={(e) => set('output', e.target.value as ExportFormat)}>
-            <option value="mp4">{t('output.mp4')}</option>
-            <option value="png" disabled={!pngSupported}>
-              {t('output.png')}
-              {pngSupported ? '' : t('output.chromeOnly')}
+    <div className="style-panel">
+      {/* 基本の設定（常に表示） */}
+      <label className="field">
+        <span>{t('style.output')}</span>
+        <select value={value.output} onChange={(e) => set('output', e.target.value as ExportFormat)}>
+          <option value="mp4">{t('output.mp4')}</option>
+          <option value="png" disabled={!pngSupported}>
+            {t('output.png')}
+            {pngSupported ? '' : t('output.chromeOnly')}
+          </option>
+          <option value="composite" disabled={!compositeSupported || !hasMedia}>
+            {t('output.composite')}
+            {!compositeSupported ? t('output.chromeOnly') : !hasMedia ? t('output.needMedia') : ''}
+          </option>
+        </select>
+      </label>
+      <label className="field">
+        <span>{t('style.aspect')}</span>
+        <select value={value.aspect} onChange={(e) => set('aspect', e.target.value as Aspect)}>
+          {(Object.keys(ASPECTS) as Aspect[]).map((k) => (
+            <option key={k} value={k}>
+              {t(ASPECT_KEYS[k])}
             </option>
-            <option value="composite" disabled={!compositeSupported || !hasMedia}>
-              {t('output.composite')}
-              {!compositeSupported ? t('output.chromeOnly') : !hasMedia ? t('output.needMedia') : ''}
+          ))}
+        </select>
+      </label>
+      <label className="field">
+        <span>{t('style.effect')}</span>
+        <select value={value.effectLevel} onChange={(e) => set('effectLevel', e.target.value as EffectLevel)}>
+          {EFFECT_LEVELS.map((k) => (
+            <option key={k} value={k}>
+              {t(EFFECT_KEYS[k])}
             </option>
+          ))}
+        </select>
+      </label>
+      <label className="field">
+        <span>{t('style.background')}</span>
+        {png || composite ? (
+          <select disabled value="fixed">
+            <option value="fixed">{png ? t('bg.transparent') : t('bg.mv')}</option>
           </select>
-        </label>
-        <label>
-          {t('style.background')}
-          {png || composite ? (
-            <select disabled value="fixed">
-              <option value="fixed">{png ? t('bg.transparent') : t('bg.mv')}</option>
-            </select>
-          ) : (
-            <select value={value.background} onChange={(e) => set('background', e.target.value as BackgroundMode)}>
-              <option value="black">{t('bg.black')}</option>
-              <option value="green">{t('bg.green')}</option>
-            </select>
-          )}
-        </label>
-        <label>
-          {t('style.size')}
-          <select value={value.sizeLevel} onChange={(e) => set('sizeLevel', e.target.value as SizeLevel)}>
-            {(Object.keys(SIZE_LEVELS) as SizeLevel[]).map((k) => (
-              <option key={k} value={k}>
-                {t(SIZE_KEYS[k])}
-              </option>
-            ))}
+        ) : (
+          <select value={value.background} onChange={(e) => set('background', e.target.value as BackgroundMode)}>
+            <option value="black">{t('bg.black')}</option>
+            <option value="green">{t('bg.green')}</option>
           </select>
+        )}
+      </label>
+      <label className="field">
+        <span>{t('style.size')}</span>
+        <select value={value.sizeLevel} onChange={(e) => set('sizeLevel', e.target.value as SizeLevel)}>
+          {(Object.keys(SIZE_LEVELS) as SizeLevel[]).map((k) => (
+            <option key={k} value={k}>
+              {t(SIZE_KEYS[k])}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="field">
+        <span>{t('style.color')}</span>
+        <select value={value.colorMode} onChange={(e) => set('colorMode', e.target.value as StyleSettings['colorMode'])}>
+          <option value="auto">{t('color.auto')}</option>
+          <option value="single">{t('color.single')}</option>
+        </select>
+      </label>
+      {value.colorMode === 'single' && (
+        <label className="field">
+          <span />
+          <span className="inline">
+            <input type="color" value={value.color} onChange={(e) => set('color', e.target.value.toUpperCase())} />
+            <code>{value.color}</code>
+          </span>
         </label>
-        <label>
-          {t('style.contrast')}
+      )}
+
+      {/* 使う頻度の低い設定（初期状態は閉じる） */}
+      <details className="advanced">
+        <summary>{t('style.advanced')}</summary>
+        <label className="field">
+          <span>{t('style.contrast')}</span>
           <select value={value.sizeContrast} onChange={(e) => set('sizeContrast', e.target.value as SizeContrast)}>
             {(Object.keys(SIZE_CONTRAST_LEVELS) as SizeContrast[]).map((k) => (
               <option key={k} value={k}>
@@ -164,16 +184,10 @@ export function StylePanel({ value, onChange, pngSupported, compositeSupported, 
             ))}
           </select>
         </label>
-        <label className="inline">
-          <input type="checkbox" checked={value.strokeEmphasis} onChange={(e) => set('strokeEmphasis', e.target.checked)} />
-          {t('style.strokeEmphasis')}
-        </label>
-      </div>
-      <div className="controls">
         {/* 開発側の設定（effects.config.json）で無効にしたエフェクトの操作は出さない */}
         {EFFECTS.verticalText && (
-          <label>
-            {t('style.vertical')}
+          <label className="field">
+            <span>{t('style.vertical')}</span>
             <select value={value.verticalMode} onChange={(e) => set('verticalMode', e.target.value as VerticalMode)}>
               {VERTICAL_MODES.map((k) => (
                 <option key={k} value={k}>
@@ -183,68 +197,63 @@ export function StylePanel({ value, onChange, pngSupported, compositeSupported, 
             </select>
           </label>
         )}
-        <label>
-          {t('style.color')}
-          <select value={value.colorMode} onChange={(e) => set('colorMode', e.target.value as StyleSettings['colorMode'])}>
-            <option value="auto">{t('color.auto')}</option>
-            <option value="single">{t('color.single')}</option>
-          </select>
+        <label className="check">
+          <input type="checkbox" checked={value.strokeEmphasis} onChange={(e) => set('strokeEmphasis', e.target.checked)} />
+          {t('style.strokeEmphasis')}
         </label>
-        {value.colorMode === 'single' && (
-          <label>
-            <input type="color" value={value.color} onChange={(e) => set('color', e.target.value.toUpperCase())} />
-            <code>{value.color}</code>
-          </label>
-        )}
         {EFFECTS.outline && (
-          <label className="inline">
+          <label className="check">
             <input type="checkbox" checked={value.outline} onChange={(e) => set('outline', e.target.checked)} />
             {t('style.outline')}
           </label>
         )}
         {EFFECTS.dropShadow && (
-          <label className="inline">
+          <label className="check">
             <input type="checkbox" checked={value.shadow} onChange={(e) => set('shadow', e.target.checked)} />
             {t('style.shadow')}
           </label>
         )}
-        {outlineNote && <span className="hint">{t('style.outlineNote')}</span>}
-      </div>
-      <div className="controls">
-        <div className="inline" role="group" aria-label={t('style.backdrop')} title={t('backdrop.title')}>
+        <div className="backdrop" role="group" aria-label={t('style.backdrop')} title={t('backdrop.title')}>
           <span className={backdropEnabled ? '' : 'disabled-text'}>{t('style.backdrop')}</span>
-          <input
-            type="color"
-            aria-label={t('backdrop.color')}
-            disabled={!backdropEnabled}
-            value={value.backdropColor}
-            onChange={(e) => set('backdropColor', e.target.value.toUpperCase())}
-          />
-          <code className={backdropEnabled ? '' : 'disabled-text'}>{value.backdropColor}</code>
-          <input
-            type="range"
-            className="backdrop-range"
-            aria-label={t('backdrop.opacity')}
-            disabled={!backdropEnabled}
-            min={0}
-            max={MAX_BACKDROP_OPACITY}
-            step={0.05}
-            value={value.backdropOpacity}
-            onChange={(e) => set('backdropOpacity', Number(e.target.value))}
-          />
-          <span className={`backdrop-value ${backdropEnabled ? '' : 'disabled-text'}`}>{Math.round(value.backdropOpacity * 100)}%</span>
-          <select
-            aria-label={t('backdrop.timing')}
-            disabled={!backdropEnabled}
-            value={value.backdropMode}
-            onChange={(e) => set('backdropMode', e.target.value as StyleSettings['backdropMode'])}
-          >
-            <option value="lyrics">{t('backdrop.mode.lyrics')}</option>
-            <option value="always">{t('backdrop.mode.always')}</option>
-          </select>
+          <div className="inline">
+            <input
+              type="color"
+              aria-label={t('backdrop.color')}
+              disabled={!backdropEnabled}
+              value={value.backdropColor}
+              onChange={(e) => set('backdropColor', e.target.value.toUpperCase())}
+            />
+            <code className={backdropEnabled ? '' : 'disabled-text'}>{value.backdropColor}</code>
+            <select
+              aria-label={t('backdrop.timing')}
+              disabled={!backdropEnabled}
+              value={value.backdropMode}
+              onChange={(e) => set('backdropMode', e.target.value as StyleSettings['backdropMode'])}
+            >
+              <option value="lyrics">{t('backdrop.mode.lyrics')}</option>
+              <option value="always">{t('backdrop.mode.always')}</option>
+            </select>
+          </div>
+          <div className="inline">
+            <input
+              type="range"
+              className="backdrop-range"
+              aria-label={t('backdrop.opacity')}
+              disabled={!backdropEnabled}
+              min={0}
+              max={MAX_BACKDROP_OPACITY}
+              step={0.05}
+              value={value.backdropOpacity}
+              onChange={(e) => set('backdropOpacity', Number(e.target.value))}
+            />
+            <span className={`backdrop-value ${backdropEnabled ? '' : 'disabled-text'}`}>{Math.round(value.backdropOpacity * 100)}%</span>
+          </div>
+          {!backdropEnabled && <span className="hint">{t('backdrop.mp4Note')}</span>}
         </div>
-        {!backdropEnabled && <span className="hint">{t('backdrop.mp4Note')}</span>}
-      </div>
+      </details>
+
+      {/* 警告は詳細設定を閉じていても見えるよう、外に出す */}
+      {outlineNote && <p className="hint">{t('style.outlineNote')}</p>}
       {lowContrast && <p className="error">{t('backdrop.lowContrast')}</p>}
       {keyWarning && <p className="error">{t('style.keyWarning')}</p>}
       {darkWarning && <p className="error">{t('style.darkWarning')}</p>}
