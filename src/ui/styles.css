@@ -6,6 +6,11 @@
   --muted: #9aa1ad;
   --accent: #ffd166;
   --danger: #ff6b6b;
+  /* 押せるボタンの色 */
+  --btn: #25406e;
+  --btn-hover: #2f5290;
+  --btn-border: #3d64a8;
+  --btn-text: #eaf1ff;
   --sidebar-w: 360px;
   color-scheme: dark;
   font-family: system-ui, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
@@ -14,12 +19,20 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--text); }
 button, select, input { font: inherit; color: inherit; }
-button, select, .file-btn {
-  background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; cursor: pointer;
+select { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+/*
+ * 押せるボタンは色を付け、押せないボタン（disabled）は灰色にして区別する。
+ * :where() で詳細度を 0 にし、クラスを付けたボタン（書体の選択欄・字幕の一覧の行など）の指定を優先させる
+ */
+:where(button, .file-btn) {
+  background: var(--btn); border: 1px solid var(--btn-border); color: var(--btn-text); border-radius: 6px; padding: 6px 12px; cursor: pointer;
 }
-button:hover, .file-btn:hover { border-color: var(--muted); }
+:where(button:not(:disabled), .file-btn):hover { background: var(--btn-hover); border-color: #5a80c4; }
 button.primary { background: var(--accent); color: #111; border-color: var(--accent); font-weight: 600; padding: 8px 20px; }
-button.danger { border-color: var(--danger); color: var(--danger); }
+button.primary:hover:not(:disabled) { background: #ffdc85; }
+button.danger, button.danger-inline { background: #3a1f24; border-color: var(--danger); color: var(--danger); }
+button.danger:hover:not(:disabled), button.danger-inline:hover:not(:disabled) { background: #4d252c; }
+button.step-btn { padding: 6px 10px; }
 
 /* 2ペイン: 左に設定・操作（縦スクロール）、右にプレビュー（固定） */
 .layout { display: grid; grid-template-columns: var(--sidebar-w) 1fr; height: 100vh; overflow: hidden; }
@@ -65,6 +78,9 @@ button.danger { border-color: var(--danger); color: var(--danger); }
   align-items: center; gap: 2px 8px; width: 100%; text-align: left; padding: 8px 10px;
 }
 .font-select-trigger::after { content: '▾'; grid-area: caret; color: var(--muted); }
+/* 書体の選択欄はボタンではなく選択欄として見せる（select と同じ配色） */
+.font-select-trigger { background: var(--panel); border-color: var(--line); color: var(--text); }
+.font-select-trigger:hover { border-color: var(--muted); }
 .font-select-trigger[aria-expanded='true'] { border-color: var(--accent); }
 .font-select-name { grid-area: name; font-size: 13px; }
 .font-select-trigger .font-select-sample, .font-select-trigger .font-select-desc { grid-area: sample; }
@@ -116,6 +132,9 @@ button.danger { border-color: var(--danger); color: var(--danger); }
 
 .export { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
 .export .hint { margin: 0; }
+/* チェックボックスと長い説明文は折り返さずに並べる（文字だけを折り返す） */
+.export label.inline { flex-wrap: nowrap; align-items: flex-start; }
+.export label.inline input { margin-top: 3px; flex: none; }
 .progress-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; width: 100%; }
 .progress-row progress { flex: 1; min-width: 120px; }
 
@@ -127,13 +146,18 @@ footer a { color: var(--muted); }
 .issues li { padding: 4px 8px; border-left: 3px solid; margin-bottom: 4px; }
 .issues li.error { border-color: var(--danger); color: var(--danger); }
 .issues li.warning { border-color: var(--accent); color: var(--accent); }
-button:disabled { opacity: 0.4; cursor: not-allowed; }
+/* 押せないボタンは色を外す（.primary や .danger より後に置いて優先させる） */
+button:disabled { background: var(--panel); border-color: var(--line); color: var(--muted); opacity: 0.6; cursor: not-allowed; }
 /* 透過確認用の市松模様 */
 .stage.alpha { background: repeating-conic-gradient(#2a2d33 0% 25%, #1c1e22 0% 50%) 0 0 / 24px 24px; }
 .partial { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--accent); border-radius: 6px; font-size: 13px; }
-button.danger-inline { border-color: var(--danger); color: var(--danger); }
 .seed-input { width: 8.5em; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; font-variant-numeric: tabular-nums; }
-.offset-input { width: 5.5em; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; font-variant-numeric: tabular-nums; }
+/* ◀ ▶ で増減できるので、数値欄の上下矢印は出さずに幅を詰める */
+.offset-input {
+  width: 4.2em; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 5px 6px;
+  font-variant-numeric: tabular-nums; text-align: right; appearance: textfield; -moz-appearance: textfield;
+}
+.offset-input::-webkit-inner-spin-button, .offset-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
 .cue-list .hint { margin-top: 0; }
 .cue-list ol { list-style: none; margin: 0; padding: 4px 0; max-height: 50vh; overflow-y: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }

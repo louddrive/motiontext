@@ -62,8 +62,9 @@ export function TimingControls({ offsetSec, onChange }: TimingProps) {
     // ボタンを含むので <label> では囲まない（ラベルのクリックが先頭のボタンに伝わるため）
     <div className="inline" role="group" aria-label={t('timing.label')} title={t('timing.title', { max: MAX_TIMING_OFFSET_SEC })}>
       <span>{t('timing.label')}</span>
-      <button type="button" onClick={() => set(offsetSec - 0.1)}>
-        {t('timing.minus')}
+      {/* 幅を取らないよう記号で表示し、意味は読み上げとツールチップで伝える */}
+      <button type="button" className="step-btn" aria-label={t('timing.minus')} title={t('timing.minus')} onClick={() => set(offsetSec - 0.1)}>
+        ◀
       </button>
       <input
         className="offset-input"
@@ -80,11 +81,11 @@ export function TimingControls({ offsetSec, onChange }: TimingProps) {
         }}
       />
       {t('timing.unit')}
-      <button type="button" onClick={() => set(offsetSec + 0.1)}>
-        {t('timing.plus')}
+      <button type="button" className="step-btn" aria-label={t('timing.plus')} title={t('timing.plus')} onClick={() => set(offsetSec + 0.1)}>
+        ▶
       </button>
-      <button type="button" onClick={() => set(0)} disabled={offsetSec === 0}>
-        {t('timing.reset')}
+      <button type="button" className="step-btn" aria-label={t('timing.reset')} title={t('timing.reset')} onClick={() => set(0)} disabled={offsetSec === 0}>
+        ↺
       </button>
     </div>
   );

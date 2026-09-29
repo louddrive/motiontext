@@ -78,8 +78,8 @@ Settings and controls are on the left, and the preview is on the right. The left
   - The "Overlay on MV" checkbox below the preview turns the overlay on and off.
   - The length of the loaded MV / song is also used as the export length.
 - If the subtitles and the MV are out of sync, shift all subtitles with "**Subtitle timing**".
-  - "+0.1 s" shows the subtitles later, "-0.1 s" earlier. You can also type a value (up to ±30 seconds).
-  - "Reset to 0" undoes the shift. The subtitle file itself is not modified.
+  - "▶" shows the subtitles 0.1 s later each time, "◀" 0.1 s earlier. You can also type a value (up to ±30 seconds).
+  - "↺" resets the shift to 0. The subtitle file itself is not modified.
 
 > If a timestamp looks like a typo, it is shown as "Note:". Please check it.
 
