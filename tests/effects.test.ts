@@ -205,7 +205,9 @@ describe('エフェクトの有効・無効（effects.config.json）', () => {
       ['outlineEcho', (t) => t.items.every((i) => i.animation !== 'outlineEcho')],
       ['underline', (t) => t.items.every((i) => !i.underline)],
     ];
-    expect(cases.map(([k]) => k).sort()).toEqual([...EFFECT_FLAG_KEYS].sort());
+    // 曲の拍に合わせる演出のフラグは、曲の解析結果が要るので別のテストで確かめる
+    const beatFlags: EffectFlag[] = ['beatSync', 'beatPulse', 'interludeMeter'];
+    expect([...cases.map(([k]) => k), ...beatFlags].sort()).toEqual([...EFFECT_FLAG_KEYS].sort());
     for (const [key, gone] of cases) {
       const t = run('ultra', { outline: true, shadow: true, theme: allTheme(), effects: without(key) });
       expect(gone(on), key).toBe(false);

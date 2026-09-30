@@ -1,4 +1,5 @@
 import type { CueFeature } from '../analysis/features';
+import type { Rhythm } from '../audio/types';
 import { findStrokeEmphasis } from '../analysis/strokes';
 import type { AnimationId } from '../animations/types';
 import { EFFECTS, type EffectFlag, type EffectFlags } from '../config/effects';
@@ -9,6 +10,18 @@ import { LocalizedError } from '../i18n/errors';
 import type { CameraMove } from '../render/camera';
 import { isKeyUnsafe } from '../themes/color';
 import type { BackgroundMode, Theme, WeightedList } from '../themes/types';
+import {
+  beatPeriodAt,
+  eighthGrid,
+  energyFor,
+  fuseChorus,
+  hitDuration,
+  loudnessRanks,
+  nearestDownbeat,
+  SNAP_MAX_SEC,
+  snapTime,
+  usableRhythm,
+} from './beatSync';
 import { hashString, pick, pickWeighted, rngFor } from './rng';
 import { FIT_MAX_FONT_SIZE, INTERLUDE_MIN_GAP_SEC, NO_BACKDROP, type Interlude, type MixedLayout, NO_MOTION_BLUR, SIZE_LEVELS, type Shake, type Backdrop, type Anchor, type Deco, type Side, type SizeLevel, type Timeline, type TimelineItem, type VerticalMode } from './types';
 
@@ -45,6 +58,11 @@ export interface DirectOptions {
   shadow?: boolean;
   /** エフェクトの有効・無効（既定: effects.config.json の値） */
   effects?: EffectFlags;
+  /**
+   * 曲のリズムの解析結果。渡すと演出を拍に合わせる（確からしさが低い場合は使わない）。
+   * 渡さなければ字幕だけの演出で、同じパターン番号なら従来と同じ結果になる
+   */
+  rhythm?: Rhythm | null;
 }
 
 export interface FontRoles {
@@ -227,6 +245,13 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     shakes.push({ time, strength: theme.fx.shake });
   };
   let prevChorus = false;
+  // 曲の拍に合わせる（解析結果が使えるときだけ）。使わないときは、以下の値はすべて従来どおり
+  const rhythm = effects.beatSync ? usableRhythm(opts.rhythm) : null;
+  const grid = rhythm ? eighthGrid(rhythm.beats) : null;
+  const ranks = rhythm ? loudnessRanks(features, rhythm) : null;
+  const chorusFlags = ranks ? fuseChorus(features, ranks) : null;
+  // カメラシェイクは、拍に合わせるときは近くの小節の頭に置く
+  const shakeAt = (t: number) => (rhythm ? nearestDownbeat(rhythm.downbeats, t, 0.3) : t);
 
   const items: TimelineItem[] = [];
   let prevAnchor: Anchor = 'center';
@@ -235,7 +260,7 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
   let verticalRun = 0;
   let prevSide: Side | null = null;
 
-  for (const f of features) {
+  features.forEach((f, fi) => {
     const r = rngFor(seed, 'cue', f.cue.index, hashString(f.cue.text));
     // フォントと配色はセクション単位で固定し、統一感を保つ
     const sr = rngFor(seed, 'section', f.section);
@@ -244,7 +269,7 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     const sectionText = pick(sr, textColors);
     const sectionAccent = pick(sr, accentColors);
 
-    const emphasis = f.isChorus;
+    const emphasis = chorusFlags ? chorusFlags[fi] : f.isChorus;
     const fontId = emphasis ? displayFont : bodyFont;
     const weights = getFont(fontId).weights;
     // 1書体だけの場合はウェイト差で強弱を付ける
@@ -272,8 +297,8 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     // 無効なエフェクトは、乱数を消費した後で外す（他の演出の選ばれ方を変えない）
     if ((deco === 'ring' && !effects.sectionRing) || (deco === 'lines' && !effects.diagonalLines)) deco = 'none';
     // カメラシェイク: サビのセクションの最初の字幕と、セクション頭の波紋が出る時刻
-    if (emphasis && (!prevChorus || f.isSectionStart)) addShake(f.cue.start);
-    if (deco === 'ring') addShake(f.cue.start);
+    if (emphasis && (!prevChorus || f.isSectionStart)) addShake(shakeAt(f.cue.start));
+    if (deco === 'ring') addShake(shakeAt(f.cue.start));
     prevChorus = emphasis;
     // シャイン・光の粒はサビ行にだけ、独立した乱数列で付ける
     const shine = emphasis && effects.shine && rngFor(seed, 'shine', f.cue.index)() < theme.fx.shineRate;
@@ -292,10 +317,22 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     verticalRun = verticalPick ? verticalRun + 1 : 0;
     prevSide = vertical ? side : null;
 
+    // 拍に合わせるときは、字幕の開始・終了を近くの8分音符の位置へ小さく寄せる（離れていれば寄せない）
+    let start = f.cue.start;
+    let end = f.cue.end;
+    if (grid) {
+      const s = snapTime(start, grid, SNAP_MAX_SEC);
+      const e = snapTime(end, grid, SNAP_MAX_SEC);
+      if (e - s >= 0.3) {
+        start = s;
+        end = e;
+      }
+    }
+
     items.push({
       id: f.cue.index,
-      start: f.cue.start,
-      end: f.cue.end,
+      start,
+      end,
       lines,
       animation,
       fontId,
@@ -321,11 +358,24 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
       particles,
       underline,
       seed: hashString(`${seed}:${f.cue.index}`),
-      energy: theme.energy,
+      // 拍に合わせるときは、字幕の音量で強さを変える（静かな所は抑え、大きい所は強く）
+      energy: rhythm && ranks ? energyFor(theme.energy, ranks[fi]) : theme.energy,
+      // 拍に合わせないときはキー自体を付けない（従来の Timeline と同じ形にする）
+      ...(rhythm
+        ? {
+            sync: {
+              hit: hitDuration(rhythm.beats, start, end - start),
+              beat: Math.round(beatPeriodAt(rhythm.beats, start) * 1000) / 1000,
+              pulse: effects.beatPulse ? Math.round(theme.fx.pulse * (emphasis ? 1.3 : 1) * 1000) / 1000 : 0,
+            },
+          }
+        : {}),
     });
     prevAnchor = anchor;
     prevAnim = animation;
-  }
+  });
+  // 曲の区切り（音色・音量が変わる所）でも画面を揺らす
+  if (rhythm) for (const t of rhythm.sections) addShake(t);
 
   const lastEnd = features.length ? features[features.length - 1].cue.end : 0;
   const maxEnd = features.reduce((m, f) => Math.max(m, f.cue.end), lastEnd);
@@ -343,5 +393,8 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     shakes: shakes.sort((a, b) => a.time - b.time),
     interludes: effects.interludeProgress ? findInterludes(items, seed, theme.fx.interludeRate) : [],
     items,
+    ...(rhythm
+      ? { rhythm: { beats: rhythm.beats, downbeats: rhythm.downbeats, ...(effects.interludeMeter ? { energy: rhythm.energy } : {}) } }
+      : {}),
   };
 }

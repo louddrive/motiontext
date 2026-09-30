@@ -16,5 +16,8 @@
   "slot": true,
   "split": true,
   "outlineEcho": true,
-  "underline": true
+  "underline": true,
+  "beatSync": true,
+  "beatPulse": true,
+  "interludeMeter": true
 }

@@ -54,6 +54,26 @@ export interface TimelineItem {
   underline: boolean;
   seed: number;
   energy: number;
+  /** 曲の拍に合わせた演出（曲を読み込んで拍に合わせるときだけ。無ければ字幕だけの演出） */
+  sync?: ItemSync;
+}
+
+/** 字幕ごとの、曲の拍に合わせた演出 */
+export interface ItemSync {
+  /** 登場を完了させる秒数（字幕の開始から次の拍まで）。null なら通常の登場の秒数 */
+  hit: number | null;
+  /** 字幕の付近の拍の間隔（秒）。文字送りの間隔をこれの分割にそろえる */
+  beat: number;
+  /** 拍の脈動の強さ（拡大率。0 なら弾まない） */
+  pulse: number;
+}
+
+/** 描画で使う曲のリズム（拍の脈動・間奏の音量表示） */
+export interface TimelineRhythm {
+  beats: number[];
+  downbeats: number[];
+  /** 音量の変化（0..1、rate 回/秒）。間奏に音量の表示を出すときだけ */
+  energy?: { rate: number; values: number[] };
 }
 
 /**
@@ -117,6 +137,8 @@ export interface Timeline {
   /** 歌詞のない長い間奏（時刻順）。次の歌詞までの進み具合を表示する */
   interludes: Interlude[];
   items: TimelineItem[];
+  /** 曲のリズム（拍に合わせるときだけ） */
+  rhythm?: TimelineRhythm;
 }
 
 export interface MotionBlur {
