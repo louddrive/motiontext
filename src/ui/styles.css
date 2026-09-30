@@ -178,6 +178,13 @@ button:disabled { background: var(--panel); border-color: var(--line); color: va
 .cue-time { color: var(--muted); font-variant-numeric: tabular-nums; flex: none; width: 4.5em; }
 .cue-list li.active .cue-time { color: var(--accent); }
 .cue-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* サビと判定した字幕: 左端の線と「サビ」の印 */
+.cue-list li button { border-left: 3px solid transparent; }
+.cue-list li.chorus button { border-left-color: var(--accent); }
+.cue-badge {
+  flex: none; align-self: center; padding: 0 6px; border-radius: 4px; font-size: 11px; line-height: 1.6;
+  color: var(--accent); border: 1px solid var(--accent);
+}
 
 /* 狭い画面では1カラム（プレビューを上に） */
 @media (max-width: 900px) {

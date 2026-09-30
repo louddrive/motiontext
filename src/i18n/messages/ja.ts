@@ -116,6 +116,8 @@ export const ja: Record<MessageKey, string> = {
   'preview.overlay': 'MVに重ねて表示',
   'preview.keys': 'キー操作: スペース＝再生／停止、← →＝1秒移動、Shift＋← →＝0.1秒移動',
   'preview.cueList': 'クリックでその時刻へ移動・{count} 件',
+  'cueList.chorus': 'サビ',
+  'cueList.chorusCount': '・サビ {count} 件',
   'preview.empty': '左側で字幕ファイルを読み込むと、ここにプレビューが表示されます。',
 
   'export.unsupported': 'このブラウザは WebCodecs による動画書き出しに対応していません。Chrome または Edge の最新版をご利用ください。',

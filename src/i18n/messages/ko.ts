@@ -116,6 +116,8 @@ export const ko: Record<MessageKey, string> = {
   'preview.overlay': 'MV 위에 겹쳐 보기',
   'preview.keys': '단축키: 스페이스＝재생／일시정지, ← →＝1초 이동, Shift＋← →＝0.1초 이동',
   'preview.cueList': '클릭하면 해당 시간으로 이동 · {count}개',
+  'cueList.chorus': '후렴',
+  'cueList.chorusCount': ' · 후렴 {count}개',
   'preview.empty': '왼쪽에서 자막 파일을 불러오면 여기에 미리보기가 표시됩니다.',
 
   'export.unsupported': '이 브라우저는 WebCodecs를 이용한 동영상 내보내기를 지원하지 않습니다. 최신 버전의 Chrome 또는 Edge를 사용해 주세요.',

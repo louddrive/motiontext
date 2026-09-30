@@ -116,6 +116,8 @@ export const zhHant: Record<MessageKey, string> = {
   'preview.overlay': '疊加在 MV 上顯示',
   'preview.keys': '快速鍵：空白鍵＝播放／暫停，← →＝移動 1 秒，Shift＋← →＝移動 0.1 秒',
   'preview.cueList': '點擊跳至該時間 · {count} 則',
+  'cueList.chorus': '副歌',
+  'cueList.chorusCount': ' · 副歌 {count} 則',
   'preview.empty': '在左側載入字幕檔後，這裡會顯示預覽。',
 
   'export.unsupported': '此瀏覽器不支援使用 WebCodecs 匯出影片。請使用最新版的 Chrome 或 Edge。',

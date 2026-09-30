@@ -116,6 +116,8 @@ export const zhHans: Record<MessageKey, string> = {
   'preview.overlay': '叠加在 MV 上显示',
   'preview.keys': '快捷键：空格＝播放／暂停，← →＝移动 1 秒，Shift＋← →＝移动 0.1 秒',
   'preview.cueList': '点击跳转到该时间 · {count} 条',
+  'cueList.chorus': '副歌',
+  'cueList.chorusCount': ' · 副歌 {count} 条',
   'preview.empty': '在左侧载入字幕文件后，这里会显示预览。',
 
   'export.unsupported': '此浏览器不支持使用 WebCodecs 导出视频。请使用最新版的 Chrome 或 Edge。',

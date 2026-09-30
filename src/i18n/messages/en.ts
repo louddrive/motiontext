@@ -122,6 +122,8 @@ export const en = {
   'preview.overlay': 'Overlay on MV',
   'preview.keys': 'Keys: Space = play / pause, ← → = move 1 s, Shift + ← → = move 0.1 s',
   'preview.cueList': 'Click a line to jump to its time · {count} cues',
+  'cueList.chorus': 'Chorus',
+  'cueList.chorusCount': ' · chorus: {count}',
   'preview.empty': 'Load a subtitle file on the left to see the preview here.',
 
   // 書き出し

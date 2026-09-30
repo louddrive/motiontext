@@ -50,6 +50,22 @@ test('字幕を読み込むとプレビューに歌詞が描かれる', async ({
   await expect.poll(() => litPixels(page), { timeout: 10_000 }).toBeGreaterThan(50);
 });
 
+test('字幕の一覧で、サビと判定した字幕に印が付く', async ({ page }) => {
+  await page.locator('.dropzone input[type=file]').setInputFiles(SAMPLE);
+  await page.getByText('4. 字幕の一覧').click();
+  const rows = page.locator('.cue-list li');
+  await expect(rows.first()).toBeVisible();
+  const chorus = page.locator('.cue-list li.chorus');
+  // sample.srt は「光を掴め」「どこまでも行け」を繰り返す
+  await expect(chorus.filter({ hasText: '光を掴め' }).first()).toBeVisible();
+  const n = await chorus.count();
+  expect(n).toBeGreaterThan(0);
+  expect(n).toBeLessThan(await rows.count());
+  await expect(page.locator('.cue-list .cue-badge')).toHaveCount(n);
+  await expect(page.locator('.cue-list .hint')).toContainText(`サビ ${n} 件`);
+  await page.locator('.cue-list').screenshot({ path: 'test-results/contact/cue-list.png' });
+});
+
 test('色を変えても「読み込み中」を出さずにレイアウトを使い回す', async ({ page }) => {
   await page.locator('.dropzone input[type=file]').setInputFiles(SAMPLE);
   await expect(page.locator('.stage-msg')).toHaveCount(0, { timeout: 30_000 });
