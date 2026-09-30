@@ -96,7 +96,6 @@ export const zhHans: Record<MessageKey, string> = {
   'rhythm.noAudio': '此文件没有音频，因此未分析歌曲。',
   'rhythm.failed': '无法分析歌曲：{error}',
   'rhythm.undecodable': '此浏览器无法读取该音频格式（{codec}），因此未分析歌曲。',
-  'rhythm.sync': '让效果配合歌曲的节拍',
   'rhythm.weak': '节拍不够清晰，因此效果未配合歌曲。',
   'beatCheck.title': '节拍确认',
   'beatCheck.info': '{bpm} BPM · 可信度 {conf} · 节拍 {beats} 个 · 段落 {sections}',

@@ -17,6 +17,7 @@ export function applyEffectLevel(theme: Theme, level: EffectLevel): Theme {
         energy: 0,
         animations: { normal: { fade: 1 }, fast: { fade: 1 }, slow: { fade: 1 }, chorus: { fade: 1 } },
         camera: { ...theme.camera, probability: 0 },
+        syncToBeat: false,
         glow: 0,
         chorusScale: 1.1,
         verticalRate: 0,
@@ -34,11 +35,12 @@ export function applyEffectLevel(theme: Theme, level: EffectLevel): Theme {
           chorus: { fadeUp: 2, slideMask: 2, charPop: 1 },
         },
         camera: { probability: 0.25, intensity: 0.5, moves: { pushIn: 3, drift: 2 } },
+        syncToBeat: false,
         glow: 8,
         chorusScale: 1.15,
         verticalRate: 0.15,
         motionBlur: { shutter: 0.25, samples: 3 },
-        fx: { shake: 0, shineRate: 0.3, particleRate: 0, interludeRate: 0.3, underlineRate: 0.15, pulse: 0.012 },
+        fx: { shake: 0, shineRate: 0.3, particleRate: 0, interludeRate: 0.3, underlineRate: 0.15, pulse: 0 },
       };
     case 'standard':
       return theme;
@@ -57,7 +59,7 @@ export function applyEffectLevel(theme: Theme, level: EffectLevel): Theme {
         chorusScale: 1.3,
         verticalRate: 0.45,
         motionBlur: { shutter: 0.75, samples: 6 },
-        fx: { shake: 0.7, shineRate: 0.6, particleRate: 0.6, interludeRate: 0.65, underlineRate: 0.35, pulse: 0.03 },
+        fx: { shake: 0.7, shineRate: 0.6, particleRate: 0.6, interludeRate: 0.65, underlineRate: 0.35, pulse: 0.04 },
       };
     case 'ultra':
       return {
@@ -74,7 +76,7 @@ export function applyEffectLevel(theme: Theme, level: EffectLevel): Theme {
         chorusScale: 1.4,
         verticalRate: 0.55,
         motionBlur: { shutter: 1, samples: 8 },
-        fx: { shake: 1, shineRate: 0.7, particleRate: 0.8, interludeRate: 0.8, underlineRate: 0.45, pulse: 0.04 },
+        fx: { shake: 1, shineRate: 0.7, particleRate: 0.8, interludeRate: 0.8, underlineRate: 0.45, pulse: 0.06 },
       };
   }
 }

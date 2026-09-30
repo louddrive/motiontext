@@ -78,12 +78,14 @@ Settings and controls are on the left, and the preview is on the right. The left
   - The "Overlay on MV" checkbox below the preview turns the overlay on and off.
   - The length of the loaded MV / song is also used as the export length.
   - When loaded, the beats (tempo) of the song are analyzed automatically and shown like "Beats detected (about 120 BPM)." The analysis runs only on your computer.
-    - When beats are detected, "**Sync the animation to the beat**" appears (on by default). While it is on, the animation follows the song:
-      - Subtitles appear and disappear on the nearest beat (eighth note), moved by at most 0.1 s.
-      - Each entrance finishes exactly on a beat, and the spacing between letters is set to a division of the beat.
-      - The lyrics on screen bounce slightly on every beat (stronger at the start of a bar). There is no bounce with "No effects".
-      - Loud parts move more and quiet parts less. Camera shakes happen at the start of bars and at section changes.
+    - With the effect level at "Standard", "Emotional" or "Ultra emotional", **the chorus lyrics are synced to the beat automatically** (nothing to turn on).
+      - Chorus subtitles appear and disappear on the nearest beat (eighth note), moved by at most 0.1 s.
+      - Each chorus entrance finishes exactly on a beat, and the spacing between letters is set to a division of the beat.
+      - The chorus lyrics bounce on every beat (scale of 2% for "Standard", 4% for "Emotional" and 6% for "Ultra emotional"; 1.5 times that at the start of a bar).
+      - Loud parts of the chorus move more, and the camera shake at the start of a chorus happens at the start of a bar.
+      - Whether a line is part of the chorus is judged from repeated lyrics and also from the loudness of the song.
       - The interlude progress gets bars that move with the loudness of the song.
+    - Lyrics outside the chorus, and the "None" and "Subtle" levels, look the same as without a song.
     - For songs without a clear beat, the animation is not synced (a message says so).
     - An offset of all subtitles is not fixed automatically. If they are out of sync, adjust "Subtitle timing" below (beats are evenly spaced, so the beats alone cannot tell how many beats off the subtitles are).
     - Slow songs may be shown at double tempo (for example, a 75 BPM song as about 150 BPM).
@@ -248,7 +250,7 @@ Notes:
 
 - If you pressed "Regenerate" too many times, use "Undo" to go back.
 - To recreate the same pattern later, write down the "Pattern No.". Entering it with the same subtitles and settings (fonts, style, subtitle timing) gives the same animation.
-  - With "Sync the animation to the beat" on, you get the same animation only with the same MV / song loaded. Without an MV / song, or with it off, the animation is made from the subtitles only.
+  - With the effect level at "Standard" or above and an MV / song loaded, you get the same animation only with the same MV / song loaded. Without an MV / song, the animation is made from the subtitles only.
 - Pattern numbers and settings are not saved in the browser (they are gone when you close the page).
 
 ### I canceled and was asked "Delete it?"
@@ -327,7 +329,7 @@ npm run bench               # time renderFrame per frame (with / without glow an
   - Tempo comes from the autocorrelation of the onset strength (log spectral flux) weighted by a tempo prior, then double / half tempo errors are corrected from the strength of off-beats and alternate beats. Beats are tracked with the dynamic programming method of Ellis (2007).
   - Downbeats are estimated from low-frequency onsets assuming 4/4, and sections from beat-level timbre similarity (Foote novelty). All of these are estimates and can be wrong on real songs.
   - `confidence` comes from the periodicity of the onset strength. Noise or sustained sounds return no beats.
-  - Syncing the animation to the beat is computed in [src/director/beatSync.ts](src/director/beatSync.ts) and baked into the Timeline (`TimelineItem.sync`, `Timeline.rhythm`). Without a song, with a confidence below 0.3, or with `beatSync` disabled, these keys are not added and the Timeline is exactly the same as before (checked by the Timeline and draw-command goldens).
+  - Syncing the animation to the beat is computed in [src/director/beatSync.ts](src/director/beatSync.ts) and baked into the Timeline (`TimelineItem.sync`, `Timeline.rhythm`). Only chorus lines are synced, and only at the "Standard" level or above (`Theme.syncToBeat`). Without a song, with a confidence below 0.3, with `beatSync` disabled, or at "None" / "Subtle", these keys are not added and the Timeline is exactly the same as before (checked by the Timeline and draw-command goldens).
   - To check the result by ear, open the app with `?beats=1`. A beat check appears below the preview: a dot flashes on each beat, and you can turn on a click on each beat (not included in exports).
 - Limits are defined in `LIMITS` in [src/limits.ts](src/limits.ts).
 - Motion blur renders only the lyrics layer at several points in time and averages them (the background and color layer are not blurred). The preview uses fewer samples while playing.
@@ -382,8 +384,8 @@ If the direction feels too busy, you can remove individual effects later. The sw
 | `split` | The split animation is never picked |
 | `outlineEcho` | The outline echo animation is never picked |
 | `underline` | No lyric lines (underline for horizontal text, a line on the right of vertical columns) |
-| `beatSync` | The animation is not synced to the beat ("Sync the animation to the beat" is hidden; the song is still analyzed and the BPM is shown) |
-| `beatPulse` | No bounce on each beat |
+| `beatSync` | The animation is not synced to the beat (the song is still analyzed and the BPM is shown) |
+| `beatPulse` | No bounce of the chorus lyrics on each beat |
 | `interludeMeter` | No loudness bars on the interlude progress |
 
 - Turning an effect off removes only that effect. The random picks stay in the same order, so with the same seed everything else looks the same.

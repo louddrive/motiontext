@@ -96,7 +96,6 @@ export const ko: Record<MessageKey, string> = {
   'rhythm.noAudio': '이 파일에는 오디오가 없어 곡을 분석하지 않았습니다.',
   'rhythm.failed': '곡을 분석하지 못했습니다: {error}',
   'rhythm.undecodable': '이 브라우저에서는 오디오 형식({codec})을 읽을 수 없어 곡을 분석하지 않았습니다.',
-  'rhythm.sync': '연출을 곡의 박자에 맞추기',
   'rhythm.weak': '박자가 뚜렷하지 않아 연출을 곡에 맞추지 않았습니다.',
   'beatCheck.title': '박자 확인',
   'beatCheck.info': '{bpm} BPM · 신뢰도 {conf} · 박자 {beats}개 · 구간 {sections}',

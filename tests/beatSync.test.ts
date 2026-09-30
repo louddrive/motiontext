@@ -87,6 +87,8 @@ describe('director に曲のリズムを渡したとき', () => {
   const plain = build();
   const synced = build({ rhythm });
   const grid = eighthGrid(rhythm.beats);
+  const chorus = synced.items.filter((it) => it.emphasis);
+  const others = synced.items.filter((it) => !it.emphasis);
 
   it('渡さない・確からしさが低い・beatSync が無効のときは、従来と完全に同じ Timeline', () => {
     expect(plain.rhythm).toBeUndefined();
@@ -95,45 +97,70 @@ describe('director に曲のリズムを渡したとき', () => {
     expect(build({ rhythm, effects: { ...ALL_EFFECTS, beatSync: false } })).toEqual(plain);
   });
 
-  it('字幕の開始・終了は、近くの8分音符の位置へ最大 0.1 秒だけ寄せる', () => {
-    synced.items.forEach((it, i) => {
-      const cue = features[i].cue;
-      expect(Math.abs(it.start - cue.start)).toBeLessThanOrEqual(SNAP_MAX_SEC + 1e-9);
-      if (it.start !== cue.start) expect(grid).toContain(it.start);
-    });
-    expect(synced.items.some((it, i) => it.start !== features[i].cue.start)).toBe(true);
+  it('演出レベルが「演出なし」「控えめ」なら、曲を渡しても従来と同じ Timeline', () => {
+    for (const level of ['none', 'subtle'] as const) expect(build({ rhythm }, level)).toEqual(build({}, level));
   });
 
-  it('登場は拍で着地し、文字送りの間隔の基準に拍の間隔を持つ', () => {
-    for (const it of synced.items) {
-      expect(it.sync).toBeDefined();
+  it('拍に合わせるのはサビの行だけ。サビ以外の行は曲が無いときと同じ', () => {
+    expect(chorus.length).toBeGreaterThan(0);
+    expect(others.length).toBeGreaterThan(0);
+    for (const it of chorus) expect(it.sync).toBeDefined();
+    for (const it of others) {
+      expect('sync' in it).toBe(false);
+      const cue = features[it.id].cue;
+      expect([it.start, it.end]).toEqual([cue.start, cue.end]);
+      expect(it.energy).toBe(0.6);
+    }
+  });
+
+  it('サビの行の開始・終了は、近くの8分音符の位置へ最大 0.1 秒だけ寄せる', () => {
+    for (const it of chorus) {
+      const cue = features[it.id].cue;
+      expect(Math.abs(it.start - cue.start)).toBeLessThanOrEqual(SNAP_MAX_SEC + 1e-9);
+      if (it.start !== cue.start) expect(grid).toContain(it.start);
+    }
+    expect(chorus.some((it) => it.start !== features[it.id].cue.start)).toBe(true);
+  });
+
+  it('サビの行の登場は拍で着地し、文字送りの間隔の基準に拍の間隔を持つ', () => {
+    for (const it of chorus) {
       expect(it.sync!.beat).toBeCloseTo(0.5);
       if (it.sync!.hit !== null) expect(rhythm.beats).toContain(Math.round((it.start + it.sync!.hit) * 1000) / 1000);
     }
-    expect(synced.items.some((it) => it.sync!.hit !== null)).toBe(true);
+    expect(chorus.some((it) => it.sync!.hit !== null)).toBe(true);
   });
 
-  it('拍の脈動はテーマの強さで決まり、サビは強め。演出なし・beatPulse 無効では 0', () => {
-    for (const it of synced.items) expect(it.sync!.pulse).toBeCloseTo(it.emphasis ? 0.026 : 0.02);
-    expect(build({ rhythm }, 'none').items.every((it) => it.sync!.pulse === 0)).toBe(true);
-    expect(build({ rhythm, effects: { ...ALL_EFFECTS, beatPulse: false } }).items.every((it) => it.sync!.pulse === 0)).toBe(true);
+  it('弾み方は 標準 2%・エモい 4%・超エモ 6%。beatPulse が無効なら 0', () => {
+    const pulses = (level: EffectLevel) => new Set(build({ rhythm }, level).items.filter((it) => it.sync).map((it) => it.sync!.pulse));
+    expect(pulses('standard')).toEqual(new Set([0.02]));
+    expect(pulses('emo')).toEqual(new Set([0.04]));
+    expect(pulses('ultra')).toEqual(new Set([0.06]));
+    expect(build({ rhythm, effects: { ...ALL_EFFECTS, beatPulse: false } }).items.filter((it) => it.sync).every((it) => it.sync!.pulse === 0)).toBe(true);
   });
 
-  it('カメラシェイクは小節の頭と曲の区切りに置く', () => {
-    const allowed = new Set([...rhythm.downbeats, ...rhythm.sections]);
-    const cueStarts = new Set(features.map((f) => f.cue.start));
-    for (const s of synced.shakes) expect(allowed.has(s.time) || cueStarts.has(s.time)).toBe(true);
-    for (const t of rhythm.sections) expect(synced.shakes.map((s) => s.time)).toContain(t);
-  });
-
-  it('字幕の音量で演出の強さが変わる（演出なしでは 0 のまま）', () => {
-    const energies = new Set(synced.items.map((it) => it.energy));
-    expect(energies.size).toBeGreaterThan(1);
-    for (const e of energies) {
-      expect(e).toBeGreaterThanOrEqual(0.6 * 0.8 - 1e-9);
-      expect(e).toBeLessThanOrEqual(0.6 * 1.2 + 1e-9);
+  it('サビの頭のカメラシェイクは近くの小節の頭（0.3 秒以内）に置き、曲の区切りだけでは揺らさない', () => {
+    const times = synced.shakes.map((s) => s.time);
+    const plainTimes = plain.shakes.map((s) => s.time);
+    // サビ以外の行のシェイクは、曲が無いときと同じ時刻
+    for (const t of times) {
+      const moved = !plainTimes.includes(t);
+      if (moved) expect(rhythm.downbeats).toContain(t);
     }
-    expect(build({ rhythm }, 'none').items.every((it) => it.energy === 0)).toBe(true);
+    for (const t of rhythm.sections) if (!plainTimes.includes(t)) expect(times).not.toContain(t);
+    for (const it of chorus) {
+      const f = features[it.id];
+      const near = rhythm.downbeats.find((d) => Math.abs(d - f.cue.start) <= 0.3);
+      // 小節の頭が開始と違う時刻にあるなら、開始の時刻では揺らさない（小節の頭へ寄せている）
+      if (near !== undefined && near !== f.cue.start) expect(times, `サビ ${it.id}`).not.toContain(f.cue.start);
+    }
+  });
+
+  it('サビの行は、字幕の音量で演出の強さが変わる', () => {
+    for (const it of chorus) {
+      expect(it.energy).toBeGreaterThanOrEqual(0.6 * 0.8 - 1e-9);
+      expect(it.energy).toBeLessThanOrEqual(0.6 * 1.2 + 1e-9);
+    }
+    expect(new Set(chorus.map((it) => it.energy)).size).toBeGreaterThan(1);
   });
 
   it('描画用のリズム（拍・小節の頭・音量）を持つ。interludeMeter が無効なら音量は持たない', () => {

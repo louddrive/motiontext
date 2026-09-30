@@ -245,13 +245,12 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     shakes.push({ time, strength: theme.fx.shake });
   };
   let prevChorus = false;
-  // 曲の拍に合わせる（解析結果が使えるときだけ）。使わないときは、以下の値はすべて従来どおり
-  const rhythm = effects.beatSync ? usableRhythm(opts.rhythm) : null;
+  // 曲の拍に合わせる（演出レベルの「標準」以上で、解析結果が使えるときだけ）。使わないときは、以下の値はすべて従来どおり。
+  // 拍に合わせるのはサビの行だけ（サビ以外の行は、曲が無いときと同じ）
+  const rhythm = effects.beatSync && theme.syncToBeat ? usableRhythm(opts.rhythm) : null;
   const grid = rhythm ? eighthGrid(rhythm.beats) : null;
   const ranks = rhythm ? loudnessRanks(features, rhythm) : null;
   const chorusFlags = ranks ? fuseChorus(features, ranks) : null;
-  // カメラシェイクは、拍に合わせるときは近くの小節の頭に置く
-  const shakeAt = (t: number) => (rhythm ? nearestDownbeat(rhythm.downbeats, t, 0.3) : t);
 
   const items: TimelineItem[] = [];
   let prevAnchor: Anchor = 'center';
@@ -270,6 +269,10 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     const sectionAccent = pick(sr, accentColors);
 
     const emphasis = chorusFlags ? chorusFlags[fi] : f.isChorus;
+    // この行を拍に合わせるか（サビの行だけ）
+    const beatLine = !!rhythm && emphasis;
+    // カメラシェイクは、拍に合わせる行では近くの小節の頭に置く
+    const shakeAt = (t: number) => (rhythm && beatLine ? nearestDownbeat(rhythm.downbeats, t, 0.3) : t);
     const fontId = emphasis ? displayFont : bodyFont;
     const weights = getFont(fontId).weights;
     // 1書体だけの場合はウェイト差で強弱を付ける
@@ -317,10 +320,10 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     verticalRun = verticalPick ? verticalRun + 1 : 0;
     prevSide = vertical ? side : null;
 
-    // 拍に合わせるときは、字幕の開始・終了を近くの8分音符の位置へ小さく寄せる（離れていれば寄せない）
+    // 拍に合わせる行は、字幕の開始・終了を近くの8分音符の位置へ小さく寄せる（離れていれば寄せない）
     let start = f.cue.start;
     let end = f.cue.end;
-    if (grid) {
+    if (grid && beatLine) {
       const s = snapTime(start, grid, SNAP_MAX_SEC);
       const e = snapTime(end, grid, SNAP_MAX_SEC);
       if (e - s >= 0.3) {
@@ -358,15 +361,15 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
       particles,
       underline,
       seed: hashString(`${seed}:${f.cue.index}`),
-      // 拍に合わせるときは、字幕の音量で強さを変える（静かな所は抑え、大きい所は強く）
-      energy: rhythm && ranks ? energyFor(theme.energy, ranks[fi]) : theme.energy,
-      // 拍に合わせないときはキー自体を付けない（従来の Timeline と同じ形にする）
-      ...(rhythm
+      // 拍に合わせる行は、字幕の音量で強さを変える（静かな所は抑え、大きい所は強く）
+      energy: beatLine && ranks ? energyFor(theme.energy, ranks[fi]) : theme.energy,
+      // 拍に合わせない行はキー自体を付けない（従来の Timeline と同じ形にする）
+      ...(rhythm && beatLine
         ? {
             sync: {
               hit: hitDuration(rhythm.beats, start, end - start),
               beat: Math.round(beatPeriodAt(rhythm.beats, start) * 1000) / 1000,
-              pulse: effects.beatPulse ? Math.round(theme.fx.pulse * (emphasis ? 1.3 : 1) * 1000) / 1000 : 0,
+              pulse: effects.beatPulse ? theme.fx.pulse : 0,
             },
           }
         : {}),
@@ -374,8 +377,6 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     prevAnchor = anchor;
     prevAnim = animation;
   });
-  // 曲の区切り（音色・音量が変わる所）でも画面を揺らす
-  if (rhythm) for (const t of rhythm.sections) addShake(t);
 
   const lastEnd = features.length ? features[features.length - 1].cue.end : 0;
   const maxEnd = features.reduce((m, f) => Math.max(m, f.cue.end), lastEnd);

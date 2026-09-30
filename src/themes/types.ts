@@ -45,13 +45,15 @@ export interface Theme {
     intensity: number;
     moves: WeightedList<CameraMoveType>;
   };
+  /** 曲を読み込んだとき、サビの演出を曲の拍に合わせるか（演出レベルの「標準」以上） */
+  syncToBeat: boolean;
   /** 文字のグロー（黒背景モードのみ有効） */
   glow: number;
   /** モーションブラー。shutter はフレーム間隔に対するシャッターの開き（0..1）、samples は1フレームの描き重ね数 */
   motionBlur: { shutter: number; samples: number };
   /**
    * 追加エフェクトの強さ（shake: カメラシェイクの強さ、shineRate / particleRate: サビ行に付ける確率、interludeRate: 長い間奏に進み具合を表示する確率、
-   * underlineRate: 字幕に線を引く確率、pulse: 曲の拍に合わせて歌詞が弾む大きさ（拡大率。曲を読み込んで拍に合わせるときだけ））
+   * underlineRate: 字幕に線を引く確率、pulse: 曲の拍に合わせてサビの歌詞が弾む大きさ（拡大率。曲を読み込んで拍に合わせるときだけ））
    */
   fx: { shake: number; shineRate: number; particleRate: number; interludeRate: number; underlineRate: number; pulse: number };
 }
