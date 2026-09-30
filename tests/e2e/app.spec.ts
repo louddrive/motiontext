@@ -153,3 +153,15 @@ test('?beats=1 のときだけ、プレビューの下に拍の確認を出す',
   await expect(page.locator('.beat-check')).toContainText('120 BPM', { timeout: 60_000 });
 });
 
+test('AAC の MP4 でも、拍がずれずに検出できる（エンコーダーの先頭の遅延を正しく扱う）', async ({ page }) => {
+  await page.goto('/tests/e2e/harness.html');
+  await page.waitForFunction(() => document.title === 'harness ready');
+  const r = await page.evaluate(() => window.mt.aacRoundTrip(124, 30));
+  console.log(`AAC round trip: ${JSON.stringify(r)}`);
+  expect(r).not.toHaveProperty('error');
+  expect(r.bpm).toBeGreaterThan(122);
+  expect(r.bpm).toBeLessThan(126);
+  expect(r.f).toBeGreaterThanOrEqual(0.95);
+  expect(Math.abs(r.offsetMs!)).toBeLessThan(15);
+});
+

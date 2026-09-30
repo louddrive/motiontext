@@ -2,7 +2,10 @@
 import type { Timeline } from '../../src/director/types';
 import { ensureGlyphs } from '../../src/fonts/loader';
 import { buildLayouts, renderFrame, type Layouts, type RenderOptions } from '../../src/render/renderer';
+import { AudioSample, AudioSampleSource, BufferTarget, Mp4OutputFormat, Output, QUALITY_HIGH } from 'mediabunny';
 import { analyzePcm } from '../../src/audio/analyzePcm';
+import { startRhythmAnalysis } from '../../src/audio/rhythmJob';
+import { beatFMeasure, medianOffset } from '../helpers/beatEval';
 import { GOLDEN_FONT, GOLDEN_PRESETS, GOLDEN_TEXT, goldenTimes } from '../helpers/goldenPresets';
 import { drumTrack, SR } from '../helpers/synth';
 
@@ -102,6 +105,31 @@ const api = {
     const t0 = performance.now();
     const r = analyzePcm(pcm, SR)!;
     return { seconds, ms: performance.now() - t0, bpm: r.bpm, beats: r.beats.length };
+  },
+  /**
+   * 合成音（ドラム）を AAC の MP4 にエンコードしてから、アプリと同じ Worker で解析する。
+   * AAC はエンコーダーの先頭の遅延があるので、デコード後の時刻の扱いが正しいか（拍が一律にずれないか）を確かめる
+   */
+  async aacRoundTrip(bpm = 124, seconds = 30) {
+    const s = drumTrack({ bpm, seconds });
+    const target = new BufferTarget();
+    const output = new Output({ format: new Mp4OutputFormat({ fastStart: 'in-memory' }), target });
+    const source = new AudioSampleSource({ codec: 'aac', bitrate: QUALITY_HIGH });
+    output.addAudioTrack(source);
+    await output.start();
+    const chunk = SR;
+    for (let i = 0; i < s.pcm.length; i += chunk) {
+      const data = s.pcm.slice(i, i + chunk);
+      const sample = new AudioSample({ data, format: 'f32-planar', numberOfChannels: 1, sampleRate: SR, timestamp: i / SR });
+      await source.add(sample);
+      sample.close();
+    }
+    await output.finalize();
+    const file = new File([target.buffer!], 'drums.mp4', { type: 'video/mp4' });
+    const outcome = await startRhythmAnalysis(file, () => {}).promise;
+    if (outcome.kind !== 'done') return { error: outcome.kind };
+    const r = outcome.rhythm;
+    return { bpm: r.bpm, f: beatFMeasure(r.beats, s.beats).f, offsetMs: medianOffset(r.beats, s.beats) * 1000, duration: r.duration };
   },
   /** 曲全体から frames 枚を等間隔に描き、1枚あたりの時間（ms）を測る。書き出しと同じく 1920x1080 等の実寸で描く */
   async bench(name: string, frames = 120, opts: RenderOptions = {}, patch: Partial<Timeline> = {}) {
