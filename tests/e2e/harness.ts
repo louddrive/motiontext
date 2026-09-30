@@ -2,12 +2,12 @@
 import type { Timeline } from '../../src/director/types';
 import { ensureGlyphs } from '../../src/fonts/loader';
 import { buildLayouts, renderFrame, type Layouts, type RenderOptions } from '../../src/render/renderer';
-import { AudioSample, AudioSampleSource, BufferTarget, Mp4OutputFormat, Output, QUALITY_HIGH } from 'mediabunny';
+import { AudioSample, AudioSampleSource, BufferTarget, canEncodeAudio, Mp4OutputFormat, Output, QUALITY_HIGH, WebMOutputFormat } from 'mediabunny';
 import { analyzePcm } from '../../src/audio/analyzePcm';
 import { startRhythmAnalysis } from '../../src/audio/rhythmJob';
 import { beatFMeasure, medianOffset } from '../helpers/beatEval';
 import { GOLDEN_FONT, GOLDEN_PRESETS, GOLDEN_TEXT, goldenTimes } from '../helpers/goldenPresets';
-import { drumTrack, SR } from '../helpers/synth';
+import { drumTrack, resample, SR } from '../helpers/synth';
 
 interface Prepared {
   timeline: Timeline;
@@ -107,29 +107,35 @@ const api = {
     return { seconds, ms: performance.now() - t0, bpm: r.bpm, beats: r.beats.length };
   },
   /**
-   * 合成音（ドラム）を AAC の MP4 にエンコードしてから、アプリと同じ Worker で解析する。
-   * AAC はエンコーダーの先頭の遅延があるので、デコード後の時刻の扱いが正しいか（拍が一律にずれないか）を確かめる
+   * 合成音（ドラム）を圧縮音声（AAC の MP4、使えなければ Opus の WebM）にエンコードしてから、アプリと同じ Worker で解析する。
+   * どちらもエンコーダーの先頭の遅延があるので、デコード後の時刻の扱いが正しいか（拍が一律にずれないか）を確かめる。
+   * どちらのエンコーダーも無い環境では { error: 'noEncoder' }（Linux の Chrome には AAC のエンコーダーが無い）
    */
-  async aacRoundTrip(bpm = 124, seconds = 30) {
+  async codecRoundTrip(bpm = 124, seconds = 30, prefer: 'aac' | 'opus' = 'aac') {
     const s = drumTrack({ bpm, seconds });
+    const aac = prefer === 'aac' && (await canEncodeAudio('aac', { numberOfChannels: 1, sampleRate: SR }));
+    const opus = !aac && (await canEncodeAudio('opus', { numberOfChannels: 1, sampleRate: 48000 }));
+    if (!aac && !opus) return { error: 'noEncoder' as const };
+    // Opus は 48kHz で入れる
+    const rate = aac ? SR : 48000;
+    const pcm = aac ? s.pcm : resample(s.pcm, SR, rate);
     const target = new BufferTarget();
-    const output = new Output({ format: new Mp4OutputFormat({ fastStart: 'in-memory' }), target });
-    const source = new AudioSampleSource({ codec: 'aac', bitrate: QUALITY_HIGH });
+    const output = new Output({ format: aac ? new Mp4OutputFormat({ fastStart: 'in-memory' }) : new WebMOutputFormat(), target });
+    const source = new AudioSampleSource({ codec: aac ? 'aac' : 'opus', bitrate: QUALITY_HIGH });
     output.addAudioTrack(source);
     await output.start();
-    const chunk = SR;
-    for (let i = 0; i < s.pcm.length; i += chunk) {
-      const data = s.pcm.slice(i, i + chunk);
-      const sample = new AudioSample({ data, format: 'f32-planar', numberOfChannels: 1, sampleRate: SR, timestamp: i / SR });
+    for (let i = 0; i < pcm.length; i += rate) {
+      const data = pcm.slice(i, i + rate);
+      const sample = new AudioSample({ data, format: 'f32-planar', numberOfChannels: 1, sampleRate: rate, timestamp: i / rate });
       await source.add(sample);
       sample.close();
     }
     await output.finalize();
-    const file = new File([target.buffer!], 'drums.mp4', { type: 'video/mp4' });
+    const file = aac ? new File([target.buffer!], 'drums.mp4', { type: 'video/mp4' }) : new File([target.buffer!], 'drums.webm', { type: 'audio/webm' });
     const outcome = await startRhythmAnalysis(file, () => {}).promise;
     if (outcome.kind !== 'done') return { error: outcome.kind };
     const r = outcome.rhythm;
-    return { bpm: r.bpm, f: beatFMeasure(r.beats, s.beats).f, offsetMs: medianOffset(r.beats, s.beats) * 1000, duration: r.duration };
+    return { codec: aac ? 'aac' : 'opus', bpm: r.bpm, f: beatFMeasure(r.beats, s.beats).f, offsetMs: medianOffset(r.beats, s.beats) * 1000, duration: r.duration };
   },
   /** 曲全体から frames 枚を等間隔に描き、1枚あたりの時間（ms）を測る。書き出しと同じく 1920x1080 等の実寸で描く */
   async bench(name: string, frames = 120, opts: RenderOptions = {}, patch: Partial<Timeline> = {}) {
