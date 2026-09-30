@@ -1,8 +1,9 @@
 // 描画命令のゴールデンテスト: renderFrame が「どこへ・どの見た目で」描いたかを記録してファイルに固定する。
 // 実フォントを使わない（文字幅は近似）ので、見た目の最終確認は Playwright の実描画テストで行う。
 // 演出を意図して変えたときは `npx vitest run tests/golden -u` で更新し、差分を確認してからコミットする。
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+// @types/node を入れずに読むため Vite の ?raw を使う（tests/fonts.test.ts と同じ）
+import src from '../fixtures/golden.srt?raw';
 import { analyze } from '../../src/analysis/features';
 import { ANIMATION_IDS } from '../../src/animations/types';
 import { direct, type DirectOptions } from '../../src/director/director';
@@ -100,7 +101,6 @@ describe('演出ごとの描画命令', () => {
 });
 
 describe('曲全体のフレームの描画命令', () => {
-  const src = readFileSync(new URL('../fixtures/golden.srt', import.meta.url), 'utf8');
   const feats = analyze(parseSubtitle('golden.srt', src).cues);
   const build = (level: EffectLevel, aspect: 'landscape' | 'portrait', extra: Partial<DirectOptions> = {}) =>
     direct(feats, {

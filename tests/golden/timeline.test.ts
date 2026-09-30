@@ -1,8 +1,9 @@
 // Timeline のゴールデンテスト: 固定の字幕・シード・設定から作る演出計画を、ファイルに固定して比べる。
 // 意図しない変更（パターン番号で同じ演出が再現しなくなる変更）を検出する。
 // 演出を意図して変えたときは `npx vitest run tests/golden -u` で更新し、差分を確認してからコミットする。
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+// @types/node を入れずに読むため Vite の ?raw を使う（tests/fonts.test.ts と同じ）
+import src from '../fixtures/golden.srt?raw';
 import { analyze } from '../../src/analysis/features';
 import { direct, type DirectOptions } from '../../src/director/director';
 import { ASPECTS, type Aspect, type Timeline } from '../../src/director/types';
@@ -11,7 +12,6 @@ import { defaultTheme } from '../../src/themes/default';
 import { EFFECT_LEVELS, applyEffectLevel, type EffectLevel } from '../../src/themes/effectLevel';
 
 const SEEDS = [1, 20260930];
-const src = readFileSync(new URL('../fixtures/golden.srt', import.meta.url), 'utf8');
 const features = analyze(parseSubtitle('golden.srt', src).cues);
 
 function build(level: EffectLevel, aspect: Aspect, seed: number, extra: Partial<DirectOptions> = {}): Timeline {
