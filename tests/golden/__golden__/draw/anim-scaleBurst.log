@@ -1,0 +1,248 @@
+# horizontal
+## t=0.15
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @226.02,594.77 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "格" @346.17,594.77 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @448.48,594.77 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "合" @550.78,594.77 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @653.09,594.77 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "せ" @737.55,594.77 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "て" @822.01,594.77 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "比" @1026.62,594.77 m[1.1,0,0,1.1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "較" @1182.45,594.77 m[1.1,0,0,1.1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "を" @1302.6,594.77 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "消" @1404.91,594.77 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "し" @1507.21,594.77 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "去" @1609.51,594.77 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "り" @1711.82,594.77 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=0.4
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @339,589.96 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "格" @440.65,589.96 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @527.21,589.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "合" @613.77,589.96 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @700.33,589.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "せ" @771.79,589.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "て" @843.25,589.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "比" @1016.36,589.96 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "較" @1148.21,589.96 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "を" @1249.87,589.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "消" @1336.43,589.96 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "し" @1422.98,589.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "去" @1509.54,589.96 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "り" @1596.1,589.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=1.5
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @343,589.78 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "格" @444,589.78 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @530,589.78 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "合" @616,589.78 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @702,589.78 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "せ" @773,589.78 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "て" @844,589.78 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "比" @1016,589.78 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "較" @1147,589.78 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "を" @1248,589.78 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "消" @1334,589.78 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "し" @1420,589.78 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "去" @1506,589.78 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "り" @1592,589.78 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=2.85
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @336.83,590.28 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "格" @438.84,590.28 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "に" @525.7,590.28 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "合" @612.56,590.28 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "わ" @699.42,590.28 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "せ" @771.13,590.28 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "て" @842.84,590.28 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "比" @1016.56,590.28 m[1.01,0,0,1.01] font=400 131px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "較" @1148.87,590.28 m[1.01,0,0,1.01] font=400 131px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "を" @1250.88,590.28 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "消" @1337.74,590.28 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "し" @1424.6,590.28 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "去" @1511.46,590.28 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "り" @1598.32,590.28 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+# twoLines
+## t=0.15
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "遠" @593.01,284.54 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "く" @695.32,284.54 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "滲" @815.47,284.54 m[1.1,0,0,1.1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "ん" @935.61,284.54 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "だ" @1020.07,284.54 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "信" @1122.38,284.54 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "号" @1242.53,284.54 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "が" @1344.83,284.54 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "青" @688.77,437.91 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @791.08,437.91 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "変" @893.38,437.91 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @995.69,437.91 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "る" @1080.15,437.91 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "ま" @1164.61,437.91 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "で" @1249.07,437.91 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=0.4
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "遠" @649.5,286.07 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "く" @736.06,286.07 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "滲" @837.71,286.07 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "ん" @939.37,286.07 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "だ" @1010.83,286.07 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "信" @1097.39,286.07 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "号" @1199.04,286.07 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "が" @1285.6,286.07 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "青" @730.52,425.97 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @817.08,425.97 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "変" @903.64,425.97 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @990.19,425.97 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "る" @1061.66,425.97 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "ま" @1133.12,425.97 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "で" @1204.58,425.97 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=1.5
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "遠" @651.5,286.13 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "く" @737.5,286.13 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "滲" @838.5,286.13 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "ん" @939.5,286.13 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "だ" @1010.5,286.13 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "信" @1096.5,286.13 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "号" @1197.5,286.13 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "が" @1283.5,286.13 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "青" @732,425.53 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @818,425.53 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "変" @904,425.53 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @990,425.53 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "る" @1061,425.53 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "ま" @1132,425.53 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "で" @1203,425.53 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=2.85
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "遠" @648.42,285.97 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "く" @735.28,285.97 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "滲" @837.29,285.97 m[1.01,0,0,1.01] font=400 131px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "ん" @939.3,285.97 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "だ" @1011.01,285.97 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "信" @1097.87,285.97 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "号" @1199.88,285.97 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "が" @1286.73,285.97 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "青" @729.72,426.77 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "に" @816.58,426.77 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "変" @903.44,426.77 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "わ" @990.3,426.77 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "る" @1062.01,426.77 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "ま" @1133.72,426.77 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "で" @1205.43,426.77 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+# vertical
+## t=0.15
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @1032.23,272.04 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "格" @1032.23,392.19 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @1032.23,481.95 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "合" @1032.23,596.8 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @1032.23,686.56 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "せ" @1032.23,771.02 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "て" @1032.23,855.48 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "比" @887.77,380.17 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "較" @887.77,500.32 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "を" @887.77,590.08 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=0.4
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @1025.88,316.08 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "格" @1025.88,417.73 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @1025.88,492.85 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "合" @1025.88,590.85 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @1025.88,665.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "せ" @1025.88,737.42 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "て" @1025.88,808.89 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "比" @894.12,407.57 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "較" @894.12,509.22 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "を" @894.12,584.34 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=1.5
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @1025.65,317.63 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "格" @1025.65,418.63 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @1025.65,493.23 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "合" @1025.65,590.63 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @1025.65,665.23 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "せ" @1025.65,736.23 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "て" @1025.65,807.23 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "比" @894.35,408.53 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "較" @894.35,509.53 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "を" @894.35,584.13 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=2.85
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @1026.31,315.41 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "格" @1026.31,417.42 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "に" @1026.31,492.76 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "合" @1026.31,591.14 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "わ" @1026.31,666.48 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "せ" @1026.31,738.19 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "て" @1026.31,809.9 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "比" @893.69,407.22 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "較" @893.69,509.23 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "を" @893.69,584.57 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+# mixed
+## t=0.15
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @760.39,900.82 m[1.1,0,0,1.1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "格" @916.22,900.82 m[1.1,0,0,1.1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @1036.37,900.82 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "合" @1138.68,900.82 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @1240.98,900.82 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "せ" @1325.44,900.82 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "て" @1409.9,900.82 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "比" @598.53,240.48 m[1.1,0,0,1.1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "較" @598.53,396.32 m[1.1,0,0,1.1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "を" @598.53,491.38 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "消" @598.53,606.23 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "し" @598.53,695.99 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "去" @598.53,810.83 m[1.1,0,0,1.1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "り" @598.53,900.6 m[1.1,0,0,1.1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=0.4
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @791.11,869.13 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "格" @922.96,869.13 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @1024.62,869.13 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "合" @1111.17,869.13 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @1197.73,869.13 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "せ" @1269.19,869.13 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "て" @1340.65,869.13 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "比" @630.27,290.2 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "較" @630.27,422.05 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "を" @630.27,500.82 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "消" @630.27,598.82 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "し" @630.27,673.94 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "去" @630.27,771.94 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "り" @630.27,847.06 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=1.5
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @792.2,867.96 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "格" @923.2,867.96 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "に" @1024.2,867.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "合" @1110.2,867.96 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "わ" @1196.2,867.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "せ" @1267.2,867.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "て" @1338.2,867.96 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "比" @631.45,291.95 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "較" @631.45,422.95 m[1,0,0,1] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "を" @631.45,501.16 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "消" @631.45,598.55 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "し" @631.45,673.16 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "去" @631.45,770.56 m[1,0,0,1] font=400 101px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+fillText "り" @631.45,845.16 m[1,0,0,1] font=400 71px mt-noto-sans-jp align=center a=1 fill=#FFFFFF
+## t=2.85
+fillRect 0,0 1920,1080 a=1 fill=#000000
+fillText "規" @790.52,871.23 m[1.01,0,0,1.01] font=400 131px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "格" @922.83,871.23 m[1.01,0,0,1.01] font=400 131px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "に" @1024.84,871.23 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "合" @1111.7,871.23 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "わ" @1198.56,871.23 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "せ" @1270.27,871.23 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "て" @1341.98,871.23 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "比" @628.16,289.47 m[1.01,0,0,1.01] font=400 131px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "較" @628.16,421.78 m[1.01,0,0,1.01] font=400 131px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "を" @628.16,500.77 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "消" @628.16,599.14 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "し" @628.16,674.49 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "去" @628.16,772.86 m[1.01,0,0,1.01] font=400 101px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
+fillText "り" @628.16,848.21 m[1.01,0,0,1.01] font=400 71px mt-noto-sans-jp align=center a=0.88 fill=#FFFFFF
