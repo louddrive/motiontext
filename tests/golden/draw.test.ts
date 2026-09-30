@@ -2,20 +2,15 @@
 // 実フォントを使わない（文字幅は近似）ので、見た目の最終確認は Playwright の実描画テストで行う。
 // 演出を意図して変えたときは `npx vitest run tests/golden -u` で更新し、差分を確認してからコミットする。
 import { describe, expect, it } from 'vitest';
-// @types/node を入れずに読むため Vite の ?raw を使う（tests/fonts.test.ts と同じ）
-import src from '../fixtures/golden.srt?raw';
 import { analyze } from '../../src/analysis/features';
 import { ANIMATION_IDS } from '../../src/animations/types';
-import { direct, type DirectOptions } from '../../src/director/director';
-import { ASPECTS, NO_BACKDROP, NO_MOTION_BLUR, type Timeline, type TimelineItem } from '../../src/director/types';
+import { direct } from '../../src/director/director';
+import { NO_BACKDROP, NO_MOTION_BLUR, type Timeline, type TimelineItem } from '../../src/director/types';
 import type { Cue } from '../../src/parsers/types';
-import { parseSubtitle } from '../../src/parsers/detect';
 import { buildLayouts, renderFrame, type RenderOptions } from '../../src/render/renderer';
 import { defaultTheme } from '../../src/themes/default';
-import { applyEffectLevel, type EffectLevel } from '../../src/themes/effectLevel';
+import { GOLDEN_FONT as FONT, GOLDEN_PRESETS, goldenTimes } from '../helpers/goldenPresets';
 import { installOffscreenCanvas, recordingCtx } from '../helpers/recordingCtx';
-
-const FONT = { fontIds: ['noto-sans-jp'], fontRoles: { body: 'noto-sans-jp', display: null } };
 
 /** タイムラインの指定時刻を順に描き、記録を1つの文字列にする */
 function record(timeline: Timeline, times: number[], opts: RenderOptions = {}): string {
@@ -101,37 +96,11 @@ describe('演出ごとの描画命令', () => {
 });
 
 describe('曲全体のフレームの描画命令', () => {
-  const feats = analyze(parseSubtitle('golden.srt', src).cues);
-  const build = (level: EffectLevel, aspect: 'landscape' | 'portrait', extra: Partial<DirectOptions> = {}) =>
-    direct(feats, {
-      theme: applyEffectLevel(defaultTheme, level),
-      seed: 1,
-      ...FONT,
-      background: 'black',
-      width: ASPECTS[aspect].width,
-      height: ASPECTS[aspect].height,
-      ...extra,
-    });
-  // 各字幕の登場中・表示中と、間奏の途中
-  const timesOf = (tl: Timeline) => [...tl.items.flatMap((it) => [it.start + 0.2, (it.start + it.end) / 2]), 32].map((t) => Math.round(t * 1000) / 1000);
-
-  const cases: [string, Timeline, RenderOptions][] = [
-    ['standard-landscape', build('standard', 'landscape'), {}],
-    ['none-landscape', build('none', 'landscape'), {}],
-    ['ultra-portrait', build('ultra', 'portrait'), {}],
-    ['emo-vertical-always', build('emo', 'landscape', { verticalMode: 'always' }), {}],
-    ['subtle-outline-shadow-xl', build('subtle', 'landscape', { outline: true, shadow: true, sizeLevel: 'xl', color: '#FFD166' }), {}],
-    [
-      'standard-backdrop-transparent',
-      build('standard', 'landscape', { backdrop: { opacity: 0.4, mode: 'lyrics', color: '#101830' } }),
-      { transparent: true, backdrop: true },
-    ],
-    ['standard-green', build('standard', 'landscape', { background: 'green' }), {}],
-  ];
-  for (const [name, tl, opts] of cases) {
+  for (const [name, preset] of Object.entries(GOLDEN_PRESETS)) {
     it(name, async () => {
+      const { timeline, opts } = preset();
       // モーションブラーの描き重ねは2回に抑える（記録の量を減らす。処理の経路は同じで、回数の計算は単体テストで確認している）
-      await expect(record(tl, timesOf(tl), { blurSamples: 2, ...opts })).toMatchFileSnapshot(`./__golden__/draw/frames-${name}.log`);
+      await expect(record(timeline, goldenTimes(timeline), { blurSamples: 2, ...opts })).toMatchFileSnapshot(`./__golden__/draw/frames-${name}.log`);
     });
   }
 });
