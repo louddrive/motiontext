@@ -42,6 +42,7 @@ export function startExport(
   onProgress: (ratio: number) => void,
 ): ExportJob<Blob> {
   const worker = spawnWorker();
+  let userCanceled = false;
   let settle: { resolve: (b: Blob) => void; reject: (e: Error) => void };
   const promise = new Promise<Blob>((resolve, reject) => (settle = { resolve, reject }));
 
@@ -50,7 +51,9 @@ export function startExport(
     if (m.type === 'progress') onProgress(m.done / m.total);
     else {
       worker.terminate();
-      if (m.type === 'done') {
+      // 最後の仕上げ（finalize）中にキャンセルされた場合も、保存せずにキャンセル扱いにする
+      if (m.type === 'done' && userCanceled) settle.reject(new DOMException('canceled', 'AbortError'));
+      else if (m.type === 'done') {
         onProgress(1);
         settle.resolve(new Blob([m.buffer], { type: m.mimeType }));
       } else if (m.type === 'canceled') settle.reject(new DOMException('canceled', 'AbortError'));
@@ -66,7 +69,10 @@ export function startExport(
   worker.postMessage(start);
   return {
     promise,
-    cancel: () => worker.postMessage({ type: 'cancel' } satisfies ToWorker),
+    cancel: () => {
+      userCanceled = true;
+      worker.postMessage({ type: 'cancel' } satisfies ToWorker);
+    },
   };
 }
 
@@ -154,6 +160,11 @@ export function startPngSequenceExport(
         if (m.type === 'frame') {
           queue = queue.then(async () => {
             if (failed) return;
+            // Worker が全フレームを送り終えた後にキャンセルされた場合も、残りを書かずに止める
+            if (userCanceled) {
+              fail(null, true);
+              return;
+            }
             try {
               const handle = await dir.getFileHandle(frameFileName(baseName, m.index), { create: true });
               const writable = await handle.createWritable();
@@ -276,6 +287,8 @@ export function startCompositeExport(
       worker.onmessage = (e: MessageEvent<FromWorker>) => {
         const m = e.data;
         if (m.type === 'progress') onProgress(m.done / m.total);
+        // 最後の仕上げ中にキャンセルされた場合は、書き終えたファイルを残すか削除するか利用者に確認する
+        else if (m.type === 'compositeDone' && userCanceled) fail(null, true);
         else if (m.type === 'compositeDone') {
           worker.terminate();
           onProgress(1);
