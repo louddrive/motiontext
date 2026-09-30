@@ -71,12 +71,20 @@ test('MP4 を書き出せる', async ({ page }) => {
     };
   });
   await page.goto('/?lang=ja');
-  await page.locator('.dropzone input[type=file]').setInputFiles(SAMPLE);
+  // 動作確認なので短い字幕で書き出す（GPU の無い CI でも時間がかからないように）
+  await page.locator('.dropzone input[type=file]').setInputFiles('tests/fixtures/short.srt');
   await expect(page.locator('.stage-msg')).toHaveCount(0, { timeout: 30_000 });
   const download = page.waitForEvent('download', { timeout: 180_000 });
   await page.getByRole('button', { name: 'MP4 を書き出す' }).click();
   await expect(page.getByRole('progressbar', { name: '書き出しの進み具合' })).toBeVisible();
-  expect((await download).suggestedFilename()).toMatch(/^sample_black_1920x1080_30fps\.mp4$/);
+  // 書き出しがエラーで止まった場合は、待ち続けずにその文言で失敗させる
+  const failed = page
+    .locator('.export .error')
+    .waitFor({ timeout: 180_000 })
+    .then(async () => `書き出しのエラー: ${await page.locator('.export .error').innerText()}`);
+  const outcome = await Promise.race([download, failed]);
+  if (typeof outcome === 'string') throw new Error(outcome);
+  expect(outcome.suggestedFilename()).toMatch(/^short_black_1920x1080_30fps\.mp4$/);
   const info = await page.evaluate(async () => {
     const blobs = (window as unknown as { __blobs: Blob[] }).__blobs;
     const mp4 = blobs.find((b) => b.type.startsWith('video/'))!;
@@ -84,6 +92,6 @@ test('MP4 を書き出せる', async ({ page }) => {
     return { size: mp4.size, box: String.fromCharCode(...head.slice(4, 8)) };
   });
   expect(info.box).toBe('ftyp');
-  expect(info.size).toBeGreaterThan(50_000);
+  expect(info.size).toBeGreaterThan(10_000);
   await expect(page.locator('.notice')).toBeVisible();
 });

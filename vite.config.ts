@@ -58,6 +58,9 @@ export default defineConfig({
     __APP_DATE__: JSON.stringify(appDate()),
   },
   worker: { format: 'es' },
+  // 書き出し用 Worker だけが使う依存は起動時の走査で見つからず、初めて書き出したときに事前バンドルし直して
+  // ページ全体が再読み込みされる（開発サーバーのみ）。最初から事前バンドルしておく
+  optimizeDeps: { include: ['mediabunny'] },
   build: {
     // 小さな woff2 が data: URI 化されると CSP(font-src 'self') に弾かれるため、フォントはインライン化しない
     assetsInlineLimit: (file) => (file.endsWith('.woff2') ? false : undefined),
