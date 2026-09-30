@@ -72,8 +72,10 @@ export interface ItemSync {
 export interface TimelineRhythm {
   beats: number[];
   downbeats: number[];
-  /** 音量の変化（0..1、rate 回/秒）。間奏に音量の表示を出すときだけ */
+  /** 音量の変化（0..1、rate 回/秒）。間奏に音量の波形を出すときだけ */
   energy?: { rate: number; values: number[] };
+  /** 間奏の音量の波形の山の高さの倍率（energy と一緒に持つ） */
+  meter?: number;
 }
 
 /**

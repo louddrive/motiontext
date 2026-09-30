@@ -395,7 +395,7 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
     interludes: effects.interludeProgress ? findInterludes(items, seed, theme.fx.interludeRate) : [],
     items,
     ...(rhythm
-      ? { rhythm: { beats: rhythm.beats, downbeats: rhythm.downbeats, ...(effects.interludeMeter && theme.interludeMeter ? { energy: rhythm.energy } : {}) } }
+      ? { rhythm: { beats: rhythm.beats, downbeats: rhythm.downbeats, ...(effects.interludeMeter && theme.interludeMeter > 0 ? { energy: rhythm.energy, meter: theme.interludeMeter } : {}) } }
       : {}),
   };
 }

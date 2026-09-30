@@ -168,6 +168,10 @@ describe('director に曲のリズムを渡したとき', () => {
     expect(synced.rhythm?.downbeats).toEqual(rhythm.downbeats);
     expect(synced.rhythm?.energy).toBeUndefined();
     for (const level of ['emo', 'ultra'] as const) expect(build({ rhythm }, level).rhythm?.energy).toEqual(rhythm.energy);
+    // 山の高さは「エモい」が控えめ、「超エモ」が大げさ
+    expect(build({ rhythm }, 'emo').rhythm?.meter).toBe(0.65);
+    expect(build({ rhythm }, 'ultra').rhythm?.meter).toBe(1.3);
+    expect(synced.rhythm?.meter).toBeUndefined();
     expect(build({ rhythm, effects: { ...ALL_EFFECTS, interludeMeter: false } }, 'emo').rhythm?.energy).toBeUndefined();
   });
 

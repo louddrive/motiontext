@@ -225,7 +225,7 @@ export function drawInterlude(ctx: Ctx2D, timeline: Timeline, t: number): void {
       const level = exaggerated(rhythm.energy, t, range);
       const kick = waveKick(rhythm.beats, t);
       const cy = height / 2;
-      const amp = Math.min(width, height) * 0.14;
+      const amp = Math.min(width, height) * 0.14 * (rhythm.meter ?? 1);
       const step = Math.max(1, 2 * res);
       const grad = ctx.createLinearGradient(0, 0, width, 0);
       grad.addColorStop(0, fadeColor(interlude.color, 0));
@@ -271,7 +271,7 @@ export function drawInterlude(ctx: Ctx2D, timeline: Timeline, t: number): void {
     if (energy) {
       const range = meterRange(energy, interlude.start, interlude.end);
       const inner = r + 14 * res;
-      const maxLen = 150 * res;
+      const maxLen = 150 * res * (timeline.rhythm?.meter ?? 1);
       ctx.lineWidth = 5 * res;
       ctx.lineCap = 'butt';
       ctx.globalAlpha = alpha * 0.55;
