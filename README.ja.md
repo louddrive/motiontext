@@ -274,9 +274,36 @@ SRT 形式の例：
 ```sh
 npm install
 npm run dev      # 開発サーバー
-npm test         # 単体テスト（Vitest）
+npm run lint     # lint（oxlint）
+npm test         # 単体テスト + ゴールデンテスト（Vitest）
 npm run build    # 型チェック + 本番ビルド（dist/ を静的ホスティング）
 ```
+
+ブラウザでのテスト（Playwright。初回のみ `npx playwright install chromium` を実行する）:
+
+```sh
+npm run test:e2e            # アプリの動作確認（字幕の読み込み・キーボード操作・プレビュー・MP4 の書き出し）+ 見た目の比較
+npm run test:visual:update  # 見た目を意図して変えたときに、比較用の画像を更新する
+npm run sheet               # 曲全体のコンタクトシートを test-results/contact/ に書き出す（比較はしない）
+npm run bench               # renderFrame 1回あたりの時間を測る（グロー・モーションブラーの有無の内訳つき）
+```
+
+- 付属の Chromium で H.264 を書き出せない環境では、`PW_CHANNEL=chrome` を付けて Google Chrome で実行する。
+
+### テスト
+
+| 種類 | 場所 | 検出するもの |
+|---|---|---|
+| 単体 | `tests/*.test.ts` | 各モジュールのロジック |
+| Timeline のゴールデン | `tests/golden/timeline.test.ts` → `tests/golden/__golden__/timeline/` | 生成される演出の意図しない変化（パターン番号で同じ演出が再現しなくなる変更） |
+| 描画命令のゴールデン | `tests/golden/draw.test.ts` → `tests/golden/__golden__/draw/` | 文字・線・光の粒を「どこへ・どの見た目で」描いたか。最終的な位置・変形・不透明度・色・グローだけを記録するので、見た目が同じリファクタリングでは差分が出ない |
+| 見た目 | `tests/e2e/visual.spec.ts` → `tests/e2e/__screenshots__/<OS>/` | 実フォントで描いた実際の見た目。文字の描き方が OS ごとに違うため、画像は OS 別に保存する |
+| アプリ | `tests/e2e/app.spec.ts` | 実ブラウザでの読み込み・キーボード操作・プレビュー・MP4 の書き出し |
+
+- ゴールデン用の字幕は [tests/fixtures/golden.srt](tests/fixtures/golden.srt)（歌詞は自作）、共通の設定は [tests/helpers/goldenPresets.ts](tests/helpers/goldenPresets.ts) にある。
+- 演出を意図して変えたときは `npx vitest run tests/golden -u`（と `npm run test:visual:update`）で更新し、差分を確認してからコミットする。
+- lint は oxlint を使う。TypeScript 7（ネイティブ版）には typescript-eslint が必要とする JS の API が無いため。有効にしているのは `correctness` と React の Hooks のルールだけ。
+- CI（`.github/workflows/ci.yml`）は、プルリクエストと `main` 以外のブランチで lint・型チェック・単体テスト・ビルド・アプリの動作確認を行う。見た目の比較は OS ごとに画像が違うため CI では行わない。
 
 ### 技術メモ
 
@@ -342,7 +369,7 @@ scripts        データ生成・ライセンス収集スクリプト
 
 ### デプロイ（GitHub Pages）
 
-- `main` に push すると `.github/workflows/deploy.yml` が実行され、テスト → ビルド → GitHub Pages へのデプロイまで自動で行う。
+- `main` に push すると `.github/workflows/deploy.yml` が実行され、lint → テスト → ビルド → GitHub Pages へのデプロイまで自動で行う。
 - 配信パスはリポジトリ名から自動で決まる（`BASE_PATH=/<リポジトリ名>/`）。
   - 手元で同じ構成を確認するときは `BASE_PATH=/motiontext/ npm run build && BASE_PATH=/motiontext/ npx vite preview` を実行する（Git Bash では先頭に `MSYS_NO_PATHCONV=1` を付ける）。
 - 初回のみ、リポジトリの Settings → Pages → Source を「GitHub Actions」にする。

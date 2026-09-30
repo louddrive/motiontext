@@ -274,9 +274,36 @@ Notes:
 ```sh
 npm install
 npm run dev      # dev server
-npm test         # unit tests (Vitest)
+npm run lint     # lint (oxlint)
+npm test         # unit tests + golden tests (Vitest)
 npm run build    # type check + production build (serve dist/ as static files)
 ```
+
+Browser tests (Playwright; run `npx playwright install chromium` once):
+
+```sh
+npm run test:e2e            # app checks (load subtitles, keyboard access, preview, MP4 export) + visual comparison
+npm run test:visual:update  # update the reference images after an intentional visual change
+npm run sheet               # write contact sheets of whole songs to test-results/contact/ (no comparison)
+npm run bench               # time renderFrame per frame (with / without glow and motion blur)
+```
+
+- If the bundled Chromium cannot encode H.264, set `PW_CHANNEL=chrome` to use Google Chrome.
+
+### Tests
+
+| Kind | Where | What it catches |
+|---|---|---|
+| Unit | `tests/*.test.ts` | Logic of each module |
+| Timeline golden | `tests/golden/timeline.test.ts` → `tests/golden/__golden__/timeline/` | Unintended changes to the generated direction (a pattern number no longer reproduces the same result) |
+| Draw-command golden | `tests/golden/draw.test.ts` → `tests/golden/__golden__/draw/` | Where and how each glyph, line and particle is drawn. It records the final position, transform, opacity, color and glow, so refactors that keep the look do not produce a diff |
+| Visual | `tests/e2e/visual.spec.ts` → `tests/e2e/__screenshots__/<OS>/` | The actual look with the real fonts. Images are stored per OS because text rasterization differs |
+| App | `tests/e2e/app.spec.ts` | Loading, keyboard access, preview and MP4 export in a real browser |
+
+- The golden fixture is [tests/fixtures/golden.srt](tests/fixtures/golden.srt) (original lyrics). The shared settings live in [tests/helpers/goldenPresets.ts](tests/helpers/goldenPresets.ts).
+- After an intentional change, update with `npx vitest run tests/golden -u` (and `npm run test:visual:update`), review the diff, then commit.
+- Lint uses oxlint because TypeScript 7 (the native version) does not provide the JS API that typescript-eslint needs. Only `correctness` and the React Hooks rules are enabled.
+- CI (`.github/workflows/ci.yml`) runs lint, type check, unit tests, build and the app checks on pull requests and non-`main` branches. The visual comparison is not run in CI (images differ per OS).
 
 ### Technical notes
 
@@ -342,7 +369,7 @@ If the direction feels too busy, you can remove individual effects later. The sw
 
 ### Deployment (GitHub Pages)
 
-- Pushing to `main` runs `.github/workflows/deploy.yml`: test → build → deploy to GitHub Pages.
+- Pushing to `main` runs `.github/workflows/deploy.yml`: lint → test → build → deploy to GitHub Pages.
 - The base path comes from the repository name (`BASE_PATH=/<repo name>/`).
   - To reproduce it locally: `BASE_PATH=/motiontext/ npm run build && BASE_PATH=/motiontext/ npx vite preview` (in Git Bash, prefix with `MSYS_NO_PATHCONV=1`).
 - One-time setup: set the repository's Settings → Pages → Source to "GitHub Actions".
