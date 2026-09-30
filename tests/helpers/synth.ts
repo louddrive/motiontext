@@ -145,3 +145,18 @@ export function resample(pcm: Float32Array, from: number, to: number): Float32Ar
   }
   return out;
 }
+
+/** 拍と関係のない位置（16分音符のランダムな位置）に、音程のある短い音（メロディーの代わり）を足す */
+export function addMelody(pcm: Float32Array, bpm: number, from: number, to: number, seed: number, gain = 0.25) {
+  const r = mulberry32(seed);
+  const step = 60 / bpm / 4;
+  for (let t = from; t < to; t += step) {
+    if (r() > 0.35) continue;
+    const f = 220 * 2 ** (Math.floor(r() * 12) / 12);
+    const start = Math.round(t * SR);
+    const len = Math.round(SR * step * (1 + Math.floor(r() * 3)));
+    for (let i = 0; i < len && start + i < pcm.length; i++) {
+      pcm[start + i] += gain * Math.sin((2 * Math.PI * f * i) / SR) * Math.min(1, i / 300) * Math.exp(-i / (SR * 0.3));
+    }
+  }
+}

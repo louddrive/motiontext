@@ -6,7 +6,7 @@ import { FrameExtractor } from '../src/audio/frames';
 import { ENERGY_RATE } from '../src/audio/rhythm';
 import { RHYTHM_VERSION } from '../src/audio/types';
 import { beatFMeasure, medianOffset } from './helpers/beatEval';
-import { addNoise, addPad, beatTimes, clickTrack, drumTrack, resample, scale, SR, type Synth } from './helpers/synth';
+import { addMelody, addNoise, addPad, beatTimes, clickTrack, drumTrack, resample, scale, SR, type Synth } from './helpers/synth';
 
 describe('PowerSpectrum', () => {
   it('正弦波のパワーは、その周波数のビンで最大になる', () => {
@@ -118,6 +118,54 @@ describe('拍とテンポ', () => {
 
   it('何も流さなければ null', () => {
     expect(analyzePcm(new Float32Array(0), SR)).toBeNull();
+  });
+});
+
+describe('実曲に近い条件', () => {
+  it('拍と関係のない位置にメロディーがあっても、テンポを倍と取り違えない', () => {
+    for (const bpm of [80, 96, 132, 150]) {
+      const s = drumTrack({ bpm, seconds: 40 });
+      addMelody(s.pcm, bpm, 0.5, 39, bpm);
+      const r = analyzePcm(s.pcm, SR)!;
+      expect(Math.abs(r.bpm - bpm) / bpm, `${bpm} BPM`).toBeLessThan(0.015);
+      expect(beatFMeasure(r.beats, s.beats).f, `${bpm} BPM`).toBeGreaterThanOrEqual(0.95);
+    }
+  });
+
+  it('メロディーがドラムより大きくても拍を追える', () => {
+    const s = drumTrack({ bpm: 140, seconds: 50 });
+    scale(s.pcm, 0, 50, 0.4);
+    addMelody(s.pcm, 140, 0.5, 49, 5);
+    addMelody(s.pcm, 140, 0.5, 49, 6);
+    expect(beatFMeasure(analyzePcm(s.pcm, SR)!.beats, s.beats).f).toBeGreaterThanOrEqual(0.95);
+  });
+
+  it('ドラムの無いイントロ（和音だけ）の間は拍を置かず、ドラムが入ってから追う', () => {
+    const s = drumTrack({ bpm: 100, seconds: 50, start: 10 });
+    addPad(s.pcm, 0, 50, [220, 277.2, 329.6], 0.25);
+    const r = analyzePcm(s.pcm, SR)!;
+    expect(r.beats[0]).toBeGreaterThan(9.9);
+    expect(beatFMeasure(r.beats, s.beats).f).toBeGreaterThanOrEqual(0.95);
+  });
+
+  it('フェードイン・フェードアウトしても追える', () => {
+    const s = drumTrack({ bpm: 118, seconds: 50 });
+    for (let i = 0; i < s.pcm.length; i++) s.pcm[i] *= Math.min(1, i / SR / 8, (50 - i / SR) / 8);
+    const r = analyzePcm(s.pcm, SR)!;
+    const inRange = (t: number) => t >= 3 && t <= 47;
+    expect(beatFMeasure(r.beats.filter(inRange), s.beats.filter(inRange)).f).toBeGreaterThanOrEqual(0.95);
+  });
+
+  it('間奏でドラムが抜けても、前後の拍はそろい、区切りを見つける', () => {
+    const s = drumTrack({ bpm: 124, seconds: 90 });
+    scale(s.pcm, 40, 56, 0);
+    addPad(s.pcm, 38, 58, [196, 246.9, 293.7], 0.3);
+    const r = analyzePcm(s.pcm, SR)!;
+    expect(Math.abs(r.bpm - 124)).toBeLessThan(1.5);
+    const drums = (t: number) => t < 39 || t > 57;
+    expect(beatFMeasure(r.beats.filter(drums), s.beats.filter(drums)).recall).toBeGreaterThanOrEqual(0.95);
+    expect(beatFMeasure(r.beats, s.beats).f).toBeGreaterThanOrEqual(0.85);
+    expect(r.sections.some((t) => Math.abs(t - 40) <= 2)).toBe(true);
   });
 });
 

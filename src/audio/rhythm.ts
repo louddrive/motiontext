@@ -94,7 +94,7 @@ export interface TempoEstimate {
  * テンポを推定する。立ち上がりの強さの自己相関を、よくあるテンポを好む事前分布で重み付けし、最も強い周期を選ぶ。
  * その後、裏拍と1拍おきの強さを見て、倍・半分のテンポに直す（refineOctave）
  */
-export function estimateTempo(env: ArrayLike<number>, frameRate: number): TempoEstimate | null {
+export function estimateTempo(env: ArrayLike<number>, frameRate: number, lowEnv?: ArrayLike<number>): TempoEstimate | null {
   const n = env.length;
   const minLag = Math.floor((frameRate * 60) / MAX_BPM);
   const maxLag = Math.ceil((frameRate * 60) / MIN_BPM);
@@ -134,7 +134,7 @@ export function estimateTempo(env: ArrayLike<number>, frameRate: number): TempoE
     const d = a - 2 * b + c;
     if (d < 0) period = best + (0.5 * (a - c)) / d;
   }
-  period = refineOctave(smooth, period, frameRate);
+  period = refineOctave(smooth, period, frameRate, lowEnv ? gaussianSmooth(lowEnv, 2) : undefined);
   let ac0 = 0;
   for (let i = 0; i < n; i++) ac0 += e[i] * e[i];
   ac0 /= n;
@@ -177,16 +177,18 @@ function gridMean(env: ArrayLike<number>, phase: number, period: number, every =
   return c ? s / c : 0;
 }
 
-/** 裏拍が拍と同じくらい強ければ倍のテンポ、1拍おきに極端に弱ければ半分のテンポとみなす（しきい値は経験的な値） */
+/** 裏拍が拍と同じくらい強ければ倍のテンポ、1拍おきに極端に弱ければ半分のテンポとみなす（しきい値は合成音での実測をもとにした経験的な値） */
 const DOUBLE_IF_OFFBEAT = 0.6;
+/** 倍にするには、裏拍の低音の立ち上がりも、拍のこの割合以上あること（裏拍がメロディーだけなら倍にしない） */
+const DOUBLE_IF_LOW_OFFBEAT = 0.3;
 const HALVE_IF_ALTERNATE = 0.35;
 
 /**
- * 倍・半分のテンポの取り違えを直す。
- * - 拍の中間（裏拍）の立ち上がりが拍と同じくらい強い → 本当の拍はその倍の速さ（例: キックとスネアが交互で、2拍分を1拍と見ていた）
+ * 倍・半分のテンポの取り違えを直す。lowEnv は低音の帯域だけの立ち上がりの強さ。
+ * - 拍の中間（裏拍）の立ち上がりが拍と同じくらい強く、低音も含む → 本当の拍はその倍の速さ（例: キックとスネアが交互で、2拍分を1拍と見ていた）
  * - 1拍おきに立ち上がりが極端に弱い → 本当の拍はその半分の速さ（例: 8分音符のハイハットを拍と見ていた）
  */
-export function refineOctave(env: ArrayLike<number>, period: number, frameRate: number): number {
+export function refineOctave(env: ArrayLike<number>, period: number, frameRate: number, lowEnv?: ArrayLike<number>): number {
   const minPeriod = (frameRate * 60) / MAX_BPM;
   const maxPeriod = (frameRate * 60) / MIN_BPM;
   for (let step = 0; step < 2; step++) {
@@ -194,7 +196,9 @@ export function refineOctave(env: ArrayLike<number>, period: number, frameRate: 
     const beat = gridMean(env, phase, period);
     if (beat <= 0) break;
     const off = gridMean(env, phase + period / 2, period);
-    if (off / beat >= DOUBLE_IF_OFFBEAT && period / 2 >= minPeriod) {
+    // 裏拍の低音: スネアの胴鳴り等は低音を含むが、メロディーやハイハットはほとんど含まない
+    const lowOk = !lowEnv || gridMean(lowEnv, phase + period / 2, period) >= DOUBLE_IF_LOW_OFFBEAT * gridMean(lowEnv, phase, period);
+    if (off / beat >= DOUBLE_IF_OFFBEAT && lowOk && period / 2 >= minPeriod) {
       period /= 2;
       continue;
     }
@@ -459,7 +463,7 @@ export function beatConfidence(periodicity: number): number {
 export function analyzeFrames(f: FrameFeatures): Rhythm {
   const env = onsetEnvelope(f.flux, f.frameRate);
   const lowEnv = onsetEnvelope(f.lowFlux, f.frameRate);
-  const tempo = estimateTempo(env, f.frameRate);
+  const tempo = estimateTempo(env, f.frameRate, lowEnv);
   const confidence = tempo ? beatConfidence(tempo.periodicity) : 0;
   // 周期性がほとんど無い（ノイズ・持続音だけ等）なら、拍は求めない
   const beatFrames = tempo && confidence > 0 ? trackBeats(env, tempo.period) : [];
