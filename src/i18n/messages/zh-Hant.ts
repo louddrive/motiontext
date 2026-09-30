@@ -96,6 +96,8 @@ export const zhHant: Record<MessageKey, string> = {
   'rhythm.noAudio': '此檔案沒有音訊，因此未分析歌曲。',
   'rhythm.failed': '無法分析歌曲：{error}',
   'rhythm.undecodable': '此瀏覽器無法讀取該音訊格式（{codec}），因此未分析歌曲。',
+  'rhythm.sync': '讓效果配合歌曲的節拍',
+  'rhythm.weak': '節拍不夠清晰，因此效果未配合歌曲。',
   'beatCheck.title': '節拍確認',
   'beatCheck.info': '{bpm} BPM · 可信度 {conf} · 節拍 {beats} 個 · 段落 {sections}',
   'beatCheck.click': '每拍播放點擊音',

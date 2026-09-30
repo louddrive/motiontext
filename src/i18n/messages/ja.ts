@@ -96,6 +96,8 @@ export const ja: Record<MessageKey, string> = {
   'rhythm.noAudio': 'このファイルには音声が無いため、曲の解析はしていません。',
   'rhythm.failed': '曲を解析できませんでした: {error}',
   'rhythm.undecodable': 'このブラウザでは音声の形式（{codec}）を読み込めないため、曲の解析はしていません。',
+  'rhythm.sync': '演出を曲の拍に合わせる',
+  'rhythm.weak': '拍がはっきりしないため、演出は曲に合わせていません。',
   'beatCheck.title': '拍の確認',
   'beatCheck.info': '{bpm} BPM ・ 確からしさ {conf} ・ 拍 {beats} 個 ・ 区切り {sections}',
   'beatCheck.click': '拍ごとにクリック音を鳴らす',

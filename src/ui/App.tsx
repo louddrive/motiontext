@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { analyze } from '../analysis/features';
 import { startRhythmAnalysis, type RhythmJob } from '../audio/rhythmJob';
 import type { Rhythm } from '../audio/types';
+import { EFFECTS } from '../config/effects';
+import { usableRhythm } from '../director/beatSync';
 import { detectScript } from '../analysis/script';
 import { shiftCues } from '../analysis/timing';
 import { direct } from '../director/director';
@@ -88,6 +90,11 @@ export function App() {
   const [activeId, setActiveId] = useState<number | null>(null);
   const previewRef = useRef<PreviewHandle>(null);
   const [rhythm, setRhythm] = useState<RhythmState | null>(null);
+  /** 演出を曲の拍に合わせるか（曲を解析できたときだけ効く。初期値はオン） */
+  const [syncMusic, setSyncMusic] = useState(true);
+  // 演出に使う解析結果（拍がはっきりしない曲・オフ・beatSync が無効のときは使わない）
+  const syncRhythm = EFFECTS.beatSync && rhythm?.status === 'done' ? usableRhythm(rhythm.rhythm) : null;
+  const directRhythm = syncMusic ? syncRhythm : null;
   const rhythmJobRef = useRef<RhythmJob | null>(null);
   // 画面を閉じたら解析をやめる
   useEffect(() => () => rhythmJobRef.current?.cancel(), []);
@@ -123,8 +130,9 @@ export function App() {
         style.output === 'mp4'
           ? undefined
           : { opacity: style.backdropOpacity, mode: style.backdropMode, color: style.backdropColor },
+      rhythm: directRhythm,
     });
-  }, [loaded, cues, seed, fontIds, fonts, mv?.duration, style]);
+  }, [loaded, cues, seed, fontIds, fonts, mv?.duration, style, directRhythm]);
 
   const subtitleIssues = useMemo(() => (loaded ? validateSubtitles(loaded.result.cues) : []), [loaded]);
   const exportIssues = useMemo(() => {
@@ -189,6 +197,7 @@ export function App() {
     setAutoScript(null);
     setSeed(randomSeed());
     setSeedHistory([]);
+    setSyncMusic(true);
     setOffsetSec(0);
     setStyle(DEFAULT_STYLE);
     setResetKey((k) => k + 1); // ファイル入力等を再マウントして選択状態も消す
@@ -309,6 +318,15 @@ export function App() {
                     ? t('rhythm.noAudio')
                     : t('rhythm.failed', { error: te(rhythm.error) })}
             </p>
+          )}
+          {syncRhythm && (
+            <label className="inline">
+              <input type="checkbox" checked={syncMusic} onChange={(e) => setSyncMusic(e.target.checked)} />
+              {t('rhythm.sync')}
+            </label>
+          )}
+          {EFFECTS.beatSync && rhythm?.status === 'done' && rhythm.rhythm.confidence > 0 && !syncRhythm && (
+            <p className="hint">{t('rhythm.weak')}</p>
           )}
           {loaded && (
             <div className="controls">

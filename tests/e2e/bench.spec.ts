@@ -17,6 +17,8 @@ const CASES: Case[] = [
   // プレビューの再生中はブラーの描き重ねを3回に抑える（src/ui/Preview.tsx）
   ['ultra-portrait', 'preview', { blurSamples: 3 }, {}],
   ['subtle-outline-shadow-xl', 'full', {}, {}],
+  // 曲の拍に合わせる（拍の脈動・間奏の音量表示の分の負荷）
+  ['standard-sync', 'full', {}, {}],
 ];
 
 test('renderFrame の速さ', async ({ page }) => {

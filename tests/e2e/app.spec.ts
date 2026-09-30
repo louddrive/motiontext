@@ -142,6 +142,19 @@ test('曲を読み込むと、裏で拍を解析して BPM を表示する', asy
   await expect(page.locator('.rhythm-status')).toHaveText('曲の拍を検出しました（約 120 BPM）', { timeout: 60_000 });
 });
 
+test('曲を解析できたら「演出を曲の拍に合わせる」が出て、初期値はオン。切り替えてもプレビューは描かれる', async ({ page }) => {
+  await page.locator('.dropzone input[type=file]').setInputFiles(SAMPLE);
+  await expect(page.getByLabel('演出を曲の拍に合わせる')).toHaveCount(0);
+  await loadClickWav(page);
+  const sync = page.getByLabel('演出を曲の拍に合わせる');
+  await expect(sync).toBeChecked({ timeout: 60_000 });
+  await page.locator('.transport input[type=range]').fill('2');
+  await expect.poll(() => litPixels(page), { timeout: 10_000 }).toBeGreaterThan(50);
+  await sync.uncheck();
+  await page.locator('.transport input[type=range]').fill('1.9');
+  await expect.poll(() => litPixels(page), { timeout: 10_000 }).toBeGreaterThan(50);
+});
+
 test('?beats=1 のときだけ、プレビューの下に拍の確認を出す', async ({ page }) => {
   await page.locator('.dropzone input[type=file]').setInputFiles(SAMPLE);
   await loadClickWav(page);

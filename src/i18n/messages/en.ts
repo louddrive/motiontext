@@ -102,6 +102,8 @@ export const en = {
   'rhythm.noAudio': 'This file has no audio, so the music was not analyzed.',
   'rhythm.failed': 'Could not analyze the music: {error}',
   'rhythm.undecodable': 'This browser cannot decode the audio format ({codec}), so the music was not analyzed.',
+  'rhythm.sync': 'Sync the animation to the beat',
+  'rhythm.weak': 'The beat is not clear enough, so the animation is not synced to the music.',
   'beatCheck.title': 'Beat check',
   'beatCheck.info': '{bpm} BPM · confidence {conf} · {beats} beats · sections at {sections}',
   'beatCheck.click': 'Click on each beat',
