@@ -24,7 +24,7 @@ import {
 import type { Timeline } from '../director/types';
 import { LocalizedError } from '../i18n/errors';
 import { buildLayouts, renderFrame } from '../render/renderer';
-import { compositeBitrate, compositeFps } from './compositeParams';
+import { compositeBitrate, compositeFps, compositeTimeline } from './compositeParams';
 
 export type AudioMode = 'copy' | 'aac' | 'none';
 
@@ -45,8 +45,8 @@ export async function runComposite(opts: {
   isCanceled: () => boolean;
   onProgress: (done: number, total: number) => void;
 }): Promise<CompositeResult> {
-  const { media, timeline, writable, isCanceled, onProgress } = opts;
-  const { width, height } = timeline;
+  const { media, writable, isCanceled, onProgress } = opts;
+  const { width, height } = opts.timeline;
   const input = new Input({ source: new BlobSource(media), formats: ALL_FORMATS });
   let output: Output | null = null;
   try {
@@ -60,6 +60,7 @@ export async function runComposite(opts: {
     }
     const duration = await input.computeDuration();
     const fps = compositeFps(vTrack ? (await vTrack.computePacketStats(120)).averagePacketRate : null, !!vTrack);
+    const timeline = compositeTimeline(opts.timeline, fps);
     const bitrate = compositeBitrate(width, height, fps);
     if (!(await canEncodeVideo('avc', { width, height, bitrate }))) {
       throw new LocalizedError('err.h264Unsupported');

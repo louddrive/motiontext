@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { compositeBitrate, compositeFileName, compositeFps, estimateComposite } from '../src/export/compositeParams';
+import { compositeBitrate, compositeFileName, compositeFps, compositeTimeline, estimateComposite } from '../src/export/compositeParams';
+import { NO_BACKDROP, type Timeline } from '../src/director/types';
+import { blurSampleTimes } from '../src/render/fx';
 
 describe('compositeFps', () => {
   it('MV のフレームレートに合わせ、よく使う値に丸める', () => {
@@ -46,5 +48,39 @@ describe('compositeBitrate / 目安 / ファイル名', () => {
   it('出力ファイル名', () => {
     expect(compositeFileName('song', 1920, 1080)).toBe('song_with_mv_1920x1080.mp4');
     expect(compositeFileName('a/b', 1080, 1920)).toBe('a_b_with_mv_1080x1920.mp4');
+  });
+});
+
+describe('compositeTimeline', () => {
+  const tl: Timeline = {
+    width: 1920,
+    height: 1080,
+    fps: 30,
+    duration: 10,
+    background: 'black',
+    glow: 0,
+    backdrop: NO_BACKDROP,
+    motionBlur: { shutter: 0.5, samples: 4 },
+    outline: false,
+    shadow: false,
+    shakes: [],
+    interludes: [],
+    items: [],
+  };
+
+  it('出力の fps に合わせ、モーションブラーのシャッター幅をフレーム間隔に対して一定に保つ', () => {
+    const at60 = compositeTimeline(tl, 60);
+    expect(at60.fps).toBe(60);
+    const span = (t: Timeline) => {
+      const times = blurSampleTimes(1, t.fps, t.motionBlur.shutter, t.motionBlur.samples);
+      return times[0] - times[times.length - 1];
+    };
+    // シャッター 0.5 = フレーム間隔の半分
+    expect(span(at60)).toBeCloseTo(0.5 / 60);
+    expect(span(compositeTimeline(tl, 24))).toBeCloseTo(0.5 / 24);
+  });
+
+  it('fps が同じならそのまま返す（描画のキャッシュを使い回す）', () => {
+    expect(compositeTimeline(tl, 30)).toBe(tl);
   });
 });

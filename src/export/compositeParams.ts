@@ -1,4 +1,5 @@
 // MV／曲との合成書き出しのパラメータ決定（純粋関数）
+import type { Timeline } from '../director/types';
 import { safeName } from './sequence';
 
 /** 合成出力の最大フレームレート */
@@ -45,3 +46,11 @@ export function estimateComposite(
 
 /** 合成書き出しの速度の目安（1080p のフレーム/秒）。MV のデコード＋歌詞描画＋エンコード */
 export const COMPOSITE_FRAMES_PER_SEC = 60;
+
+/**
+ * 合成で描くタイムライン。出力の fps は MV に合わせて決まるので、タイムラインの fps もそれに合わせる。
+ * モーションブラーのシャッター幅は fps から決まるため、合わせないと 60fps の MV でブレが2倍になる
+ */
+export function compositeTimeline(timeline: Timeline, fps: number): Timeline {
+  return timeline.fps === fps ? timeline : { ...timeline, fps };
+}
