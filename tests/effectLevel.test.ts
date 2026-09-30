@@ -58,6 +58,6 @@ describe('演出レベル', () => {
   });
 
   it('どのレベルでも決定的', () => {
-    for (const l of [...EFFECT_LEVELS]) expect(run(l, 8)).toEqual(run(l, 8));
+    for (const l of EFFECT_LEVELS) expect(run(l, 8)).toEqual(run(l, 8));
   });
 });

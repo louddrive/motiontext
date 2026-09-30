@@ -2,6 +2,8 @@
 
 /** ファイル名に使えない文字を置き換える */
 export function safeName(name: string): string {
+  // 制御文字（U+0000〜U+001F）もファイル名に使えないので、意図して置き換える
+  // eslint-disable-next-line no-control-regex
   return name.replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_').trim() || 'lyrics';
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MAX_TIMING_OFFSET_SEC, clampOffset } from '../analysis/timing';
 import { useI18n } from '../i18n/react';
 
@@ -14,7 +14,12 @@ interface SeedProps {
 export function SeedControls({ seed, canUndo, onRegenerate, onUndo, onSeedInput }: SeedProps) {
   const { t } = useI18n();
   const [draft, setDraft] = useState(String(seed));
-  useEffect(() => setDraft(String(seed)), [seed]);
+  // 外からパターン番号が変わったら入力欄も合わせる（effect ではなく描画中に前の値と比べて更新する）
+  const [shownSeed, setShownSeed] = useState(seed);
+  if (shownSeed !== seed) {
+    setShownSeed(seed);
+    setDraft(String(seed));
+  }
 
   const commit = () => {
     const n = Number(draft.trim());
@@ -55,7 +60,11 @@ interface TimingProps {
 export function TimingControls({ offsetSec, onChange }: TimingProps) {
   const { t } = useI18n();
   const [draft, setDraft] = useState(offsetSec.toFixed(2));
-  useEffect(() => setDraft(offsetSec.toFixed(2)), [offsetSec]);
+  const [shownOffset, setShownOffset] = useState(offsetSec);
+  if (shownOffset !== offsetSec) {
+    setShownOffset(offsetSec);
+    setDraft(offsetSec.toFixed(2));
+  }
   const set = (v: number) => onChange(clampOffset(v));
 
   return (

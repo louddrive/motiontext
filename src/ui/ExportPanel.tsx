@@ -39,7 +39,9 @@ function formatMB(mb: number): string {
 }
 
 export function ExportPanel({ timeline, fontIds, text, baseName, format, issues, media, onExported }: Props) {
-  const [progress, setProgress] = useState<number | null>(null);
+  const [progress, setProgressState] = useState<number | null>(null);
+  /** 進捗を受け取った時点の経過秒（残り時間の推定用） */
+  const [elapsedSec, setElapsedSec] = useState(0);
   const { t, te } = useI18n();
   // エラーは表示時に翻訳する（言語を切り替えたときも追従する）
   const [error, setError] = useState<unknown>(null);
@@ -54,12 +56,15 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
   const png = format === 'png';
   const composite = format === 'composite';
 
-  // 経過時間と進捗から残り時間を推定（序盤は不安定なので 3% 以降に表示）
-  let remaining: string | null = null;
-  if (progress !== null && progress >= 0.03 && progress < 1) {
-    const elapsed = (performance.now() - startedAtRef.current) / 1000;
-    remaining = formatTime((elapsed * (1 - progress)) / progress);
+  /** 進捗を更新する。経過時間は描画中に測らず、ここで一緒に記録する */
+  function setProgress(p: number | null) {
+    setProgressState(p);
+    setElapsedSec(p === null ? 0 : (performance.now() - startedAtRef.current) / 1000);
   }
+
+  // 経過時間と進捗から残り時間を推定（序盤は不安定なので 3% 以降に表示）
+  const remaining =
+    progress !== null && progress >= 0.03 && progress < 1 ? formatTime((elapsedSec * (1 - progress)) / progress) : null;
 
   async function runMp4() {
     const job = startExport(timeline, fontIds, text, setProgress);
@@ -71,8 +76,8 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
   async function runPng(): Promise<Localized> {
     // 保存先はクリック直後に選ばせる（ブラウザの制約）
     const parent = await pickOutputDirectory();
-    setProgress(0);
     startedAtRef.current = performance.now();
+    setProgress(0);
     const job = startPngSequenceExport(parent, baseName, timeline, fontIds, text, setProgress);
     jobRef.current = job;
     const result = await job.promise;
@@ -86,8 +91,8 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
     if (!media) throw new LocalizedError('export.noMedia');
     // 保存先はクリック直後に選ばせる（ブラウザの制約）
     const handle = await pickOutputFile(compositeFileName(baseName, timeline.width, timeline.height), t('picker.mp4'));
-    setProgress(0);
     startedAtRef.current = performance.now();
+    setProgress(0);
     const job = startCompositeExport(handle, media.file, timeline, fontIds, text, setProgress);
     jobRef.current = job;
     const r = await job.promise;
@@ -99,8 +104,8 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
     setError(null);
     setPartial(null);
     if (!png && !composite) {
-      setProgress(0);
       startedAtRef.current = performance.now();
+      setProgress(0);
     }
     try {
       if (png) onExported(autoWipe, await runPng());

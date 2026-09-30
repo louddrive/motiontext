@@ -119,7 +119,7 @@ export function App() {
       issues.unshift({ level: 'error', key: 'composite.needMedia' });
     }
     return issues;
-  }, [loaded, cues, timeline, mv?.duration, style.output]);
+  }, [loaded, cues, timeline, mv, style.output]);
 
   /** パターンを変える。今のパターン番号は「1つ前に戻す」用に履歴へ積む */
   function changeSeed(next: number) {

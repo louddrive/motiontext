@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef } from 'react';
+import { memo, useLayoutEffect, useMemo, useRef } from 'react';
 import type { TimelineItem } from '../director/types';
 import { useI18n } from '../i18n/react';
 import { formatClock } from './Preview';
@@ -20,7 +20,9 @@ export const CueList = memo(function CueList({ items, activeId, onSeek }: Props)
   );
   // onSeek は毎回新しい関数になるので ref で最新を使い、一覧の再描画を activeId の変化だけに抑える
   const seekRef = useRef(onSeek);
-  seekRef.current = onSeek;
+  useLayoutEffect(() => {
+    seekRef.current = onSeek;
+  });
   return (
     <div className="cue-list">
       <p className="hint">{t('preview.cueList', { count: rows.length })}</p>

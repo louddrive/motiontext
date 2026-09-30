@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  // TypeScript 7（ネイティブ版）は typescript-eslint が使えないため、TypeScript に依存しない oxlint で検査する。
+  // 誤検出の少ない correctness と React の Hooks のルールだけを有効にする
+  "plugins": ["typescript", "unicorn", "oxc", "react"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "react/react-in-jsx-scope": "off"
+  },
+  "ignorePatterns": ["dist/**", "node_modules/**", "src/data/strokes.ts"]
+}
