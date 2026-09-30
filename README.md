@@ -77,6 +77,9 @@ Settings and controls are on the left, and the preview is on the right. The left
 - Use "**Load MV / audio (optional, for preview)**" to see how the lyrics look over your MV or song.
   - The "Overlay on MV" checkbox below the preview turns the overlay on and off.
   - The length of the loaded MV / song is also used as the export length.
+  - When loaded, the beats (tempo) of the song are analyzed automatically and shown like "Beats detected (about 120 BPM)." The analysis runs only on your computer.
+    - For now, the result is not yet used for the animation (it will be used to sync the animation to the beat).
+    - Slow songs may be shown at double tempo (for example, a 75 BPM song as about 150 BPM).
 - If the subtitles and the MV are out of sync, shift all subtitles with "**Subtitle timing**".
   - "▶" shows the subtitles 0.1 s later each time, "◀" 0.1 s earlier. You can also type a value (up to ±30 seconds).
   - "↺" resets the shift to 0. The subtitle file itself is not modified.
@@ -298,7 +301,8 @@ npm run bench               # time renderFrame per frame (with / without glow an
 | Timeline golden | `tests/golden/timeline.test.ts` → `tests/golden/__golden__/timeline/` | Unintended changes to the generated direction (a pattern number no longer reproduces the same result) |
 | Draw-command golden | `tests/golden/draw.test.ts` → `tests/golden/__golden__/draw/` | Where and how each glyph, line and particle is drawn. It records the final position, transform, opacity, color and glow, so refactors that keep the look do not produce a diff |
 | Visual | `tests/e2e/visual.spec.ts` → `tests/e2e/__screenshots__/<OS>/` | The actual look with the real fonts. Images are stored per OS because text rasterization differs |
-| App | `tests/e2e/app.spec.ts` | Loading, keyboard access, preview and MP4 export in a real browser |
+| App | `tests/e2e/app.spec.ts` | Loading, keyboard access, preview, MP4 export and music analysis in a real browser |
+| Rhythm analysis | `tests/rhythm.test.ts` | Beats, tempo, downbeats, sections and loudness on synthetic audio ([tests/helpers/synth.ts](tests/helpers/synth.ts)). Beats are scored with the F-measure (±70 ms) |
 
 - The golden fixture is [tests/fixtures/golden.srt](tests/fixtures/golden.srt) (original lyrics). The shared settings live in [tests/helpers/goldenPresets.ts](tests/helpers/goldenPresets.ts).
 - After an intentional change, update with `npx vitest run tests/golden -u` (and `npm run test:visual:update`), review the diff, then commit.
@@ -311,6 +315,11 @@ npm run bench               # time renderFrame per frame (with / without glow an
 - PNG sequences and composites are written directly to the destination with the File System Access API (nothing accumulates in memory, so long videos are fine).
 - Lyrics-only MP4s are built in memory before saving, so a warning is shown over 10 minutes.
 - The production build blocks external connections with a CSP (meta tag in `index.html`). localStorage / IndexedDB / cookies / Service Workers are not used.
+- Rhythm analysis ([src/audio/](src/audio/)) decodes the MV / song with mediabunny in a Worker and computes an STFT with a built-in FFT (no new dependencies).
+  - Tempo comes from the autocorrelation of the onset strength (log spectral flux) weighted by a tempo prior, then double / half tempo errors are corrected from the strength of off-beats and alternate beats. Beats are tracked with the dynamic programming method of Ellis (2007).
+  - Downbeats are estimated from low-frequency onsets assuming 4/4, and sections from beat-level timbre similarity (Foote novelty). All of these are estimates and can be wrong on real songs.
+  - `confidence` comes from the periodicity of the onset strength. Noise or sustained sounds return no beats.
+  - To check the result by ear, open the app with `?beats=1`. A beat check appears below the preview: a dot flashes on each beat, and you can turn on a click on each beat (not included in exports).
 - Limits are defined in `LIMITS` in [src/limits.ts](src/limits.ts).
 - Motion blur renders only the lyrics layer at several points in time and averages them (the background and color layer are not blurred). The preview uses fewer samples while playing.
 - UI text lives in the dictionaries in [src/i18n/messages/](src/i18n/messages/). English (`en.ts`) is the source; missing keys in other languages are caught by the type checker. Logic code (validation, export errors) returns keys and parameters instead of text, and the UI translates them.
@@ -320,6 +329,7 @@ npm run bench               # time renderFrame per frame (with / without glow an
 ```text
 src/parsers    SRT/SBV parsers
 src/analysis   Features (tempo, sections, chorus detection, phrase segmentation, stroke counts, vertical-text check)
+src/audio      Rhythm analysis of the song (MV / song audio → beats, tempo, downbeats, onsets, loudness, sections; in a Worker)
 src/director   Features + theme + seed → Timeline (deterministic)
 src/config     Loads the developer effect switches (effects.config.json)
 src/themes     Theme definitions and effect levels
