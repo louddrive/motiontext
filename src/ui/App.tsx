@@ -169,11 +169,12 @@ export function App() {
 
   function loadMv(file: File | undefined) {
     if (!file) return;
-    revokeObjectUrl(mv?.url);
     const url = createObjectUrl(file);
     const probe = document.createElement('video');
     probe.preload = 'metadata';
     probe.onloadedmetadata = () => {
+      // 前の MV の URL は、新しいファイルを読み込めてから破棄する（失敗したら前の MV をそのまま使えるように）
+      revokeObjectUrl(mv?.url);
       setMv({ file, url, name: file.name, duration: Number.isFinite(probe.duration) ? probe.duration : 0 });
       probe.removeAttribute('src');
     };
@@ -208,11 +209,17 @@ export function App() {
           <span className="tag">{t('app.tagline')}</span>
         </header>
 
-        {notice && (
-          <p className="notice" onClick={() => setNotice(null)}>
-            {notice.wrap ? t(notice.wrap, { message: tl(notice.msg) }) : tl(notice.msg)}
-          </p>
-        )}
+        {/* 完了・破棄などのお知らせ。読み上げソフトにも伝える（live region は常に置いておく） */}
+        <div role="status" aria-live="polite">
+          {notice && (
+            <p className="notice">
+              <span>{notice.wrap ? t(notice.wrap, { message: tl(notice.msg) }) : tl(notice.msg)}</span>
+              <button type="button" className="notice-close" aria-label={t('app.dismiss')} title={t('app.dismiss')} onClick={() => setNotice(null)}>
+                ×
+              </button>
+            </p>
+          )}
+        </div>
 
         <Section title={t('sec.subtitle')}>
           {loaded ? (
@@ -238,7 +245,8 @@ export function App() {
           <div className="controls">
             <label className="file-btn">
               {t('mv.load')}
-              <input type="file" accept="video/*,audio/*" hidden onChange={(e) => loadMv(e.target.files?.[0])} />
+              {/* hidden にするとキーボードで選べないので、見た目だけ隠す */}
+              <input type="file" accept="video/*,audio/*" className="visually-hidden" onChange={(e) => loadMv(e.target.files?.[0])} />
             </label>
             {mv && <span className="hint">{t('mv.loaded', { name: mv.name, sec: mv.duration.toFixed(1) })}</span>}
           </div>

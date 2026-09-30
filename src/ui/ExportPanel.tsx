@@ -195,13 +195,17 @@ export function ExportPanel({ timeline, fontIds, text, baseName, format, issues,
         </button>
       ) : (
         <div className="progress-row">
-          <progress value={progress} max={1} />
+          <progress value={progress} max={1} aria-label={t('export.progressLabel')} />
           <span>{Math.round(progress * 100)}%</span>
           {remaining && <span className="hint">{t('export.remaining', { time: remaining })}</span>}
           <button onClick={() => jobRef.current?.cancel()}>{t('export.cancel')}</button>
         </div>
       )}
-      {error != null && <p className="error">{te(error)}</p>}
+      {error != null && (
+        <p className="error" role="alert">
+          {te(error)}
+        </p>
+      )}
       {partial && (
         <div className="partial">
           <span>{t(partial.kind === 'folder' ? 'export.partial.folder' : 'export.partial.file', { name: partial.label })}</span>

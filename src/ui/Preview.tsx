@@ -58,6 +58,8 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
+  /** 書体の読み込みに失敗した（代わりの書体で描いている） */
+  const [fontError, setFontError] = useState(false);
   const [overlay, setOverlay] = useState(true);
   const activeRef = useRef<number | null>(null);
   // 描画ループから最新のコールバックを呼ぶため ref で持つ
@@ -73,12 +75,18 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
     let alive = true;
     setLoading(true);
     layoutsRef.current = null;
-    ensureGlyphs(document.fonts, fontIds, text).then(() => {
+    const layout = (failed: boolean) => {
       const ctx = canvasRef.current?.getContext('2d');
       if (!alive || !ctx) return;
       layoutsRef.current = buildLayouts(ctx, timeline);
+      setFontError(failed);
       setLoading(false);
-    });
+    };
+    // 読み込みに失敗しても「読み込み中」のまま止めず、代わりの書体で描いて知らせる
+    ensureGlyphs(document.fonts, fontIds, text).then(
+      () => layout(false),
+      () => layout(true),
+    );
     return () => {
       alive = false;
     };
@@ -194,6 +202,11 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
         />
         {loading && <div className="stage-msg">{t('preview.loadingFonts')}</div>}
       </div>
+      {fontError && (
+        <p className="error" role="alert">
+          {t('preview.fontLoadFailed')}
+        </p>
+      )}
       <div className="transport">
         <button onClick={() => (playing ? pause() : play())}>{playing ? t('preview.pause') : t('preview.play')}</button>
         <input
@@ -201,6 +214,7 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
           min={0}
           max={timeline.duration}
           step={1 / timeline.fps}
+          aria-label={t('preview.seek')}
           value={time}
           onChange={(e) => seek(Number(e.target.value))}
         />

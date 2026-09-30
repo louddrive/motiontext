@@ -49,11 +49,16 @@ export function DropZone({ onLoaded }: Props) {
           void handle(e.dataTransfer.files[0]);
         }}
       >
-        <input type="file" accept=".srt,.sbv,text/plain" hidden onChange={(e) => void handle(e.target.files?.[0])} />
+        {/* hidden にするとキーボードで選べないので、見た目だけ隠す */}
+        <input type="file" accept=".srt,.sbv,text/plain" className="visually-hidden" onChange={(e) => void handle(e.target.files?.[0])} />
         <strong>{t('drop.title')}</strong>
         <span>{t('drop.sub')}</span>
       </label>
-      {error != null && <p className="error">{te(error)}</p>}
+      {error != null && (
+        <p className="error" role="alert">
+          {te(error)}
+        </p>
+      )}
     </div>
   );
 }
