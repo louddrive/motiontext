@@ -91,7 +91,7 @@ export const ja: Record<MessageKey, string> = {
   'mv.load': 'MV / 音声を読み込む（任意・確認用）',
   'mv.loaded': '{name}（{sec} 秒・書き出し長に反映）',
   'rhythm.running': '曲を解析しています… {pct}%',
-  'rhythm.done': '曲の拍を検出しました（約 {bpm} BPM）。',
+  'rhythm.done': '曲の拍を検出しました（約 {bpm} BPM）',
   'rhythm.unclear': 'この曲では、はっきりした拍が見つかりませんでした。',
   'rhythm.noAudio': 'このファイルには音声が無いため、曲の解析はしていません。',
   'rhythm.failed': '曲を解析できませんでした: {error}',

@@ -139,7 +139,7 @@ async function loadClickWav(page: Page, bpm = 120, seconds = 20) {
 
 test('曲を読み込むと、裏で拍を解析して BPM を表示する', async ({ page }) => {
   await loadClickWav(page);
-  await expect(page.locator('.rhythm-status')).toHaveText('曲の拍を検出しました（約 120 BPM）。', { timeout: 60_000 });
+  await expect(page.locator('.rhythm-status')).toHaveText('曲の拍を検出しました（約 120 BPM）', { timeout: 60_000 });
 });
 
 test('?beats=1 のときだけ、プレビューの下に拍の確認を出す', async ({ page }) => {
