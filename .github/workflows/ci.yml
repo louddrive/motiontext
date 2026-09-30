@@ -1,0 +1,56 @@
+# プルリクエストと main 以外のブランチへの push で、lint・型チェック・テスト・ビルドを行う（デプロイはしない）
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - name: Build
+        run: npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+
+  # ブラウザでの動作確認（字幕の読み込み・プレビュー・MP4 の書き出し）。
+  # 見た目の比較（visual）は OS ごとに画像が違うため、ここでは行わない（手元で npm run test:e2e）
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # 付属の Chromium は Linux で H.264 を使えない場合があるため、Google Chrome で動かす
+      - run: npx playwright install --with-deps chrome
+      - run: npx playwright test --project=app
+        env:
+          PW_CHANNEL: chrome
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-results
+          path: test-results/
+          retention-days: 7
