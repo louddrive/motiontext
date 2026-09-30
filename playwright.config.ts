@@ -13,7 +13,8 @@ export default defineConfig({
   timeout: 120_000,
   fullyParallel: false,
   workers: 1,
-  reporter: isCI ? 'list' : [['list']],
+  // CI では失敗の内容を GitHub の注記（annotation）にも出す（サインインせずに API から読めるように）
+  reporter: isCI ? [['github'], ['list']] : [['list']],
   snapshotPathTemplate: '{testDir}/__screenshots__/{platform}/{arg}{ext}',
   expect: {
     toMatchSnapshot: { threshold: 0.2, maxDiffPixelRatio: 0.002 },
