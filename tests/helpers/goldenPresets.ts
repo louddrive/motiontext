@@ -51,6 +51,8 @@ export const GOLDEN_PRESETS: Record<string, () => GoldenPreset> = {
   'standard-green': () => ({ timeline: build('standard', 'landscape', { background: 'green' }), opts: {} }),
   // 曲の拍に合わせる（124 BPM の仮の解析結果。区切りは 14.5 秒と 36 秒）
   'standard-sync': () => ({ timeline: build('standard', 'landscape', { rhythm: GOLDEN_RHYTHM }), opts: {} }),
+  // 「エモい」以上は、間奏に曲の音量の波形も出る
+  'emo-sync': () => ({ timeline: build('emo', 'landscape', { rhythm: GOLDEN_RHYTHM }), opts: {} }),
   'ultra-sync-portrait': () => ({ timeline: build('ultra', 'portrait', { rhythm: GOLDEN_RHYTHM }), opts: {} }),
 };
 

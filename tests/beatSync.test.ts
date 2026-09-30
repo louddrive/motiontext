@@ -163,11 +163,12 @@ describe('director に曲のリズムを渡したとき', () => {
     expect(new Set(chorus.map((it) => it.energy)).size).toBeGreaterThan(1);
   });
 
-  it('描画用のリズム（拍・小節の頭・音量）を持つ。interludeMeter が無効なら音量は持たない', () => {
+  it('描画用のリズム（拍・小節の頭）を持つ。間奏の波形用の音量は「エモい」以上だけで、interludeMeter が無効なら持たない', () => {
     expect(synced.rhythm?.beats).toEqual(rhythm.beats);
     expect(synced.rhythm?.downbeats).toEqual(rhythm.downbeats);
-    expect(synced.rhythm?.energy).toEqual(rhythm.energy);
-    expect(build({ rhythm, effects: { ...ALL_EFFECTS, interludeMeter: false } }).rhythm?.energy).toBeUndefined();
+    expect(synced.rhythm?.energy).toBeUndefined();
+    for (const level of ['emo', 'ultra'] as const) expect(build({ rhythm }, level).rhythm?.energy).toEqual(rhythm.energy);
+    expect(build({ rhythm, effects: { ...ALL_EFFECTS, interludeMeter: false } }, 'emo').rhythm?.energy).toBeUndefined();
   });
 
   it('同じ入力なら同じ結果（決定的）', () => {

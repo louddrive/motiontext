@@ -84,7 +84,7 @@ Settings and controls are on the left, and the preview is on the right. The left
       - The chorus lyrics bounce on every beat (scale of 2% for "Standard", 4% for "Emotional" and 6% for "Ultra emotional"; 1.5 times that at the start of a bar).
       - Loud parts of the chorus move more, and the camera shake at the start of a chorus happens at the start of a bar.
       - Whether a line is part of the chorus is judged from repeated lyrics and also from the loudness of the song.
-      - The interlude progress gets bars that move with the loudness of the song.
+      - With "Emotional" and "Ultra emotional", the interlude progress gets a waveform that moves with the loudness of the song (radial bars around the circle, or a spectrum-like line across the middle of the screen for the horizontal style).
     - Lyrics outside the chorus, and the "None" and "Subtle" levels, look the same as without a song.
     - For songs without a clear beat, the animation is not synced (a message says so).
     - An offset of all subtitles is not fixed automatically. If they are out of sync, adjust "Subtitle timing" below (beats are evenly spaced, so the beats alone cannot tell how many beats off the subtitles are).
@@ -386,7 +386,7 @@ If the direction feels too busy, you can remove individual effects later. The sw
 | `underline` | No lyric lines (underline for horizontal text, a line on the right of vertical columns) |
 | `beatSync` | The animation is not synced to the beat (the song is still analyzed and the BPM is shown) |
 | `beatPulse` | No bounce of the chorus lyrics on each beat |
-| `interludeMeter` | No loudness bars on the interlude progress |
+| `interludeMeter` | No loudness waveform on the interlude progress (shown only with "Emotional" and "Ultra emotional") |
 
 - Turning an effect off removes only that effect. The random picks stay in the same order, so with the same seed everything else looks the same.
   - The exceptions are `glitch`, `echo`, `bandWipe`, `slot`, `split` and `outlineEcho`. They are removed from the list of candidate animations, so those lines get a different animation instead.

@@ -11,6 +11,7 @@ export const PRESETS = [
   'standard-backdrop-transparent',
   'standard-green',
   'standard-sync',
+  'emo-sync',
   'ultra-sync-portrait',
 ];
 
