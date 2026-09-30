@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { syncStagger } from '../src/animations/registry';
 import { PULSE_ATTACK_SEC, PULSE_DECAY_SEC, PULSE_DOWNBEAT_BOOST, pulseScale } from '../src/render/fx';
-import { ecgShape, ecgValue, exaggerated, METER_BARS, METER_STEP_SEC, meterLevel, meterRange } from '../src/render/interlude';
+import { exaggerated, METER_BARS, METER_STEP_SEC, meterLevel, meterRange, waveKick, waveOffset, WAVE_CYCLES } from '../src/render/interlude';
 
 describe('拍の脈動', () => {
   const rhythm = { beats: [1, 1.5, 2, 2.5], downbeats: [1, 3] };
@@ -54,14 +54,23 @@ describe('間奏の音量表示', () => {
     expect(meterLevel(energy, t, 0, range)).toBe(0);
   });
 
-  it('横型: 拍で鋭い山が立ち、拍の間は基準線に戻る', () => {
-    expect(ecgShape(0)).toBeGreaterThan(0.9);
-    expect(ecgShape(0.018)).toBeLessThan(0);
-    expect(Math.abs(ecgShape(0.4))).toBeLessThan(0.01);
-    const range = { lo: 0.5, hi: 1 };
-    expect(ecgValue([7], energy, 7, range)).toBeGreaterThan(0.9);
-    // 音量が小さい所の拍は、山が低い
-    expect(ecgValue([2], energy, 2, range)).toBeLessThan(0.4);
-    expect(ecgValue([2, 7], energy, 4.5, range)).toBe(0);
+  it('横型: 中央（低音側）ほど大きく振れ、音量が大きいほど・拍の直後ほど大きい', () => {
+    // 振れの大きさ（波の山の付近の最大）を、中央の近くと端の近くで比べる
+    const peak = (from: number, level: number, kick: number, t = 1.234) => {
+      let m = 0;
+      for (let i = 0; i <= 200; i++) m = Math.max(m, Math.abs(waveOffset(from + (i / 200) * (1 / WAVE_CYCLES), t, level, kick)));
+      return m;
+    };
+    expect(peak(0, 1, 0)).toBeGreaterThan(peak(0.9, 1, 0) * 2);
+    expect(peak(0, 1, 0)).toBeGreaterThan(peak(0, 0, 0) * 2);
+    expect(peak(0, 1, 1)).toBeGreaterThan(peak(0, 1, 0) * 1.5);
+    // 同じ入力なら同じ値（決定的）
+    expect(waveOffset(0.3, 5.5, 0.7, 0.2)).toBe(waveOffset(0.3, 5.5, 0.7, 0.2));
+  });
+
+  it('横型: 拍の瞬間に 1 で、時間とともに 0 に近づく', () => {
+    expect(waveKick([1, 2], 1)).toBe(1);
+    expect(waveKick([1, 2], 1.15)).toBeCloseTo(Math.exp(-1));
+    expect(waveKick([1, 2], 0.5)).toBe(0);
   });
 });

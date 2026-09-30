@@ -113,37 +113,63 @@ export function meterLevel(energy: Energy, t: number, k: number, range: { lo: nu
   return exaggerated(energy, t - (METER_BARS - 1 - k) * METER_STEP_SEC, range);
 }
 
-/** 横型の心電図の線: 画面の幅に見せる秒数（右端が今、左端が ECG_WINDOW_SEC 秒前） */
-export const ECG_WINDOW_SEC = 3;
+/** 横型の音量表示: 左右それぞれの、中央から端までの波の数（線が上下に振れる回数） */
+export const WAVE_CYCLES = 14;
+/** 波が中央から外へ流れる速さ（波の数/秒） */
+const WAVE_FLOW = 1.2;
+/** 拍の瞬間に、中央（低音側）を跳ねさせる強さと、元に戻る秒数 */
+const WAVE_KICK = 1.2;
+const WAVE_KICK_DECAY_SEC = 0.15;
+
+/** 横型の音量表示の、中央から端までの帯域の数（帯域の間はなめらかにつなぐ） */
+export const WAVE_BANDS = 24;
+
+/** 帯域 j のゆらぎの位相（帯域の番号だけで決まる。乱数を使わず決定的） */
+const bandPhase = (j: number, k: number) => ((Math.sin((j + 1) * 12.9898 * k + 78.233) * 43758.5453) % 1) * Math.PI * 2;
+
+/** 帯域 j（0 = 中央、WAVE_BANDS - 1 = 端）の、時刻 t の大きさ（0..1 程度。拍の跳ねを含む） */
+function bandMagnitude(j: number, t: number, level: number, kick: number): number {
+  const u = j / (WAVE_BANDS - 1);
+  // 中央（低音側）ほど大きく、端（高音側）ほど小さい
+  const envelope = 0.15 + 0.85 * (1 - u) ** 0.8;
+  // 帯域ごとにばらばらに揺らす（速さと位相を帯域ごとに変える）
+  const wobble =
+    0.55 + 0.3 * Math.sin(2 * Math.PI * (1.3 + 3.1 * u) * t + bandPhase(j, 1)) + 0.15 * Math.sin(2 * Math.PI * (2.7 + 5.3 * u) * t + bandPhase(j, 2));
+  return envelope * wobble * (0.2 + 0.8 * level) * (1 + WAVE_KICK * kick * (1 - u) ** 2);
+}
 
 /**
- * 心電図の波形（拍の時刻 b から d = τ - b 秒の高さ。1 が山の頂点、負は基準線より下）。
- * 拍の直前に小さく下がり、拍で鋭く上がって下がり、少し後になだらかな小山がある
+ * 横型の疑似スペアナ: 画面中央からの距離 u（0 = 中央、1 = 端）の、時刻 t の振れ（-1..1 程度）。
+ * 実際の周波数を解析するのではなく、音量と拍から作る見た目だけの動き。中央ほど低い音に見立てて大きく動かし、
+ * 帯域ごとにばらばらに揺らし、拍の瞬間に中央を跳ねさせる。線が上下に振れる波は、中央から外へ流れる
  */
-export function ecgShape(d: number): number {
-  const g = (x: number, mu: number, sigma: number) => Math.exp(-0.5 * ((x - mu) / sigma) ** 2);
-  return -0.18 * g(d, -0.018, 0.008) + g(d, 0, 0.007) - 0.32 * g(d, 0.018, 0.009) + 0.22 * g(d, 0.16, 0.035);
+export function waveOffset(u: number, t: number, level: number, kick: number): number {
+  // 帯域の間は、なめらかにつなぐ（線がギザギザしないように）
+  const x = Math.min(1, Math.max(0, u)) * (WAVE_BANDS - 1);
+  const j = Math.min(WAVE_BANDS - 2, Math.floor(x));
+  const f = x - j;
+  const w = f * f * (3 - 2 * f);
+  const magnitude = bandMagnitude(j, t, level, kick) * (1 - w) + bandMagnitude(j + 1, t, level, kick) * w;
+  // 上下に振れる波（中央から外へ流れる）
+  return magnitude * Math.sin(2 * Math.PI * (WAVE_CYCLES * u - WAVE_FLOW * t));
 }
 
-/** 時刻 τ の心電図の線の高さ（拍ごとの波形 × その拍の強調した音量）。拍が無い所は 0（基準線） */
-export function ecgValue(beats: number[], energy: Energy | undefined, tau: number, range: { lo: number; hi: number }): number {
-  let v = 0;
-  // 波形は拍の前後 0.3 秒に収まるので、近くの拍だけを見る
+/** 時刻 t の拍の跳ね（直前の拍からの経過で 1 → 0） */
+export function waveKick(beats: number[], t: number): number {
   let lo = 0;
   let hi = beats.length - 1;
-  while (lo < hi) {
+  let last = -1;
+  while (lo <= hi) {
     const mid = (lo + hi) >> 1;
-    if (beats[mid] < tau - 0.3) lo = mid + 1;
-    else hi = mid;
+    if (beats[mid] <= t) {
+      last = mid;
+      lo = mid + 1;
+    } else hi = mid - 1;
   }
-  for (let i = lo; i < beats.length && beats[i] <= tau + 0.3; i++) {
-    const amp = energy ? 0.25 + 0.75 * exaggerated(energy, beats[i], range) : 1;
-    v += amp * ecgShape(tau - beats[i]);
-  }
-  return v;
+  return last < 0 ? 0 : Math.exp(-(t - beats[last]) / WAVE_KICK_DECAY_SEC);
 }
 
-/** 心電図の線の色（左端ほど薄くする） */
+/** 線の色（端ほど薄くする） */
 function fadeColor(hex: string, alpha: number): string {
   const [r, g, b] = hexToRgb(hex);
   return `rgba(${r},${g},${b},${alpha})`;
@@ -192,17 +218,21 @@ export function drawInterlude(ctx: Ctx2D, timeline: Timeline, t: number): void {
       ctx.lineTo(x0 + w * p, y);
       ctx.stroke();
     }
-    // 画面の中央を水平に横切る心電図の線（拍ごとに波形が立ち、右から左へ流れる。右端が今）
+    // 画面の中央を水平に横切る、曲の音量と拍に合わせて動く疑似スペアナの線（左右対称。端ほど薄い）
     const rhythm = timeline.rhythm;
     if (rhythm?.energy) {
       const range = meterRange(rhythm.energy, interlude.start, interlude.end);
+      const level = exaggerated(rhythm.energy, t, range);
+      const kick = waveKick(rhythm.beats, t);
       const cy = height / 2;
-      const amp = Math.min(width, height) * 0.16;
+      const amp = Math.min(width, height) * 0.14;
       const step = Math.max(1, 2 * res);
       const grad = ctx.createLinearGradient(0, 0, width, 0);
       grad.addColorStop(0, fadeColor(interlude.color, 0));
-      grad.addColorStop(0.35, fadeColor(interlude.color, 0.6));
-      grad.addColorStop(1, fadeColor(interlude.color, 1));
+      grad.addColorStop(0.3, fadeColor(interlude.color, 0.8));
+      grad.addColorStop(0.5, fadeColor(interlude.color, 1));
+      grad.addColorStop(0.7, fadeColor(interlude.color, 0.8));
+      grad.addColorStop(1, fadeColor(interlude.color, 0));
       ctx.save();
       ctx.strokeStyle = grad;
       ctx.lineWidth = 3 * res;
@@ -210,8 +240,8 @@ export function drawInterlude(ctx: Ctx2D, timeline: Timeline, t: number): void {
       ctx.globalAlpha = alpha;
       ctx.beginPath();
       for (let x = 0; x <= width; x += step) {
-        const tau = t - (1 - x / width) * ECG_WINDOW_SEC;
-        const yy = cy - amp * ecgValue(rhythm.beats, rhythm.energy, tau, range);
+        const u = Math.abs(x - width / 2) / (width / 2);
+        const yy = cy - amp * waveOffset(u, t, level, kick);
         if (x === 0) ctx.moveTo(x, yy);
         else ctx.lineTo(x, yy);
       }
