@@ -65,7 +65,7 @@ describe('全ての演出', () => {
           for (const id of ANIMATION_IDS) {
             const ctx = fakeCtx();
             const gs = { cam, outline: '#000000', shadow: true, shine: null };
-            expect(() => ANIMATIONS[id]({ ctx, item, layout, t, dur, inDur, outDur, outP, gs, bg: 'black' }), id).not.toThrow();
+            expect(() => ANIMATIONS[id]({ ctx, item, layout, t, dur, inDur, outDur, outP, gs, bg: 'black', beat: null }), id).not.toThrow();
           }
         }
       }

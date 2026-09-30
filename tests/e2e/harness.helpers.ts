@@ -10,6 +10,8 @@ export const PRESETS = [
   'subtle-outline-shadow-xl',
   'standard-backdrop-transparent',
   'standard-green',
+  'standard-sync',
+  'ultra-sync-portrait',
 ];
 
 export async function openHarness(page: Page) {

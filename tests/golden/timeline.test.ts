@@ -10,6 +10,7 @@ import { ASPECTS, type Aspect, type Timeline } from '../../src/director/types';
 import { parseSubtitle } from '../../src/parsers/detect';
 import { defaultTheme } from '../../src/themes/default';
 import { EFFECT_LEVELS, applyEffectLevel, type EffectLevel } from '../../src/themes/effectLevel';
+import { GOLDEN_RHYTHM } from '../helpers/goldenPresets';
 
 const SEEDS = [1, 20260930];
 const features = analyze(parseSubtitle('golden.srt', src).cues);
@@ -54,6 +55,8 @@ describe('Timeline のゴールデン', () => {
     'green-backdrop': { background: 'green', backdrop: { opacity: 0.4, mode: 'lyrics', color: '#101830' } },
     'kana-strong-no-stroke': { kanaRatio: 0.56, strokeEmphasis: false },
     'mv-longer': { minDuration: 70 },
+    // 曲の拍に合わせる（仮の解析結果）
+    'beat-sync': { rhythm: GOLDEN_RHYTHM },
   };
   for (const [name, extra] of Object.entries(variants)) {
     it(`standard / ${name}`, async () => {

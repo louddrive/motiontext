@@ -5,7 +5,7 @@ import type { Timeline, TimelineItem } from '../director/types';
 import { backdropAlpha, backdropFill, backdropIntervals, type Interval } from './backdrop';
 import { outlineColor } from '../themes/color';
 import { cameraAt } from './camera';
-import { blurSampleTimes, shakeOffset, shineBand } from './fx';
+import { blurSampleTimes, pulseScale, shakeOffset, shineBand } from './fx';
 import { drawInterlude, interludeAt } from './interlude';
 import { computeMixedLayout } from './mixedLayout';
 import { computeVerticalLayout } from './verticalLayout';
@@ -183,11 +183,23 @@ function drawLyrics(ctx: Ctx2D, timeline: Timeline, layouts: Layouts, t: number)
     if (!layout) continue;
     const dur = item.end - item.start;
     const lt = t - item.start;
-    const inDur = Math.min(dur * 0.45, 0.7 - 0.3 * item.energy);
+    // 拍に合わせるときは、登場が次の拍でちょうど完了するようにする
+    const inDur = item.sync?.hit ?? Math.min(dur * 0.45, 0.7 - 0.3 * item.energy);
     const outDur = Math.min(0.3, dur * 0.2);
     const outP = outDur > 0 ? Math.max(0, (lt - (dur - outDur)) / outDur) : 0;
 
     ctx.save();
+    // 拍の脈動: 登場が終わってから退場が始まるまで、拍ごとに歌詞のまとまりの中心を基準に少し拡大する
+    if (item.sync?.pulse && timeline.rhythm && outP === 0) {
+      const s = pulseScale(timeline.rhythm, item.sync.pulse, t, item.start + inDur);
+      if (s !== 1) {
+        const cx = layout.bbox.x + layout.bbox.w / 2;
+        const cy = layout.bbox.y + layout.bbox.h / 2;
+        ctx.translate(cx, cy);
+        ctx.scale(s, s);
+        ctx.translate(-cx, -cy);
+      }
+    }
     ctx.font = layout.font;
     ctx.fillStyle = item.color;
     if (timeline.glow > 0) {
@@ -204,7 +216,7 @@ function drawLyrics(ctx: Ctx2D, timeline: Timeline, layouts: Layouts, t: number)
     drawParticles(ctx, item, layout, lt, outP, cam);
     drawDeco(ctx, item, layout, lt, outP, cam);
     drawUnderline(ctx, item, layout, lt, inDur, outP, cam);
-    ANIMATIONS[item.animation]({ ctx, item, layout, t: lt, dur, inDur, outDur, outP, gs, bg: timeline.background });
+    ANIMATIONS[item.animation]({ ctx, item, layout, t: lt, dur, inDur, outDur, outP, gs, bg: timeline.background, beat: item.sync?.beat ?? null });
     ctx.restore();
   }
   ctx.restore();

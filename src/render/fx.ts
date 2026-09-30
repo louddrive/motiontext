@@ -1,5 +1,6 @@
 import type { ShineBand } from '../animations/draw';
-import type { Shake } from '../director/types';
+import { lastIndexAtOrBefore } from '../director/beatSync';
+import type { Shake, TimelineRhythm } from '../director/types';
 
 /** モーションブラーのサンプル時刻（現在の時刻から過去方向へ等間隔。先頭が現在） */
 export function blurSampleTimes(t: number, fps: number, shutter: number, samples: number): number[] {
@@ -59,4 +60,28 @@ export function shineBand(
   }
   const halfWidth = Math.max(bbox.h * 0.35, 30);
   return { x: bbox.x - halfWidth + (bbox.w + halfWidth * 2) * p, y: bbox.y + bbox.h / 2, ux: Math.cos(tilt), uy: Math.sin(tilt), halfWidth };
+}
+
+/** 拍の脈動: 拍の瞬間に一気に大きくなり、この秒数で元に戻っていく */
+export const PULSE_ATTACK_SEC = 0.02;
+export const PULSE_DECAY_SEC = 0.15;
+/** 小節の頭の拍は、脈動をこの倍率だけ強くする */
+export const PULSE_DOWNBEAT_BOOST = 1.5;
+
+/**
+ * 時刻 t の拍の脈動の拡大率（1 で脈動なし）。from より前の拍では弾まない（登場が終わってから弾ませる）。
+ * amount は Timeline の sync.pulse
+ */
+export function pulseScale(rhythm: TimelineRhythm, amount: number, t: number, from: number): number {
+  if (amount <= 0) return 1;
+  const i = lastIndexAtOrBefore(rhythm.beats, t);
+  if (i < 0) return 1;
+  const b = rhythm.beats[i];
+  if (b < from) return 1;
+  const age = t - b;
+  if (age > PULSE_DECAY_SEC * 5) return 1;
+  const d = lastIndexAtOrBefore(rhythm.downbeats, b);
+  const boost = d >= 0 && rhythm.downbeats[d] === b ? PULSE_DOWNBEAT_BOOST : 1;
+  const env = age < PULSE_ATTACK_SEC ? age / PULSE_ATTACK_SEC : Math.exp(-(age - PULSE_ATTACK_SEC) / PULSE_DECAY_SEC);
+  return 1 + amount * boost * env;
 }

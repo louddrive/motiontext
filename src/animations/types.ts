@@ -41,6 +41,8 @@ export interface AnimContext {
   gs: GlyphStyle;
   /** 出力の背景（グリッチの色選びに使う） */
   bg: BackgroundMode;
+  /** 曲の拍の間隔（秒）。拍に合わせるときだけ。文字送りの間隔をこれの分割にそろえる（null なら従来の間隔） */
+  beat: number | null;
 }
 
 export type AnimationFn = (a: AnimContext) => void;

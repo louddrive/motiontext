@@ -1,6 +1,6 @@
 // 長い間奏の進み具合の表示（画面下部の横線／画面中央の円と、カウントアップするパーセンテージ）。
 // 最初はゆっくり進み、最後の約1秒で一気に 100% に達して、その直後に次の歌詞が始まる
-import type { Interlude, Timeline } from '../director/types';
+import type { Interlude, Timeline, TimelineRhythm } from '../director/types';
 import { cssFont } from '../fonts/catalog';
 import type { Ctx2D } from './layout';
 import { easeOutCubic, progress } from './easing';
@@ -77,6 +77,18 @@ function drawPercent(ctx: Ctx2D, iv: Interlude, value: number, size: number, x: 
   ctx.fillText('%', cx + percentW / 2, cy);
 }
 
+/** 間奏の音量表示の棒の数と、1本あたりにさかのぼる秒数（右端が今、左へ行くほど過去の音量） */
+export const METER_BARS = 32;
+export const METER_STEP_SEC = 0.05;
+
+/** 間奏の音量表示の、k 本目（0 = 最も過去、METER_BARS - 1 = 今）の高さ 0..1 */
+export function meterLevel(energy: NonNullable<TimelineRhythm['energy']>, t: number, k: number): number {
+  const at = t - (METER_BARS - 1 - k) * METER_STEP_SEC;
+  const i = Math.floor(at * energy.rate);
+  const v = i >= 0 && i < energy.values.length ? energy.values[i] : 0;
+  return v * v;
+}
+
 /** 時刻 t の間奏の進み具合を描く */
 export function drawInterlude(ctx: Ctx2D, timeline: Timeline, t: number): void {
   const state = interludeAt(timeline.interludes, t);
@@ -120,6 +132,24 @@ export function drawInterlude(ctx: Ctx2D, timeline: Timeline, t: number): void {
       ctx.lineTo(x0 + w * p, y);
       ctx.stroke();
     }
+    // 曲の音量に合わせて動く棒（バーの上に並べる）
+    const energy = timeline.rhythm?.energy;
+    if (energy) {
+      const slot = w / METER_BARS;
+      const maxH = 70 * res;
+      ctx.lineWidth = Math.max(2, slot * 0.45);
+      ctx.lineCap = 'butt';
+      ctx.globalAlpha = alpha * 0.55;
+      ctx.beginPath();
+      for (let k = 0; k < METER_BARS; k++) {
+        const h = Math.max(2 * res, maxH * meterLevel(energy, t, k));
+        const x = x0 + slot * (k + 0.5);
+        ctx.moveTo(x, y - lw);
+        ctx.lineTo(x, y - lw - h);
+      }
+      ctx.stroke();
+      ctx.lineCap = 'round';
+    }
     ctx.globalAlpha = alpha;
     drawPercent(ctx, interlude, label, labelSize, x0 + w + lw / 2 + gap, y, 'left');
   } else {
@@ -136,6 +166,23 @@ export function drawInterlude(ctx: Ctx2D, timeline: Timeline, t: number): void {
       ctx.globalAlpha = alpha;
       ctx.beginPath();
       ctx.arc(cx, cy, r, top, top + Math.PI * 2 * p);
+      ctx.stroke();
+    }
+    // 曲の音量に合わせて動く棒（円の外側に放射状に並べる。時計回りに過去から今へ）
+    const energy = timeline.rhythm?.energy;
+    if (energy) {
+      const inner = r + 14 * res;
+      const maxLen = 60 * res;
+      ctx.lineWidth = 5 * res;
+      ctx.lineCap = 'butt';
+      ctx.globalAlpha = alpha * 0.55;
+      ctx.beginPath();
+      for (let k = 0; k < METER_BARS; k++) {
+        const a = top + (Math.PI * 2 * (k + 0.5)) / METER_BARS;
+        const len = Math.max(2 * res, maxLen * meterLevel(energy, t, k));
+        ctx.moveTo(cx + Math.cos(a) * inner, cy + Math.sin(a) * inner);
+        ctx.lineTo(cx + Math.cos(a) * (inner + len), cy + Math.sin(a) * (inner + len));
+      }
       ctx.stroke();
     }
     ctx.globalAlpha = alpha;

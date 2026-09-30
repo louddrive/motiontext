@@ -7,12 +7,16 @@ import type { RenderOptions } from '../../src/render/renderer';
 import { defaultTheme } from '../../src/themes/default';
 import { applyEffectLevel, type EffectLevel } from '../../src/themes/effectLevel';
 import src from '../fixtures/golden.srt?raw';
+import { makeRhythm } from './rhythmFixture';
 
 export const GOLDEN_FONT = { fontIds: ['noto-sans-jp'], fontRoles: { body: 'noto-sans-jp', display: null } };
 /** フォントを読み込む文字（歌詞 + 間奏のパーセンテージ） */
 export const GOLDEN_TEXT = `${src}\n0123456789%`;
 
 const features = analyze(parseSubtitle('golden.srt', src).cues);
+
+/** ゴールデン用の曲のリズム（仮の解析結果） */
+export const GOLDEN_RHYTHM = makeRhythm({ bpm: 124, start: 0.4, duration: 56, sections: [14.5, 36] });
 
 function build(level: EffectLevel, aspect: 'landscape' | 'portrait', extra: Partial<DirectOptions> = {}): Timeline {
   return direct(features, {
@@ -45,6 +49,9 @@ export const GOLDEN_PRESETS: Record<string, () => GoldenPreset> = {
     opts: { transparent: true, backdrop: true },
   }),
   'standard-green': () => ({ timeline: build('standard', 'landscape', { background: 'green' }), opts: {} }),
+  // 曲の拍に合わせる（124 BPM の仮の解析結果。区切りは 14.5 秒と 36 秒）
+  'standard-sync': () => ({ timeline: build('standard', 'landscape', { rhythm: GOLDEN_RHYTHM }), opts: {} }),
+  'ultra-sync-portrait': () => ({ timeline: build('ultra', 'portrait', { rhythm: GOLDEN_RHYTHM }), opts: {} }),
 };
 
 /** 各字幕の登場中・表示中と、間奏の途中の時刻 */

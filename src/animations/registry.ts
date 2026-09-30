@@ -14,11 +14,22 @@ import { clipWith, drawGlyph, glyphRand, outlineWidth, PLAIN_STYLE, strokeGlyph 
 import type { BackgroundMode } from '../themes/types';
 import type { AnimationFn, AnimationId } from './types';
 
+/**
+ * 文字送りの間隔を、曲の拍の間隔の 1/2^k（8分・16分・32分…音符）にそろえる。元の間隔の 1.2 倍を超えない最も長いものを選ぶ
+ * （登場にかかる時間が元より長くなりすぎないように）。拍に合わせないとき（beat が null）は元の間隔のまま
+ */
+export function syncStagger(s: number, beat: number | null): number {
+  if (!beat || s <= 0) return s;
+  let c = beat / 2;
+  while (c > s * 1.2 && c > 1e-3) c /= 2;
+  return c;
+}
+
 /** 共通の退場: フェードしながら少し上へ */
 const exitAlpha = (outP: number) => 1 - easeInCubic(outP);
 
-const fadeUp: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
-  const stagger = 0.06;
+const fadeUp: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item, beat }) => {
+  const stagger = syncStagger(0.06, beat);
   for (const p of layout.phrases) {
     const e = easeOutCubic(progress(t, p.index * stagger, inDur));
     const rise = 36 * (0.6 + item.energy);
@@ -52,10 +63,10 @@ const slideMask: AnimationFn = ({ ctx, gs, layout, t, inDur, outP }) => {
   });
 };
 
-const phraseStack: AnimationFn = ({ ctx, gs, layout, t, dur, inDur, outP, item }) => {
+const phraseStack: AnimationFn = ({ ctx, gs, layout, t, dur, inDur, outP, item, beat }) => {
   const n = layout.phrases.length;
   const span = Math.min(dur * 0.55, n * 0.32);
-  const step = n > 1 ? span / (n - 1) : 0;
+  const step = syncStagger(n > 1 ? span / (n - 1) : 0, beat);
   for (const p of layout.phrases) {
     const e = progress(t, p.index * step, inDur * 0.8);
     const dir = p.index % 2 === 0 ? -1 : 1;
@@ -88,9 +99,9 @@ const scatter: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
   }
 };
 
-const charPop: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
+const charPop: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item, beat }) => {
   const n = layout.glyphs.length;
-  const stagger = Math.min(0.05, (inDur * 1.2) / Math.max(n, 1));
+  const stagger = syncStagger(Math.min(0.05, (inDur * 1.2) / Math.max(n, 1)), beat);
   for (const g of layout.glyphs) {
     const e = progress(t, g.index * stagger, inDur * 0.7);
     const oLocal = clamp01(outP * 1.6 - (g.index / Math.max(n, 1)) * 0.6);
@@ -102,9 +113,9 @@ const charPop: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
   }
 };
 
-const typewriter: AnimationFn = ({ ctx, gs, layout, t, dur, outP }) => {
+const typewriter: AnimationFn = ({ ctx, gs, layout, t, dur, outP, beat }) => {
   const n = layout.glyphs.length;
-  const step = Math.min(0.09, (dur * 0.6) / Math.max(n, 1));
+  const step = syncStagger(Math.min(0.09, (dur * 0.6) / Math.max(n, 1)), beat);
   for (const g of layout.glyphs) {
     const e = progress(t, g.index * step, 0.08);
     drawGlyph(ctx, g, gs, { alpha: e * exitAlpha(outP), scale: lerp(1.25, 1, easeOutCubic(e)) });
@@ -127,10 +138,11 @@ const scaleBurst: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
   }
 };
 
-const wave: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
+const wave: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item, beat }) => {
   const amp = 6 + 10 * item.energy;
+  const stagger = syncStagger(0.035, beat);
   for (const g of layout.glyphs) {
-    const e = easeOutCubic(progress(t, g.index * 0.035, inDur));
+    const e = easeOutCubic(progress(t, g.index * stagger, inDur));
     const w = Math.sin(t * 5 - g.index * 0.55) * amp * e;
     // 縦書きは左右に揺らす
     const xf = layout.lines[g.line].vertical ? { dx: w, dy: 44 * (1 - e) } : { dy: 44 * (1 - e) + w };
@@ -293,9 +305,9 @@ export function slotReel(layout: ItemLayout, seed: number, index: number): strin
 const reelCache = new WeakMap<ItemLayout, { seed: number; reels: Map<number, string[]> }>();
 
 /** スロット: 文字の枠の中を別の文字が上から流れ、本来の文字で少し行き過ぎて止まる */
-const slot: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
+const slot: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item, beat }) => {
   const n = layout.glyphs.length;
-  const stagger = Math.min(0.04, (inDur * 0.8) / Math.max(n, 1));
+  const stagger = syncStagger(Math.min(0.04, (inDur * 0.8) / Math.max(n, 1)), beat);
   const alpha = exitAlpha(outP);
   for (const g of layout.glyphs) {
     const e = progress(t, g.index * stagger, inDur * 1.1);
@@ -325,9 +337,9 @@ const slot: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
 export const splitOffset = (e: number, size: number, energy: number) => (1 - easeOutCubic(e)) * size * 1.6 * (0.6 + energy);
 
 /** スプリット: 字の上半分と下半分（縦書きは左半分と右半分）が逆方向から来て合体する */
-const split: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
+const split: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item, beat }) => {
   const n = layout.glyphs.length;
-  const stagger = Math.min(0.04, (inDur * 0.8) / Math.max(n, 1));
+  const stagger = syncStagger(Math.min(0.04, (inDur * 0.8) / Math.max(n, 1)), beat);
   const alpha = exitAlpha(outP);
   // クリップ範囲は、ずれる方向には十分に長く取る
   const far = 1e4;
