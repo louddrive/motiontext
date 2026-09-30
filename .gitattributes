@@ -1,0 +1,3 @@
+# ゴールデンは改行コードの違いで不一致にならないよう LF に固定する
+tests/golden/** text eol=lf
+*.png binary
