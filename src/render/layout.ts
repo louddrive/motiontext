@@ -93,15 +93,17 @@ function shapePhrase(ctx: Ctx2D, item: TimelineItem, chars: string[], scales: nu
     while (j < chars.length && sizes[j] === s) j++;
     const font = cssFont(item.fontId, item.weight, s);
     ctx.font = font;
+    // 先頭からの幅を1文字ずつ測る（カーニングを含めるため）。左端の幅は直前の文字の右端の幅と同じなので測り直さない
     let prefix = '';
+    let left = 0;
     for (let k = i; k < j; k++) {
-      const left = ctx.measureText(prefix).width;
       prefix += chars[k];
       const right = ctx.measureText(prefix).width;
       glyphs.push({ ch: chars[k], x: x + (left + right) / 2, w: right - left, size: s, font });
       if (chars[k].trim()) maxSize = Math.max(maxSize, s);
+      left = right;
     }
-    x += ctx.measureText(prefix).width;
+    x += left;
     i = j;
   }
   return { text: chars.join(''), w: x, glyphs, maxSize };

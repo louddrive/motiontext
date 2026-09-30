@@ -274,13 +274,23 @@ export const SLOT_DECOYS = 3;
  * （読み込み済みのグリフだけを使い、別のフォントに置き換わらないようにする）。seed とグリフ番号から決定的
  */
 export function slotReel(layout: ItemLayout, seed: number, index: number): string[] {
-  const target = layout.glyphs[index].ch;
-  const pool = [...new Set(layout.glyphs.map((g) => g.ch))];
-  const others = pool.filter((c) => c !== target);
-  const src = others.length ? others : pool;
-  const r = glyphRand(seed, -1000 - index);
-  return [...Array.from({ length: SLOT_DECOYS }, () => src[Math.floor(r() * src.length)]), target];
+  // 毎フレーム同じ並びになるので、レイアウト・seed ごとに1回だけ作って使い回す
+  let cache = reelCache.get(layout);
+  if (!cache || cache.seed !== seed) reelCache.set(layout, (cache = { seed, reels: new Map() }));
+  let reel = cache.reels.get(index);
+  if (!reel) {
+    const target = layout.glyphs[index].ch;
+    const pool = [...new Set(layout.glyphs.map((g) => g.ch))];
+    const others = pool.filter((c) => c !== target);
+    const src = others.length ? others : pool;
+    const r = glyphRand(seed, -1000 - index);
+    reel = [...Array.from({ length: SLOT_DECOYS }, () => src[Math.floor(r() * src.length)]), target];
+    cache.reels.set(index, reel);
+  }
+  return reel;
 }
+
+const reelCache = new WeakMap<ItemLayout, { seed: number; reels: Map<number, string[]> }>();
 
 /** スロット: 文字の枠の中を別の文字が上から流れ、本来の文字で少し行き過ぎて止まる */
 const slot: AnimationFn = ({ ctx, gs, layout, t, inDur, outP, item }) => {
