@@ -427,7 +427,7 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] fill A419.66,1075.07 r=6.91 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A407.39,1109.13 r=3.89 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M398.2,600.75 L434.52,1204.14 a=1 stroke=#FFD166 lw=5.64 butt miter glow=47.6:#FFD166
 [off0] fillText "ど" @308.51,697.54 m[1.09,-0.07,0.07,1.09] font=400 99px mt-noto-sans-jp align=center a=0.16 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ど" @308.51,697.54 m[1.09,-0.07,0.07,1.09] font=400 99px mt-noto-sans-jp align=center a=0.25 fill=#FFD166 glow=47.6:#FFD166
@@ -448,7 +448,7 @@ fillRect 0,0 1080,1920 a=1 fill=#000000
 [off0] fillText "け" @346.44,1328.65 m[1.03,-0.06,0.06,1.04] font=400 99px mt-noto-sans-jp align=center a=0.49 fill=#FFD166 glow=47.6:#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] fill A421.34,1080.51 r=6.98 0..6.28 a=0.37 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A408.36,1112.3 r=3.93 0..6.28 a=0.37 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M397.84,600.76 L428.49,1102.97 a=1 stroke=#FFD166 lw=5.64 butt miter glow=47.6:#FFD166
 [off0] fillText "ど" @307.93,695.55 m[1.04,-0.07,0.06,1.04] font=400 99px mt-noto-sans-jp align=center a=0.18 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ど" @308,696.66 m[1.07,-0.07,0.07,1.07] font=400 99px mt-noto-sans-jp align=center a=0.28 fill=#FFD166 glow=47.6:#FFD166
@@ -470,17 +470,17 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] fill A460.85,651.62 r=4.69 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A282.72,1218.56 r=6.37 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A407.86,922.17 r=5.64 0..6.28 a=0.6 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A337.42,1064.96 r=5.79 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A474.11,939.41 r=4.03 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A352.85,988.97 r=7.21 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A159.1,1350.64 r=3.68 0..6.28 a=0.58 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A465.11,832.16 r=4.89 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A219.45,751.1 r=5.43 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A392.63,1144.67 r=8 0..6.28 a=0.17 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A429.03,762.95 r=4.9 0..6.28 a=0.22 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A431.6,705.26 r=2.64 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A292.55,1243.85 r=3.58 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A393.51,1021.76 r=3.17 0..6.28 a=0.6 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A334.06,1096.17 r=3.26 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A440.81,963.28 r=2.27 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A346.74,1033.97 r=4.06 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A187.41,1358.67 r=2.07 0..6.28 a=0.58 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A440.87,872.2 r=2.75 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A234.64,769.79 r=3.05 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A375.1,1148.44 r=4.5 0..6.28 a=0.17 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A404.3,838.15 r=2.76 0..6.28 a=0.22 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M416.16,581.13 L416.16,1338.87 a=1 stroke=#FFD166 lw=5.64 butt miter glow=47.6:#FFD166
 [off0] fillText "ど" @317.32,670.95 m[1.03,0,0,1.03] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ど" @317.32,670.95 m[1.03,0,0,1.03] font=400 99px mt-noto-sans-jp align=center a=1 fill=grad(-21.94,566.04,21.94,686.61|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
@@ -498,17 +498,17 @@ fillRect 0,0 1080,1920 a=1 fill=#000000
 [off0] fillText "け" @317.32,1326.62 m[1.03,0,0,1.03] font=400 99px mt-noto-sans-jp align=center a=1 fill=grad(-21.94,-69.96,21.94,50.61|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] fill A459.72,659.76 r=4.69 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A285.79,1221.38 r=6.35 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A407.06,928.29 r=5.63 0..6.28 a=0.64 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A338.07,1070.13 r=5.8 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A473.36,942.7 r=4.03 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A355.04,995.27 r=7.23 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A162.92,1353.14 r=3.67 0..6.28 a=0.46 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A463.94,837.27 r=4.89 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A221.53,757.74 r=5.41 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A393.59,1150.29 r=7.98 0..6.28 a=0.04 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A427.54,767.52 r=4.9 0..6.28 a=0.26 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A431.01,710.54 r=2.64 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A295.4,1244.87 r=3.57 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A393.68,1024.9 r=3.17 0..6.28 a=0.64 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A335.25,1098.86 r=3.26 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A440.7,965.22 r=2.26 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A348.69,1037.42 r=4.07 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A191.2,1359.36 r=2.06 0..6.28 a=0.46 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A440.38,875.34 r=2.75 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A236.55,774.35 r=3.05 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A376.38,1151.31 r=4.49 0..6.28 a=0.04 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A403.81,841.01 r=2.75 0..6.28 a=0.26 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M415.61,583.07 L417.86,1337.67 a=1 stroke=#FFD166 lw=5.64 butt miter glow=47.6:#FFD166
 [off0] fillText "ど" @317.97,673.42 m[1.02,-0.01,0,1.02] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ど" @317.97,673.42 m[1.02,-0.01,0,1.02] font=400 99px mt-noto-sans-jp align=center a=1 fill=grad(-21.94,524.93,21.94,645.5|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
@@ -530,10 +530,10 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] fill A614.89,649.18 r=8.16 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A959.98,808.36 r=5.77 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A786.19,1020.24 r=6.81 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A651.37,982.84 r=4.03 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A625.21,679.99 r=4.59 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A940.11,826.76 r=3.25 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A779.71,1053.79 r=3.83 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A656.75,1034.29 r=2.27 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M-1428.54,707.29 L1517.03,2312.8 a=0.75 stroke=#FFD166 lw=2.19 butt miter glow=47.6:#FFD166
 [off0] stroke M-1082.18,-173.61 L147.87,496.84 a=0.48 stroke=#FFD166 lw=3.28 butt miter glow=47.6:#FFD166
 [off0] stroke M2316.99,1699.87 L1479.99,1243.65 a=0.79 stroke=#FFD166 lw=3.93 butt miter glow=47.6:#FFD166
@@ -543,9 +543,9 @@ fillRect 0,0 1080,1920 a=1 fill=#000000
 [off0] fill R557.87,615.5 692.43,612.15 692.43,617.47 557.87,620.83 a=1 fill=#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] fill A614.51,655.1 r=8.2 0..6.28 a=0.37 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A959.32,811.55 r=5.82 0..6.28 a=0.37 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A786.78,1025.83 r=6.85 0..6.28 a=0.37 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A624.8,683.34 r=4.62 0..6.28 a=0.37 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A939.18,828.56 r=3.27 0..6.28 a=0.37 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A779.67,1056.92 r=3.85 0..6.28 a=0.37 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M-1419.81,707.52 L1243.51,2164.34 a=0.75 stroke=#FFD166 lw=2.19 butt miter glow=47.6:#FFD166
 [off0] stroke M974.59,419.35 L974.59,1160.06 a=1 stroke=#FFD166 lw=7.32 butt miter glow=47.6:#FFD166
 [off0] fill R729.56,439.03 936.4,439.03 936.4,526.16 729.56,526.16 a=1 fill=#FFD166
@@ -556,17 +556,17 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] fill A1015.15,658.06 r=3.5 0..6.28 a=0 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A626.31,477.4 r=6.44 0..6.28 a=0.46 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A765.48,656.26 r=4.3 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A486.21,982.69 r=7.08 0..6.28 a=0.83 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A866.56,1162.91 r=6.42 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A795.44,846.66 r=5.17 0..6.28 a=0.24 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A577.67,703.02 r=5.38 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A526.29,1257.35 r=4.93 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A728.33,1046.06 r=4.33 0..6.28 a=0.58 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A555.7,733.42 r=8.06 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A628.35,1072.13 r=4.02 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A996.55,744.61 r=1.97 0..6.28 a=0 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A642.85,586 r=3.62 0..6.28 a=0.46 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A760.68,736.08 r=2.42 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A517.75,999.71 r=3.98 0..6.28 a=0.83 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A862.21,1196.42 r=3.61 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A799.29,954.65 r=2.91 0..6.28 a=0.24 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A601.6,744.19 r=3.03 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A547.71,1288.83 r=2.77 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A725.24,1094.97 r=2.44 0..6.28 a=0.58 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A576.32,753.8 r=4.54 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A642.1,1098.53 r=2.26 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M-1918.37,691.96 L2335,2661.01 a=0.75 stroke=#FFD166 lw=2.19 butt miter glow=47.6:#FFD166
 [off0] stroke M-1485.82,-242.4 L2767.55,1726.65 a=0.48 stroke=#FFD166 lw=3.28 butt miter glow=47.6:#FFD166
 [off0] stroke M2759.16,1744.76 L-1494.21,-224.29 a=0.79 stroke=#FFD166 lw=3.93 butt miter glow=47.6:#FFD166
@@ -586,18 +586,18 @@ fillRect 0,0 1080,1920 a=1 fill=#000000
 [off0] fillText "て" @643.24,1173.32 m[1.06,0,0,1.06] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] fill A1017.73,660.1 r=3.57 0..6.28 a=0.04 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A626.41,481.29 r=6.56 0..6.28 a=0.5 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A767.31,660.74 r=4.37 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A484.58,987.43 r=7.19 0..6.28 a=0.73 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A868.69,1168.75 r=6.55 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A855.99,636.93 r=4.39 0..6.28 a=0.04 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A795.69,851.72 r=5.27 0..6.28 a=0.28 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A577.07,704.98 r=5.47 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A524.99,1261.01 r=5.01 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A729.07,1049.69 r=4.42 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A555.74,738.23 r=8.19 0..6.28 a=0.79 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A627.19,1079.33 r=4.08 0..6.28 a=0.88 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A999.04,745.58 r=2.01 0..6.28 a=0.04 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A642.9,587.8 r=3.69 0..6.28 a=0.5 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A762.01,738.39 r=2.46 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A516.46,1002.48 r=4.04 0..6.28 a=0.73 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A864.06,1200.16 r=3.69 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A849.48,722.68 r=2.47 0..6.28 a=0.04 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A799.9,957.71 r=2.97 0..6.28 a=0.28 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A601.14,745.02 r=3.08 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A546.67,1291.5 r=2.82 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A725.84,1097.34 r=2.49 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A576.12,756.2 r=4.61 0..6.28 a=0.79 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A641.43,1102.87 r=2.29 0..6.28 a=0.88 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M-1918.19,692 L2334.86,2660.78 a=0.75 stroke=#FFD166 lw=2.19 butt miter glow=47.6:#FFD166
 [off0] stroke M-1485.67,-242.23 L2767.38,1726.54 a=0.48 stroke=#FFD166 lw=3.28 butt miter glow=47.6:#FFD166
 [off0] stroke M2758.99,1744.65 L-1494.05,-224.13 a=0.79 stroke=#FFD166 lw=3.93 butt miter glow=47.6:#FFD166
@@ -623,20 +623,20 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] fill A890.79,783.35 r=3.11 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A679.6,1007.63 r=2.45 0..6.28 a=0.56 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A619.68,678.5 r=5.56 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A858.91,796.38 r=3.49 0..6.28 a=0.61 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A697.79,831.27 r=3.51 0..6.28 a=0.33 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A527.78,840.82 r=3.58 0..6.28 a=0.46 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A773.93,1159.63 r=4.56 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A769.45,792.25 r=4.14 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A725.54,940.15 r=4.14 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A645.7,901.52 r=2.45 0..6.28 a=0.55 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A534.07,1273.14 r=3.98 0..6.28 a=0.26 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A662.23,1109.75 r=3.82 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A554.37,593.91 r=3.94 0..6.28 a=0.35 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A614.15,854.9 r=1.94 0..6.28 a=0.31 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A869.41,821.05 r=1.75 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A684.94,1083.92 r=1.38 0..6.28 a=0.56 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A627.02,712.55 r=3.13 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A846.39,827.34 r=1.96 0..6.28 a=0.61 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A697.29,841.47 r=1.98 0..6.28 a=0.33 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A544.49,916.38 r=2.02 0..6.28 a=0.46 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A769.88,1178.55 r=2.56 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A762.44,817.51 r=2.33 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A727.39,999.59 r=2.33 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A649.4,979.16 r=1.38 0..6.28 a=0.55 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A552.97,1276.55 r=2.24 0..6.28 a=0.26 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A667.6,1119.46 r=2.15 0..6.28 a=0.63 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A572.42,685.64 r=2.21 0..6.28 a=0.35 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A622.64,966.46 r=1.09 0..6.28 a=0.31 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M-394.49,1256.68 L1940.04,2560.14 a=0.75 stroke=#FFD166 lw=2.19 butt miter glow=47.6:#FFD166
 [off0] stroke M-57.12,377.73 L2277.42,1681.19 a=0.48 stroke=#FFD166 lw=3.28 butt miter glow=47.6:#FFD166
 [off0] stroke M1287.92,1149.4 L-1046.62,-154.06 a=0.79 stroke=#FFD166 lw=3.93 butt miter glow=47.6:#FFD166
@@ -722,20 +722,20 @@ fillRect 0,0 1080,1920 a=1 fill=#000000
 [off0] fillText "t" @894.74,664.12 m[1.06,-0.07,0,1.03] font=400 90px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] fill A892.82,785.94 r=3.14 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A680.78,1013.27 r=2.49 0..6.28 a=0.7 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A620,683.19 r=5.63 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A859.98,798.9 r=3.55 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A697.28,836.03 r=3.55 0..6.28 a=0.3 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A527.58,844.74 r=3.63 0..6.28 a=0.58 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A775.39,1164.21 r=4.63 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A770.79,795.08 r=4.19 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A726.9,944.89 r=4.2 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A646.29,907.35 r=2.49 0..6.28 a=0.69 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A533.5,1275.63 r=4.03 0..6.28 a=0.22 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A661.53,1112.74 r=3.87 0..6.28 a=0.73 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A554,598.47 r=3.99 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A614.88,860.68 r=1.97 0..6.28 a=0.4 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A871.02,822.47 r=1.77 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A685.82,1087.19 r=1.4 0..6.28 a=0.7 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A627.33,715.11 r=3.17 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A847.44,828.72 r=1.99 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A697.23,844.1 r=2 0..6.28 a=0.3 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A544.4,918.61 r=2.04 0..6.28 a=0.58 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A771.03,1181.23 r=2.6 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A763.52,819.06 r=2.36 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A728.44,1002.3 r=2.36 0..6.28 a=0.75 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A649.88,982.48 r=1.4 0..6.28 a=0.69 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A552.68,1278.08 r=2.26 0..6.28 a=0.22 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A667.4,1121.21 r=2.18 0..6.28 a=0.73 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A572.27,688.14 r=2.25 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A623.18,969.77 r=1.11 0..6.28 a=0.4 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M-812.62,1025.5 L1944.2,2561.06 a=0.75 stroke=#FFD166 lw=2.19 butt miter glow=47.6:#FFD166
 [off0] stroke M-474.24,146.04 L2282.58,1681.6 a=0.48 stroke=#FFD166 lw=3.28 butt miter glow=47.6:#FFD166
 [off0] stroke M1705.49,1380.86 L-1051.33,-154.7 a=0.79 stroke=#FFD166 lw=3.93 butt miter glow=47.6:#FFD166
@@ -1278,8 +1278,8 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] stroke M263.51,952.91 L729.1,951.96 a=1 stroke=#FFFFFF lw=3.56 butt miter glow=34:#FFFFFF
-[off0] stroke M327.73,1058.74 L474.71,1062.86 a=1 stroke=#FFFFFF lw=3.56 butt miter glow=34:#FFFFFF
+[off0] stroke M263.51,952.91 L729.1,951.96 a=1 stroke=#FFFFFF lw=3.52 butt miter glow=34:#FFFFFF
+[off0] stroke M327.73,1058.74 L474.71,1062.86 a=1 stroke=#FFFFFF lw=3.52 butt miter glow=34:#FFFFFF
 [off0] fillText "리" @415.79,907.11 m[0.85,-0.17,0.06,0.9] font=400 88px mt-noto-sans-jp align=center a=0.68 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "는" @430.1,890.08 m[0.83,-0.33,0.21,0.85] font=400 88px mt-noto-sans-jp align=center a=0.4 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "끝" @619.69,953.04 m[0.95,-0.02,-0.05,0.98] font=400 88px mt-noto-sans-jp align=center a=0.67 fill=#FFFFFF glow=34:#FFFFFF
@@ -1292,7 +1292,7 @@ fillRect 0,0 1080,1920 a=1 fill=#000000
 [off0] fillText "야" @768.7,1062.31 m[1.04,0.03,-0.06,1.05] font=400 88px mt-noto-sans-jp align=center a=0.79 fill=#FFFFFF glow=34:#FFFFFF
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] stroke M264.56,952.92 L651.33,952.12 a=1 stroke=#FFFFFF lw=3.56 butt miter glow=34:#FFFFFF
+[off0] stroke M264.56,952.92 L651.33,952.12 a=1 stroke=#FFFFFF lw=3.52 butt miter glow=34:#FFFFFF
 [off0] fillText "리" @425.89,894.17 m[0.84,-0.24,0.11,0.88] font=400 88px mt-noto-sans-jp align=center a=0.55 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "는" @418.58,874.3 m[0.79,-0.43,0.29,0.8] font=400 88px mt-noto-sans-jp align=center a=0.2 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "끝" @616.13,959.79 m[0.95,-0.03,-0.05,0.98] font=400 88px mt-noto-sans-jp align=center a=0.54 fill=#FFFFFF glow=34:#FFFFFF
@@ -1305,8 +1305,8 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] stroke M188,952.08 L804,952.08 a=1 stroke=#FFFFFF lw=3.56 butt miter glow=34:#FFFFFF
-[off0] stroke M276,1066.48 L804,1066.48 a=1 stroke=#FFFFFF lw=3.56 butt miter glow=34:#FFFFFF
+[off0] stroke M188,952.08 L804,952.08 a=1 stroke=#FFFFFF lw=3.52 butt miter glow=34:#FFFFFF
+[off0] stroke M276,1066.48 L804,1066.48 a=1 stroke=#FFFFFF lw=3.52 butt miter glow=34:#FFFFFF
 [off0] fillText "우" @232,936.24 m[1,0,0,1] font=400 88px mt-noto-sans-jp align=center a=1 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "리" @320,936.24 m[1,0,0,1] font=400 88px mt-noto-sans-jp align=center a=1 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "는" @408,936.24 m[1,0,0,1] font=400 88px mt-noto-sans-jp align=center a=1 fill=#FFFFFF glow=34:#FFFFFF
@@ -1320,8 +1320,8 @@ fillRect 0,0 1080,1920 a=1 fill=#000000
 [off0] fillText "야" @760,1050.64 m[1,0,0,1] font=400 88px mt-noto-sans-jp align=center a=1 fill=#FFFFFF glow=34:#FFFFFF
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] stroke M190.42,952.11 L805.83,952.06 a=1 stroke=#FFFFFF lw=3.56 butt miter glow=34:#FFFFFF
-[off0] stroke M277.87,1066.23 L806.28,1066.87 a=1 stroke=#FFFFFF lw=3.56 butt miter glow=34:#FFFFFF
+[off0] stroke M190.42,952.11 L805.83,952.06 a=1 stroke=#FFFFFF lw=3.52 butt miter glow=34:#FFFFFF
+[off0] stroke M277.87,1066.23 L806.28,1066.87 a=1 stroke=#FFFFFF lw=3.52 butt miter glow=34:#FFFFFF
 [off0] fillText "우" @235.26,936.32 m[0.99,0,0,1] font=400 88px mt-noto-sans-jp align=center a=1 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "리" @322.71,936.3 m[0.99,0,0,1] font=400 88px mt-noto-sans-jp align=center a=1 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "는" @410.33,936.28 m[1,0,0,1] font=400 88px mt-noto-sans-jp align=center a=1 fill=#FFFFFF glow=34:#FFFFFF
@@ -1387,7 +1387,7 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] stroke M364,1009.28 L667.42,1009.28 a=1 stroke=#FFFFFF lw=3.56 butt miter glow=34:#FFFFFF
+[off0] stroke M364,1009.28 L667.42,1009.28 a=1 stroke=#FFFFFF lw=3.52 butt miter glow=34:#FFFFFF
 [off0] fillText "Y" @408,996.64 m[1.1,0,0,1.1] font=400 88px mt-noto-sans-jp align=center a=0.16 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "Y" @408,996.64 m[1.1,0,0,1.1] font=400 88px mt-noto-sans-jp align=center a=0.25 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "Y" @408,993.49 m[1,0,0,1] font=400 88px mt-noto-sans-jp align=center a=0.98 fill=#FFFFFF glow=34:#FFFFFF
@@ -1401,7 +1401,7 @@ fillRect 0,0 1080,1920 a=1 fill=#000000
 [off0] fillText "h" @672,993.74 m[1.01,0,0,1.01] font=400 88px mt-noto-sans-jp align=center a=0.89 fill=#FFFFFF glow=34:#FFFFFF
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] stroke M364,1009.28 L621.99,1009.28 a=1 stroke=#FFFFFF lw=3.56 butt miter glow=34:#FFFFFF
+[off0] stroke M364,1009.28 L621.99,1009.28 a=1 stroke=#FFFFFF lw=3.52 butt miter glow=34:#FFFFFF
 [off0] fillText "Y" @408,994.92 m[1.04,0,0,1.04] font=400 88px mt-noto-sans-jp align=center a=0.18 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "Y" @408,995.91 m[1.07,0,0,1.07] font=400 88px mt-noto-sans-jp align=center a=0.28 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "Y" @408,993.59 m[1,0,0,1] font=400 88px mt-noto-sans-jp align=center a=0.94 fill=#FFFFFF glow=34:#FFFFFF
@@ -1418,7 +1418,7 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] stroke M364,1009.28 L709.3,1009.28 a=1 stroke=#FFFFFF lw=3.56 butt miter glow=34:#FFFFFF
+[off0] stroke M364,1009.28 L709.3,1009.28 a=1 stroke=#FFFFFF lw=3.52 butt miter glow=34:#FFFFFF
 [off0] fillText "Y" @408,995.67 m[1.07,0,0,1.07] font=400 88px mt-noto-sans-jp align=center a=0.09 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "Y" @408,1000.4 m[1.21,0,0,1.21] font=400 88px mt-noto-sans-jp align=center a=0.1 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "Y" @408,1001.04 m[1.23,0,0,1.23] font=400 88px mt-noto-sans-jp align=center a=0.11 fill=#FFFFFF glow=34:#FFFFFF
@@ -1438,7 +1438,7 @@ fillRect 0,0 1080,1920 a=1 fill=#000000
 [off0] fillText "h" @672,993.44 m[1,0,0,1] font=400 88px mt-noto-sans-jp align=center a=1 fill=#FFFFFF glow=34:#FFFFFF
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] stroke M364,1009.28 L703.03,1009.28 a=1 stroke=#FFFFFF lw=3.56 butt miter glow=34:#FFFFFF
+[off0] stroke M364,1009.28 L703.03,1009.28 a=1 stroke=#FFFFFF lw=3.52 butt miter glow=34:#FFFFFF
 [off0] fillText "Y" @408,997.99 m[1.14,0,0,1.14] font=400 88px mt-noto-sans-jp align=center a=0.11 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "Y" @408,999.7 m[1.19,0,0,1.19] font=400 88px mt-noto-sans-jp align=center a=0.13 fill=#FFFFFF glow=34:#FFFFFF
 [off0] fillText "Y" @408,997.91 m[1.13,0,0,1.13] font=400 88px mt-noto-sans-jp align=center a=0.19 fill=#FFFFFF glow=34:#FFFFFF
@@ -1460,17 +1460,17 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] fill A577.24,1047.28 r=6.76 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A909.87,1186.25 r=5.12 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A729.14,922.11 r=7.93 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A599.94,1080.72 r=3.81 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A877.99,1218.64 r=2.88 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A729.24,942.78 r=4.46 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M1942.27,-585.75 L-769.53,1311.23 a=0.75 stroke=#FFD166 lw=8.13 butt miter glow=47.6:#FFD166
 [off0] stroke M871.12,658.61 L871.12,1152.68 a=1 stroke=#FFD166 lw=7.32 butt miter glow=47.6:#FFD166
 [off0] fill R644.17,665.17 835.97,665.17 835.97,750 644.17,750 a=1 fill=#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] fill A579.3,1054.04 r=6.82 0..6.28 a=0.38 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A910.37,1194.21 r=5.16 0..6.28 a=0.38 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A730.99,927.36 r=8 0..6.28 a=0.38 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A601.75,1084.92 r=3.84 0..6.28 a=0.38 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A878.69,1223.49 r=2.9 0..6.28 a=0.38 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A730.81,946.14 r=4.5 0..6.28 a=0.38 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M1938.77,-583.63 L-464.51,1102.68 a=0.75 stroke=#FFD166 lw=8.13 butt miter glow=47.6:#FFD166
 [off0] stroke M872.02,659.47 L872.02,1070.68 a=1 stroke=#FFD166 lw=7.32 butt miter glow=47.6:#FFD166
 [off0] fill R645.63,666.14 836.91,666.14 836.91,715.23 645.63,715.23 a=1 fill=#FFD166
@@ -1480,25 +1480,25 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] fill A660.21,815.8 r=4.11 0..6.28 a=0.37 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A853.6,985.07 r=5.97 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A640.01,1026.91 r=3.31 0..6.28 a=0.84 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A661.45,1112.56 r=6.42 0..6.28 a=0.64 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A917.62,640.01 r=6.87 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A755.72,1076.85 r=6.87 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A922.1,943.72 r=3.63 0..6.28 a=0.06 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A762.72,967.27 r=9.28 0..6.28 a=0.11 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A643.83,941.7 r=4.04 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A800.75,1148.51 r=6.72 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A940.48,992.26 r=2.93 0..6.28 a=0.47 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A806.18,1002.09 r=4.45 0..6.28 a=0.16 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A813.4,965.83 r=4.82 0..6.28 a=0.25 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A554.4,998.57 r=4.81 0..6.28 a=0.25 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A588.84,1090.94 r=6.42 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A952.13,678.86 r=5.71 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A918.09,753.75 r=7.11 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A885.11,1011.47 r=8.92 0..6.28 a=0.2 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A700.87,905.21 r=7.81 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A677.85,884.48 r=2.31 0..6.28 a=0.37 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A837.45,1002.24 r=3.36 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A662.82,1056.18 r=1.86 0..6.28 a=0.84 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A679.4,1126.24 r=3.61 0..6.28 a=0.64 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A899.32,726.14 r=3.87 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A757.34,1109.96 r=3.87 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A900.23,1079.48 r=2.04 0..6.28 a=0.06 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A760.86,968.64 r=5.22 0..6.28 a=0.11 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A667.76,972.12 r=2.27 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A792.47,1174.96 r=3.78 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A915.29,1042.47 r=1.65 0..6.28 a=0.47 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A802.25,1005.93 r=2.5 0..6.28 a=0.16 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A805.68,971.04 r=2.71 0..6.28 a=0.25 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A595.1,1043.04 r=2.71 0..6.28 a=0.25 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A620.51,1166.45 r=3.61 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A920.45,741.07 r=3.21 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A895.61,813.31 r=4 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A866.96,1015.37 r=5.02 0..6.28 a=0.2 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A709.86,949.55 r=4.39 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M2292.67,-678.85 L-1738.54,1712.31 a=0.75 stroke=#FFD166 lw=8.13 butt miter glow=47.6:#FFD166
 [off0] stroke M902.17,682.34 L902.17,1237.66 a=1 stroke=#FFD166 lw=7.32 butt miter glow=47.6:#FFD166
 [off0] fillText "光" @769.79,814.34 m[1.06,0,0,1.06] font=400 141px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
@@ -1507,24 +1507,24 @@ fillRect 0,0 1080,1920 a=1 fill=#000000
 [off0] fillText "め" @769.79,1225.02 m[1.06,0,0,1.06] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] fill A661.3,820.31 r=4.21 0..6.28 a=0.43 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A855.32,987.72 r=6.08 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A638.78,1029.93 r=3.38 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A659.96,1119.57 r=6.52 0..6.28 a=0.51 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A919.08,645.77 r=6.98 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A754.85,1082.79 r=6.99 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A924.83,950.59 r=3.71 0..6.28 a=0.11 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A643.34,946.29 r=4.1 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A801.93,1154.76 r=6.83 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A943.74,995.42 r=2.98 0..6.28 a=0.52 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A807.44,1007.92 r=4.51 0..6.28 a=0.06 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A815.4,970.23 r=4.88 0..6.28 a=0.16 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A553.78,1001.47 r=4.92 0..6.28 a=0.3 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A587.36,1097.54 r=6.52 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A954.48,682.71 r=5.81 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A920.95,758.38 r=7.24 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A887.95,1016.89 r=9.05 0..6.28 a=0.08 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A701.35,910.64 r=7.93 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A678.57,887.04 r=2.37 0..6.28 a=0.43 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A838.9,1003.84 r=3.42 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A662.21,1058.08 r=1.9 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A678.67,1130.46 r=3.67 0..6.28 a=0.51 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A900.81,729.18 r=3.93 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A757.15,1113.59 r=3.93 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A902.42,1083.8 r=2.09 0..6.28 a=0.11 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A667.59,974.78 r=2.31 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A793.5,1178.86 r=3.84 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A917.81,1044.47 r=1.68 0..6.28 a=0.52 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A803.37,1009.29 r=2.54 0..6.28 a=0.06 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A807.21,973.54 r=2.75 0..6.28 a=0.16 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A594.69,1044.88 r=2.77 0..6.28 a=0.3 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A619.66,1170.63 r=3.67 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A922.44,743.02 r=3.27 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A897.85,815.8 r=4.07 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A869.12,1018.51 r=5.09 0..6.28 a=0.08 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A710.3,952.67 r=4.46 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
 [off0] stroke M2292.6,-678.66 L-1738.45,1712.22 a=0.75 stroke=#FFD166 lw=8.13 butt miter glow=47.6:#FFD166
 [off0] stroke M904.12,680.78 L904.12,1239.22 a=1 stroke=#FFD166 lw=7.32 butt miter glow=47.6:#FFD166
 [off0] fillText "光" @770.54,813.83 m[1.07,0,0,1.07] font=400 141px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
@@ -1537,16 +1537,16 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] fill A225.63,1054.98 r=4.25 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A444.05,1162.56 r=6.16 0..6.28 a=0.39 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A251.29,1067.55 r=2.39 0..6.28 a=0.45 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A425.3,1175.94 r=3.47 0..6.28 a=0.39 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ど" @349.13,705.78 m[0.96,-0.06,0,1.03] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "こ" @349.13,798.8 m[1,-0.04,0,1.08] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ま" @349.13,886.85 m[0.92,-0.02,0,1] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "で" @349.13,965.99 m[0.62,0,0,0.67] font=400 99px mt-noto-sans-jp align=center a=0.54 fill=#FFD166 glow=47.6:#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] fill A225.62,1057.7 r=4.29 0..6.28 a=0.38 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A443.47,1167.12 r=6.2 0..6.28 a=0.27 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A251.54,1068.98 r=2.41 0..6.28 a=0.38 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A425.1,1178.32 r=3.49 0..6.28 a=0.27 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ど" @349.55,707.78 m[0.99,-0.06,0,1.07] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "こ" @349.55,797.75 m[0.96,-0.04,0,1.04] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ま" @349.55,880.17 m[0.75,-0.02,0,0.81] font=400 99px mt-noto-sans-jp align=center a=0.71 fill=#FFD166 glow=47.6:#FFD166
@@ -1557,15 +1557,15 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1080,1920 a=1 fill=#000000
 [off1] clearRect 0,0 1080,1920
 [off0] clearRect 0,0 1080,1920
-[off0] fill A223.66,1250.79 r=7.2 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A187.72,979.81 r=3.58 0..6.28 a=0.15 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A434,1040.66 r=5.66 0..6.28 a=0.68 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A301.01,1066.68 r=4.57 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A475.37,775.86 r=6.94 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A267.48,579.88 r=4.01 0..6.28 a=0.5 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A218.38,1020.23 r=3.26 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A389.13,1058.46 r=7.03 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A283.27,1190.12 r=7 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A240.39,1272.94 r=4.05 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A207.6,1034.24 r=2.01 0..6.28 a=0.15 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A407.97,1124.28 r=3.19 0..6.28 a=0.68 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A303.8,1089.6 r=2.57 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A443.95,806.98 r=3.91 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A277.02,674.78 r=2.26 0..6.28 a=0.5 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A236.74,1082.1 r=1.83 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A379.08,1080.55 r=3.95 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A290.89,1263.96 r=3.93 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ど" @311.55,658.7 m[1.03,-0.05,0,1.07] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ど" @311.55,658.7 m[1.03,-0.05,0,1.07] font=400 99px mt-noto-sans-jp align=center a=1 fill=grad(-21.94,566.04,21.94,686.61|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
 [off0] fillText "こ" @311.55,765.09 m[1.03,-0.03,0,1.07] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
@@ -1582,15 +1582,15 @@ fillRect 0,0 1080,1920 a=1 fill=#000000
 [off0] fillText "け" @311.55,1342.16 m[1.03,0.05,0,1.07] font=400 99px mt-noto-sans-jp align=center a=1 fill=grad(-21.94,-69.96,21.94,50.61|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1080,1920
-[off0] fill A227.34,1251.77 r=7.18 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A190.67,982.99 r=3.6 0..6.28 a=0.21 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A435.45,1045.71 r=5.67 0..6.28 a=0.72 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A301.81,1070.45 r=4.57 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A475.02,783.28 r=6.93 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A270.83,587.59 r=4.01 0..6.28 a=0.54 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A220.43,1024.67 r=3.26 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A390.19,1062.01 r=7.04 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
-[off0] fill A285.64,1194.5 r=6.99 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A243.59,1272.27 r=4.04 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A210.5,1035.51 r=2.03 0..6.28 a=0.21 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A409.42,1126.16 r=3.19 0..6.28 a=0.72 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A305.18,1091.15 r=2.57 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A444.28,811.56 r=3.9 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A279.92,679.7 r=2.26 0..6.28 a=0.54 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A239.03,1083.88 r=1.83 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A380.36,1082.02 r=3.96 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
+[off0] fill A293.18,1265 r=3.93 0..6.28 a=0.9 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ど" @313.64,661.16 m[1.02,-0.05,0,1.07] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166
 [off0] fillText "ど" @313.64,661.16 m[1.02,-0.05,0,1.07] font=400 99px mt-noto-sans-jp align=center a=1 fill=grad(-21.94,524.93,21.94,645.5|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
 [off0] fillText "こ" @313.64,766.68 m[1.02,-0.03,0,1.07] font=400 99px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=47.6:#FFD166

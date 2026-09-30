@@ -4,6 +4,9 @@ import { easeInCubic, easeOutExpo, progress } from '../render/easing';
 import type { Ctx2D, ItemLayout } from '../render/layout';
 import { glyphRand } from './draw';
 
+/** 1080p を 1 とした解像度の倍率。短辺を基準にして、縦型でも横型と同じ大きさにする（カメラシェイク・間奏の表示と同じ） */
+const resolutionScale = (ctx: Ctx2D) => Math.min(ctx.canvas.width, ctx.canvas.height) / 1080;
+
 /** 斜めラインの乱数に使うキー（グリフ番号と衝突しない値） */
 const LINES_RAND_KEY = -1;
 
@@ -108,7 +111,7 @@ export function drawParticles(
 ): void {
   if (!item.particles) return;
   const { bbox } = layout;
-  const res = ctx.canvas.height / 1080;
+  const res = resolutionScale(ctx);
   const rand = glyphRand(item.seed, PARTICLES_RAND_KEY);
   const count = 10 + Math.floor(rand() * 15);
   const master = Math.min(1, t / 0.4) * (1 - easeInCubic(outP));
@@ -192,7 +195,7 @@ export function drawUnderline(
   if (!item.underline) return;
   const o = easeInCubic(outP);
   if (o >= 1) return;
-  const segments = underlineSegments(layout, ctx.canvas.height / 1080);
+  const segments = underlineSegments(layout, resolutionScale(ctx));
   ctx.save();
   ctx.strokeStyle = item.color;
   ctx.lineCap = 'butt';
