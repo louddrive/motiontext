@@ -95,6 +95,16 @@ describe('演出ごとの描画命令', () => {
   });
 });
 
+describe('間奏の表示の描画命令（曲の拍に合わせる）', () => {
+  for (const style of ['bar', 'ring'] as const) {
+    it(style, async () => {
+      const { timeline } = GOLDEN_PRESETS['standard-sync']();
+      const patched = { ...timeline, interludes: timeline.interludes.map((iv) => ({ ...iv, style })) };
+      await expect(record(patched, [29, 30.2, 31.53, 34.9])).toMatchFileSnapshot(`./__golden__/draw/interlude-sync-${style}.log`);
+    });
+  }
+});
+
 describe('曲全体のフレームの描画命令', () => {
   for (const [name, preset] of Object.entries(GOLDEN_PRESETS)) {
     it(name, async () => {

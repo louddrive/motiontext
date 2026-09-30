@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { syncStagger } from '../src/animations/registry';
 import { PULSE_ATTACK_SEC, PULSE_DECAY_SEC, PULSE_DOWNBEAT_BOOST, pulseScale } from '../src/render/fx';
-import { METER_BARS, METER_STEP_SEC, meterLevel } from '../src/render/interlude';
+import { ecgShape, ecgValue, exaggerated, METER_BARS, METER_STEP_SEC, meterLevel, meterRange } from '../src/render/interlude';
 
 describe('拍の脈動', () => {
   const rhythm = { beats: [1, 1.5, 2, 2.5], downbeats: [1, 3] };
@@ -34,11 +34,34 @@ describe('文字送りの間隔', () => {
 });
 
 describe('間奏の音量表示', () => {
+  // 0〜5秒は 0.5、5秒以降は 1
   const energy = { rate: 20, values: Array.from({ length: 200 }, (_, i) => (i >= 100 ? 1 : 0.5)) };
-  it('右端が今の音量で、左へ行くほど過去の音量（高さは音量の2乗）', () => {
+
+  it('区間の中の最小〜最大を 0〜1 に広げて強調する（差が小さい区間は広げない）', () => {
+    const range = meterRange(energy, 0, 10);
+    expect(range).toEqual({ lo: 0.5, hi: 1 });
+    expect(exaggerated(energy, 7, range)).toBe(1);
+    expect(exaggerated(energy, 2, range)).toBe(0);
+    const flat = meterRange(energy, 0, 4);
+    expect(flat).toEqual({ lo: 0, hi: 1 });
+    expect(exaggerated(energy, 2, { lo: 0.5, hi: 0.52 })).toBeCloseTo(0.5 ** 1.8);
+  });
+
+  it('円形: 右回りの先（k = METER_BARS - 1）が今、根元に近いほど過去', () => {
+    const range = meterRange(energy, 0, 10);
     const t = 5 + METER_STEP_SEC * 2;
-    expect(meterLevel(energy, t, METER_BARS - 1)).toBe(1);
-    expect(meterLevel(energy, t, 0)).toBe(0.25);
-    expect(meterLevel(energy, 100, METER_BARS - 1)).toBe(0);
+    expect(meterLevel(energy, t, METER_BARS - 1, range)).toBe(1);
+    expect(meterLevel(energy, t, 0, range)).toBe(0);
+  });
+
+  it('横型: 拍で鋭い山が立ち、拍の間は基準線に戻る', () => {
+    expect(ecgShape(0)).toBeGreaterThan(0.9);
+    expect(ecgShape(0.018)).toBeLessThan(0);
+    expect(Math.abs(ecgShape(0.4))).toBeLessThan(0.01);
+    const range = { lo: 0.5, hi: 1 };
+    expect(ecgValue([7], energy, 7, range)).toBeGreaterThan(0.9);
+    // 音量が小さい所の拍は、山が低い
+    expect(ecgValue([2], energy, 2, range)).toBeLessThan(0.4);
+    expect(ecgValue([2, 7], energy, 4.5, range)).toBe(0);
   });
 });

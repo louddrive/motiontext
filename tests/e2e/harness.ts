@@ -75,8 +75,12 @@ const api = {
     return toDataUrl(out);
   },
   /** 複数の時刻を1枚に並べた一覧（コンタクトシート） */
-  async sheet(name: string, times: number[], cols = 6, cellW = 320): Promise<string> {
-    const p = await prepare(name);
+  async sheet(name: string, times: number[], cols = 6, cellW = 320, interludeStyle?: 'bar' | 'ring'): Promise<string> {
+    const prepared = await prepare(name);
+    // 間奏の表示の形を差し替えて確かめられるようにする（レイアウトは変わらない）
+    const p = interludeStyle
+      ? { ...prepared, timeline: { ...prepared.timeline, interludes: prepared.timeline.interludes.map((iv) => ({ ...iv, style: interludeStyle })) } }
+      : prepared;
     const cellH = Math.round((cellW * p.timeline.height) / p.timeline.width);
     const label = 18;
     const rows = Math.ceil(times.length / cols);
