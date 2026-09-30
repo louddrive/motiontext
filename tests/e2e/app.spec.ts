@@ -95,3 +95,61 @@ test('MP4 を書き出せる', async ({ page }) => {
   expect(info.size).toBeGreaterThan(10_000);
   await expect(page.locator('.notice')).toBeVisible();
 });
+
+/** ページ内で 120 BPM のクリック音の WAV を作り、MV／曲のファイル選択に渡す */
+async function loadClickWav(page: Page, bpm = 120, seconds = 20) {
+  await page.evaluate(
+    ([bpm, seconds]) => {
+      const sr = 44100;
+      const n = sr * seconds;
+      const pcm = new Int16Array(n);
+      for (let k = 0, t = 0.5; t < seconds - 0.3; k++, t += 60 / bpm) {
+        const start = Math.round(t * sr);
+        const f = k % 4 === 0 ? 1760 : 1320;
+        for (let i = 0; i < sr * 0.05 && start + i < n; i++) {
+          pcm[start + i] = Math.round(20000 * Math.sin((2 * Math.PI * f * i) / sr) * Math.exp(-i / (sr * 0.01)));
+        }
+      }
+      const buf = new ArrayBuffer(44 + n * 2);
+      const v = new DataView(buf);
+      const str = (o: number, s: string) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+      str(0, 'RIFF');
+      v.setUint32(4, 36 + n * 2, true);
+      str(8, 'WAVE');
+      str(12, 'fmt ');
+      v.setUint32(16, 16, true);
+      v.setUint16(20, 1, true);
+      v.setUint16(22, 1, true);
+      v.setUint32(24, sr, true);
+      v.setUint32(28, sr * 2, true);
+      v.setUint16(32, 2, true);
+      v.setUint16(34, 16, true);
+      str(36, 'data');
+      v.setUint32(40, n * 2, true);
+      new Int16Array(buf, 44).set(pcm);
+      const input = document.querySelector<HTMLInputElement>('.file-btn input[type=file]')!;
+      const dt = new DataTransfer();
+      dt.items.add(new File([buf], 'click.wav', { type: 'audio/wav' }));
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    },
+    [bpm, seconds] as const,
+  );
+}
+
+test('曲を読み込むと、裏で拍を解析して BPM を表示する', async ({ page }) => {
+  await loadClickWav(page);
+  await expect(page.locator('.rhythm-status')).toHaveText('曲の拍を検出しました（約 120 BPM）。', { timeout: 60_000 });
+});
+
+test('?beats=1 のときだけ、プレビューの下に拍の確認を出す', async ({ page }) => {
+  await page.locator('.dropzone input[type=file]').setInputFiles(SAMPLE);
+  await loadClickWav(page);
+  await expect(page.locator('.rhythm-status')).toContainText('120 BPM', { timeout: 60_000 });
+  await expect(page.locator('.beat-check')).toHaveCount(0);
+  await page.goto('/?lang=ja&beats=1');
+  await page.locator('.dropzone input[type=file]').setInputFiles(SAMPLE);
+  await loadClickWav(page);
+  await expect(page.locator('.beat-check')).toContainText('120 BPM', { timeout: 60_000 });
+});
+

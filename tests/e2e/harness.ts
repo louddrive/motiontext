@@ -2,7 +2,9 @@
 import type { Timeline } from '../../src/director/types';
 import { ensureGlyphs } from '../../src/fonts/loader';
 import { buildLayouts, renderFrame, type Layouts, type RenderOptions } from '../../src/render/renderer';
+import { analyzePcm } from '../../src/audio/analyzePcm';
 import { GOLDEN_FONT, GOLDEN_PRESETS, GOLDEN_TEXT, goldenTimes } from '../helpers/goldenPresets';
+import { drumTrack, SR } from '../helpers/synth';
 
 interface Prepared {
   timeline: Timeline;
@@ -93,6 +95,13 @@ const api = {
       octx.fillText(`t=${t}`, x + 4, y + 14);
     });
     return toDataUrl(out);
+  },
+  /** seconds 秒の合成音（ドラム）のリズム解析にかかる時間（ms）。デコードは含まない */
+  analyzeBench(seconds: number, bpm = 128) {
+    const { pcm } = drumTrack({ bpm, seconds, bass: false });
+    const t0 = performance.now();
+    const r = analyzePcm(pcm, SR)!;
+    return { seconds, ms: performance.now() - t0, bpm: r.bpm, beats: r.beats.length };
   },
   /** 曲全体から frames 枚を等間隔に描き、1枚あたりの時間（ms）を測る。書き出しと同じく 1920x1080 等の実寸で描く */
   async bench(name: string, frames = 120, opts: RenderOptions = {}, patch: Partial<Timeline> = {}) {

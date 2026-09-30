@@ -1,5 +1,7 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { analyze } from '../analysis/features';
+import { startRhythmAnalysis, type RhythmJob } from '../audio/rhythmJob';
+import type { Rhythm } from '../audio/types';
 import { detectScript } from '../analysis/script';
 import { shiftCues } from '../analysis/timing';
 import { direct } from '../director/director';
@@ -17,6 +19,7 @@ import { createObjectUrl, revokeAll, revokeObjectUrl } from '../session/session'
 import { defaultTheme } from '../themes/default';
 import { applyEffectLevel } from '../themes/effectLevel';
 import { APP_VERSION_LABEL } from '../version';
+import { beatCheckEnabled } from './BeatCheck';
 import { CueList } from './CueList';
 import { DropZone } from './DropZone';
 import { ExportPanel } from './ExportPanel';
@@ -31,6 +34,16 @@ interface Loaded {
   fileName: string;
   result: ParseResult;
 }
+
+/** 曲のリズム解析の状態（MV／曲を読み込むと裏で解析する） */
+type RhythmState =
+  | { status: 'running'; progress: number }
+  | { status: 'done'; rhythm: Rhythm }
+  | { status: 'noAudio' }
+  | { status: 'failed'; error: unknown };
+
+/** 拍の確認（URL に ?beats=1）。ページを開いたときに1回だけ判定する */
+const BEAT_CHECK = beatCheckEnabled();
 
 interface Mv {
   /** 合成書き出しで中身を読むため File を保持する（破棄時に参照を消す） */
@@ -49,7 +62,7 @@ interface Notice {
 }
 
 export function App() {
-  const { t, tl, lang, setLang } = useI18n();
+  const { t, te, tl, lang, setLang } = useI18n();
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [fonts, setFonts] = useState<FontChoice>(DEFAULT_FONTS);
   /** 利用者が書体を選んだか（選んでいれば、字幕の読み込み時に歌詞の言語に合わせて切り替えない） */
@@ -74,6 +87,10 @@ export function App() {
   /** プレビューで表示中の字幕（サイドバーの字幕の一覧で強調する） */
   const [activeId, setActiveId] = useState<number | null>(null);
   const previewRef = useRef<PreviewHandle>(null);
+  const [rhythm, setRhythm] = useState<RhythmState | null>(null);
+  const rhythmJobRef = useRef<RhythmJob | null>(null);
+  // 画面を閉じたら解析をやめる
+  useEffect(() => () => rhythmJobRef.current?.cancel(), []);
 
   // フォントを読み込む文字。間奏のパーセンテージの数字も、歌詞に含まれなくても同じ書体で出るよう加える
   const text = useMemo(() => (loaded ? `${loaded.result.cues.map((c) => c.text).join('\n')}\n${INTERLUDE_GLYPHS}` : ''), [loaded]);
@@ -133,7 +150,36 @@ export function App() {
     setSeedHistory(seedHistory.slice(0, -1));
   }
 
+  /** MV／曲の音声を裏で解析する（前の解析は捨てる） */
+  function analyzeMusic(file: File | null) {
+    rhythmJobRef.current?.cancel();
+    rhythmJobRef.current = null;
+    if (!file) {
+      setRhythm(null);
+      return;
+    }
+    setRhythm({ status: 'running', progress: 0 });
+    const job = startRhythmAnalysis(file, (progress) => {
+      if (rhythmJobRef.current === job) setRhythm({ status: 'running', progress });
+    });
+    rhythmJobRef.current = job;
+    job.promise.then(
+      (outcome) => {
+        if (rhythmJobRef.current !== job) return;
+        rhythmJobRef.current = null;
+        setRhythm(outcome.kind === 'done' ? { status: 'done', rhythm: outcome.rhythm } : { status: 'noAudio' });
+      },
+      (error: unknown) => {
+        // キャンセル（別の MV を読み込んだ・データを破棄した）は表示しない
+        if (rhythmJobRef.current !== job || (error instanceof DOMException && error.name === 'AbortError')) return;
+        rhythmJobRef.current = null;
+        setRhythm({ status: 'failed', error });
+      },
+    );
+  }
+
   function wipe(message: Notice) {
+    analyzeMusic(null);
     revokeAll();
     setLoaded(null);
     setMv(null);
@@ -177,6 +223,7 @@ export function App() {
       revokeObjectUrl(mv?.url);
       setMv({ file, url, name: file.name, duration: Number.isFinite(probe.duration) ? probe.duration : 0 });
       probe.removeAttribute('src');
+      analyzeMusic(file);
     };
     probe.onerror = () => {
       revokeObjectUrl(url);
@@ -250,6 +297,19 @@ export function App() {
             </label>
             {mv && <span className="hint">{t('mv.loaded', { name: mv.name, sec: mv.duration.toFixed(1) })}</span>}
           </div>
+          {rhythm && (
+            <p className={`hint rhythm-status ${rhythm.status === 'failed' ? 'error' : ''}`} role="status">
+              {rhythm.status === 'running'
+                ? t('rhythm.running', { pct: Math.round(rhythm.progress * 100) })
+                : rhythm.status === 'done'
+                  ? rhythm.rhythm.confidence > 0
+                    ? t('rhythm.done', { bpm: Math.round(rhythm.rhythm.bpm) })
+                    : t('rhythm.unclear')
+                  : rhythm.status === 'noAudio'
+                    ? t('rhythm.noAudio')
+                    : t('rhythm.failed', { error: te(rhythm.error) })}
+            </p>
+          )}
           {loaded && (
             <div className="controls">
               <TimingControls offsetSec={offsetSec} onChange={setOffsetSec} />
@@ -353,6 +413,7 @@ export function App() {
             alphaPreview={style.output === 'png'}
             compositePreview={style.output === 'composite'}
             onActiveChange={setActiveId}
+            beatCheck={BEAT_CHECK && rhythm?.status === 'done' ? rhythm.rhythm : null}
           />
         ) : (
           <p className="main-empty">{t('preview.empty')}</p>

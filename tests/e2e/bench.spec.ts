@@ -32,3 +32,13 @@ test('renderFrame の速さ', async ({ page }) => {
   console.log(['', ...table].join('\n'));
   await test.info().attach('bench.json', { body: JSON.stringify(rows, null, 2), contentType: 'application/json' });
 });
+
+test('リズム解析の速さ', async ({ page }) => {
+  test.setTimeout(300_000);
+  await openHarness(page);
+  const rows = [];
+  for (const seconds of [60, 300]) rows.push(await page.evaluate((s) => window.mt.analyzeBench(s), seconds));
+  const lines = rows.map((r) => `analyze ${String(r.seconds).padStart(4)} s audio: ${r.ms.toFixed(0).padStart(6)} ms (bpm ${r.bpm}, ${r.beats} beats)`);
+  console.log(['', ...lines].join('\n'));
+  await test.info().attach('analyze.json', { body: JSON.stringify(rows, null, 2), contentType: 'application/json' });
+});

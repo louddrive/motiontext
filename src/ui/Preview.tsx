@@ -1,8 +1,10 @@
-import { useEffect, useImperativeHandle, useRef, useState, type Ref } from 'react';
+import { useCallback, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState, type Ref } from 'react';
+import type { Rhythm } from '../audio/types';
 import type { Timeline, TimelineItem } from '../director/types';
 import { ensureGlyphs } from '../fonts/loader';
 import { useI18n } from '../i18n/react';
 import { buildLayouts, layoutsFromCache, renderFrame, type LayoutCache, type Layouts } from '../render/renderer';
+import { BeatCheck } from './BeatCheck';
 
 /** 再生中のプレビューのモーションブラーのサンプル数の上限 */
 const PREVIEW_BLUR_SAMPLES = 3;
@@ -19,6 +21,8 @@ interface Props {
   compositePreview?: boolean;
   /** 表示中の字幕が変わったとき（字幕の一覧の強調表示用） */
   onActiveChange?: (id: number | null) => void;
+  /** 拍の確認を出す（URL に ?beats=1 を付けたときだけ渡す） */
+  beatCheck?: Rhythm | null;
   ref?: Ref<PreviewHandle>;
 }
 
@@ -49,7 +53,7 @@ export function formatClock(t: number) {
   return `${m}:${s}`;
 }
 
-export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, compositePreview = false, onActiveChange, ref }: Props) {
+export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, compositePreview = false, onActiveChange, beatCheck, ref }: Props) {
   const { t } = useI18n();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -145,6 +149,15 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
     return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeline, transparent, showMv, alphaPreview, compositePreview]);
+
+  const isPlaying = () => clockRef.current.playing || (showMv && videoRef.current ? !videoRef.current.paused : false);
+  // 拍の確認の描画ループから、最新の再生位置を読むための口（関数自体は変わらないようにする）
+  const clockFnsRef = useRef({ now, isPlaying });
+  useLayoutEffect(() => {
+    clockFnsRef.current = { now, isPlaying };
+  });
+  const getTime = useCallback(() => clockFnsRef.current.now(), []);
+  const getPlaying = useCallback(() => clockFnsRef.current.isPlaying(), []);
 
   function play() {
     const c = clockRef.current;
@@ -248,6 +261,7 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
         )}
       </div>
       <p className="hint keys">{t('preview.keys')}</p>
+      {beatCheck && <BeatCheck rhythm={beatCheck} getTime={getTime} isPlaying={getPlaying} />}
     </div>
   );
 }
