@@ -2,7 +2,7 @@ import { useEffect, useImperativeHandle, useRef, useState, type Ref } from 'reac
 import type { Timeline, TimelineItem } from '../director/types';
 import { ensureGlyphs } from '../fonts/loader';
 import { useI18n } from '../i18n/react';
-import { buildLayouts, renderFrame, type Layouts } from '../render/renderer';
+import { buildLayouts, layoutsFromCache, renderFrame, type LayoutCache, type Layouts } from '../render/renderer';
 
 /** 再生中のプレビューのモーションブラーのサンプル数の上限 */
 const PREVIEW_BLUR_SAMPLES = 3;
@@ -54,6 +54,8 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const layoutsRef = useRef<Layouts | null>(null);
+  /** 計算済みのレイアウト。書体と文字（=読み込むグリフ）が同じあいだだけ使い回す */
+  const layoutCacheRef = useRef<{ key: string; cache: LayoutCache }>({ key: '', cache: new Map() });
   const clockRef = useRef({ playing: false, base: 0, startedAt: 0 });
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -73,12 +75,22 @@ export function Preview({ timeline, fontIds, text, mvUrl, alphaPreview = false, 
   // フォントロード → レイアウト計算（タイムラインやフォントが変わるたびに）
   useEffect(() => {
     let alive = true;
+    const fontsKey = JSON.stringify([fontIds, text]);
+    if (layoutCacheRef.current.key !== fontsKey) layoutCacheRef.current = { key: fontsKey, cache: new Map() };
+    const { cache } = layoutCacheRef.current;
+    // 色・背景レイヤー・演出だけが変わった場合は、計算済みのレイアウトをそのまま使う（読み込み中の表示も出さない）
+    const cached = layoutsFromCache(timeline, cache);
+    if (cached) {
+      layoutsRef.current = cached;
+      return;
+    }
     setLoading(true);
     layoutsRef.current = null;
     const layout = (failed: boolean) => {
       const ctx = canvasRef.current?.getContext('2d');
       if (!alive || !ctx) return;
-      layoutsRef.current = buildLayouts(ctx, timeline);
+      // 代わりの書体で組んだレイアウトは、書体が読み込めたときに組み直せるよう使い回さない
+      layoutsRef.current = buildLayouts(ctx, timeline, failed ? undefined : cache);
       setFontError(failed);
       setLoading(false);
     };

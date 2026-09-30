@@ -1,7 +1,7 @@
 import { drawDeco, drawParticles, drawUnderline } from '../animations/deco';
 import type { GlyphStyle } from '../animations/draw';
 import { ANIMATIONS } from '../animations/registry';
-import type { Timeline } from '../director/types';
+import type { Timeline, TimelineItem } from '../director/types';
 import { backdropAlpha, backdropFill, backdropIntervals, type Interval } from './backdrop';
 import { outlineColor } from '../themes/color';
 import { cameraAt } from './camera';
@@ -15,15 +15,53 @@ export const BACKGROUND_COLORS = { black: '#000000', green: '#00FF00' } as const
 
 export type Layouts = Map<number, ItemLayout>;
 
-/** 全アイテムのレイアウトを事前計算する。フォントのロード完了後に呼ぶこと */
-export function buildLayouts(ctx: Ctx2D, timeline: Timeline): Layouts {
+/**
+ * レイアウトの計算に使う項目だけから作るキー。色・演出・時刻・カメラ等が変わってもキーが同じなら、
+ * 同じレイアウトを使い回せる（レイアウトの計算で新しい項目を使うときは、ここにも加えること。テストで検査している）
+ */
+export function layoutKey(item: TimelineItem, width: number, height: number): string {
+  const { lines, fontId, weight, fontSize, fit, vertical, side, mixed, kanaRatio, emphasisRanges, emphasisScale, anchor, align } = item;
+  return JSON.stringify([width, height, lines, fontId, weight, fontSize, fit, vertical, side, mixed, kanaRatio, emphasisRanges, emphasisScale, anchor, align]);
+}
+
+/** レイアウトの使い回し用（キーは layoutKey）。同じ書体の読み込み状態のあいだだけ使うこと */
+export type LayoutCache = Map<string, ItemLayout>;
+
+/** キャッシュが大きくなりすぎたら捨てる上限（パターンの再生成を繰り返したとき用） */
+const LAYOUT_CACHE_MAX = 20_000;
+
+function computeItemLayout(ctx: Ctx2D, item: TimelineItem, width: number, height: number): ItemLayout {
+  return item.mixed
+    ? computeMixedLayout(ctx, item, width, height)
+    : item.vertical
+      ? computeVerticalLayout(item, width, height)
+      : computeLayout(ctx, item, width, height);
+}
+
+/** 全アイテムのレイアウトを事前計算する。フォントのロード完了後に呼ぶこと。cache を渡すと、計算済みのものを使い回す */
+export function buildLayouts(ctx: Ctx2D, timeline: Timeline, cache?: LayoutCache): Layouts {
+  const { width, height } = timeline;
+  if (cache && cache.size > LAYOUT_CACHE_MAX) cache.clear();
   const map: Layouts = new Map();
   for (const item of timeline.items) {
-    const layout = item.mixed
-      ? computeMixedLayout(ctx, item, timeline.width, timeline.height)
-      : item.vertical
-        ? computeVerticalLayout(item, timeline.width, timeline.height)
-        : computeLayout(ctx, item, timeline.width, timeline.height);
+    if (!cache) {
+      map.set(item.id, computeItemLayout(ctx, item, width, height));
+      continue;
+    }
+    const key = layoutKey(item, width, height);
+    let layout = cache.get(key);
+    if (!layout) cache.set(key, (layout = computeItemLayout(ctx, item, width, height)));
+    map.set(item.id, layout);
+  }
+  return map;
+}
+
+/** すべてのアイテムがキャッシュにあれば、計算せずにレイアウトを返す（フォントの読み込み待ちも省ける）。1つでも無ければ null */
+export function layoutsFromCache(timeline: Timeline, cache: LayoutCache): Layouts | null {
+  const map: Layouts = new Map();
+  for (const item of timeline.items) {
+    const layout = cache.get(layoutKey(item, timeline.width, timeline.height));
+    if (!layout) return null;
     map.set(item.id, layout);
   }
   return map;
