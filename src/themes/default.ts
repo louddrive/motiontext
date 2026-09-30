@@ -29,5 +29,5 @@ export const defaultTheme: Theme = {
   interludeMeter: 0,
   glow: 18,
   motionBlur: { shutter: 0.5, samples: 4 },
-  fx: { shake: 0.4, shineRate: 0.5, particleRate: 0.3, interludeRate: 0.5, underlineRate: 0.25, pulse: 0.02, pulseEvery: 1 },
+  fx: { shake: 0.4, shineRate: 0.5, particleRate: 0.3, interludeRate: 0.5, underlineRate: 0.25, pulse: 0.02, pulseEvery: 2 },
 };

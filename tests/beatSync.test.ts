@@ -138,9 +138,9 @@ describe('director に曲のリズムを渡したとき', () => {
     expect(build({ rhythm, effects: { ...ALL_EFFECTS, beatPulse: false } }).items.filter((it) => it.sync).every((it) => it.sync!.pulse === 0)).toBe(true);
   });
 
-  it('弾む間隔は「エモい」だけ2拍に1回、「標準」「超エモ」は毎拍', () => {
+  it('弾む間隔は「標準」「エモい」は2拍に1回、「超エモ」は毎拍', () => {
     const every = (level: EffectLevel) => new Set(build({ rhythm }, level).items.filter((it) => it.sync).map((it) => it.sync!.pulseEvery));
-    expect(every('standard')).toEqual(new Set([1]));
+    expect(every('standard')).toEqual(new Set([2]));
     expect(every('emo')).toEqual(new Set([2]));
     expect(every('ultra')).toEqual(new Set([1]));
   });

@@ -81,7 +81,7 @@ Settings and controls are on the left, and the preview is on the right. The left
     - With the effect level at "Standard", "Emotional" or "Ultra emotional", **the chorus lyrics are synced to the beat automatically** (nothing to turn on).
       - Chorus subtitles appear and disappear on the nearest beat (eighth note), moved by at most 0.1 s.
       - Each chorus entrance finishes exactly on a beat, and the spacing between letters is set to a division of the beat.
-      - The chorus lyrics bounce with the beat (scale of 2% for "Standard", 4% for "Emotional" and 6% for "Ultra emotional"; 1.5 times that at the start of a bar). "Standard" and "Ultra emotional" bounce on every beat, and "Emotional" on every other beat (beats 1 and 3 of each bar).
+      - The chorus lyrics bounce with the beat (scale of 2% for "Standard", 4% for "Emotional" and 6% for "Ultra emotional"; 1.5 times that at the start of a bar). "Standard" and "Emotional" bounce on every other beat (beats 1 and 3 of each bar), and "Ultra emotional" on every beat.
       - Loud parts of the chorus move more, and the camera shake at the start of a chorus happens at the start of a bar.
       - Whether a line is part of the chorus is judged from repeated lyrics and also from the loudness of the song.
       - With "Emotional" and "Ultra emotional", the interlude progress gets a waveform that moves with the loudness of the song (radial bars around the circle, or a spectrum-like line across the middle of the screen for the horizontal style).
