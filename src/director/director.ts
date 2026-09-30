@@ -370,6 +370,7 @@ export function direct(features: CueFeature[], opts: DirectOptions): Timeline {
               hit: hitDuration(rhythm.beats, start, end - start),
               beat: Math.round(beatPeriodAt(rhythm.beats, start) * 1000) / 1000,
               pulse: effects.beatPulse ? theme.fx.pulse : 0,
+              pulseEvery: theme.fx.pulseEvery,
             },
           }
         : {}),

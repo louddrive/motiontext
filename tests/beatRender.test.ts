@@ -23,6 +23,32 @@ describe('拍の脈動', () => {
   });
 });
 
+describe('2拍に1回の脈動', () => {
+  // 小節の頭は 1 と 3。拍は 0.5 秒ごと（1 = 1拍目, 1.5 = 2拍目, 2 = 3拍目, 2.5 = 4拍目, 3 = 次の小節の1拍目）
+  const rhythm = { beats: [0.5, 1, 1.5, 2, 2.5, 3, 3.5], downbeats: [1, 3] };
+  const at = (t: number) => pulseScale(rhythm, 0.04, t + PULSE_ATTACK_SEC, 0, 2);
+
+  it('小節の1・3拍目だけで弾み、2・4拍目では弾まない', () => {
+    expect(at(1)).toBeCloseTo(1 + 0.04 * PULSE_DOWNBEAT_BOOST);
+    expect(at(2)).toBeCloseTo(1.04);
+    expect(at(3)).toBeCloseTo(1 + 0.04 * PULSE_DOWNBEAT_BOOST);
+    // 2・4拍目の直後は、直前の弾む拍（1・3拍目）から 0.5 秒たった分だけ残る
+    const decayed = 1 + 0.04 * Math.exp(-(0.5 - 0) / PULSE_DECAY_SEC);
+    expect(at(2.5)).toBeCloseTo(decayed);
+    expect(at(1.5)).toBeLessThan(at(1));
+  });
+
+  it('毎拍（every = 1）なら、2・4拍目でも弾む', () => {
+    expect(pulseScale(rhythm, 0.04, 1.5 + PULSE_ATTACK_SEC, 0, 1)).toBeCloseTo(1.04);
+  });
+
+  it('小節の頭より前の拍は、拍の番号で数える', () => {
+    const r = { beats: [0.5, 1, 1.5, 2], downbeats: [1.5] };
+    expect(pulseScale(r, 0.04, 0.5 + PULSE_ATTACK_SEC, 0, 2)).toBeCloseTo(1.04);
+    expect(pulseScale(r, 0.04, 1 + PULSE_ATTACK_SEC, 0, 2)).toBeLessThan(1.02);
+  });
+});
+
 describe('文字送りの間隔', () => {
   it('拍の 1/2^k のうち、元の 1.2 倍を超えない最も長いものにそろえる', () => {
     expect(syncStagger(0.06, 0.5)).toBeCloseTo(0.0625);

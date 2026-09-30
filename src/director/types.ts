@@ -66,6 +66,8 @@ export interface ItemSync {
   beat: number;
   /** 拍の脈動の強さ（拡大率。0 なら弾まない） */
   pulse: number;
+  /** 何拍に1回弾ませるか（1 で毎拍、2 で小節の1・3拍目） */
+  pulseEvery: number;
 }
 
 /** 描画で使う曲のリズム（拍の脈動・間奏の音量表示） */

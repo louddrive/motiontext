@@ -323,24 +323,24 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1920,1080 a=1 fill=#000000
 [off1] clearRect 0,0 1920,1080
 [off0] clearRect 0,0 1920,1080
-[off0] fillText "光" @769.99,609.35 m[1.07,0,0,1.07] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "光" @769.99,609.35 m[1.07,0,0,1.07] font=400 131px mt-noto-sans-jp align=center a=1 fill=grad(356.54,-41.28,501.91,11.64|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "を" @889.68,609.35 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "を" @889.68,609.35 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(245.04,-56.1,390.41,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "掴" @1030.32,609.35 m[1.07,0,0,1.07] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "掴" @1030.32,609.35 m[1.07,0,0,1.07] font=400 170px mt-noto-sans-jp align=center a=1 fill=grad(114.04,-26.46,259.41,26.46|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "め" @1170.95,609.35 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "め" @1170.95,609.35 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(-16.96,-56.1,128.41,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "光" @771.63,608.75 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "光" @771.63,608.75 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=grad(356.54,-41.28,501.91,11.64|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "を" @890.29,608.75 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "を" @890.29,608.75 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(245.04,-56.1,390.41,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "掴" @1029.71,608.75 m[1.06,0,0,1.06] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "掴" @1029.71,608.75 m[1.06,0,0,1.06] font=400 170px mt-noto-sans-jp align=center a=1 fill=grad(114.04,-26.46,259.41,26.46|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "め" @1169.12,608.75 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "め" @1169.12,608.75 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(-16.96,-56.1,128.41,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1920,1080
-[off0] fillText "光" @770.2,609.28 m[1.07,0,0,1.07] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "光" @770.2,609.28 m[1.07,0,0,1.07] font=400 131px mt-noto-sans-jp align=center a=1 fill=grad(333.69,-41.28,479.06,11.64|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "を" @889.65,609.39 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "を" @889.65,609.39 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(222.19,-56.1,367.56,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "掴" @1030.48,609.52 m[1.08,0,0,1.08] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "掴" @1030.48,609.52 m[1.08,0,0,1.08] font=400 170px mt-noto-sans-jp align=center a=1 fill=grad(91.19,-26.46,236.56,26.46|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "め" @1171.82,609.65 m[1.08,0,0,1.08] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "め" @1171.82,609.65 m[1.08,0,0,1.08] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(-39.81,-56.1,105.56,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "光" @772.14,608.58 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "光" @772.14,608.58 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=grad(333.69,-41.28,479.06,11.64|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "を" @890.37,608.68 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "を" @890.37,608.68 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(222.19,-56.1,367.56,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "掴" @1029.76,608.81 m[1.07,0,0,1.07] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "掴" @1029.76,608.81 m[1.07,0,0,1.07] font=400 170px mt-noto-sans-jp align=center a=1 fill=grad(91.19,-26.46,236.56,26.46|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "め" @1169.66,608.94 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "め" @1169.66,608.94 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(-39.81,-56.1,105.56,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 drawImage off1 @0,0 a=1 fill=#000000
 ## t=17.052
@@ -478,38 +478,38 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1920,1080 a=1 fill=#000000
 [off1] clearRect 0,0 1920,1080
 [off0] clearRect 0,0 1920,1080
-[off0] fill A1837.71,346.17 r=1.99 0..6.28 a=0.04 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1363.92,213.55 r=3.67 0..6.28 a=0.51 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1517.45,342.49 r=2.44 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1197.05,571.36 r=4.02 0..6.28 a=0.71 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1658.55,727.73 r=3.66 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1637.36,327.57 r=2.45 0..6.28 a=0.04 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1574.29,513.48 r=2.95 0..6.28 a=0.29 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1310.04,356.53 r=3.06 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1233.65,801.7 r=2.8 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1468.5,640.32 r=2.47 0..6.28 a=0.64 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1273.75,371.16 r=4.58 0..6.28 a=0.77 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1360.61,650.95 r=2.28 0..6.28 a=0.86 fill=#FFD166 glow=36.4:#FFD166
-[off0] stroke M-1353.25,-41.5 L2900.1,1927.55 a=0.75 stroke=#FFD166 lw=2.16 butt miter glow=36.4:#FFD166
-[off0] stroke M-1109.94,-567.08 L3143.41,1401.97 a=0.48 stroke=#FFD166 lw=3.1 butt miter glow=36.4:#FFD166
-[off0] stroke M3138.69,1412.16 L-1114.65,-556.89 a=0.79 stroke=#FFD166 lw=3.67 butt miter glow=36.4:#FFD166
-[off0] stroke M1834.62,149.24 L1834.62,582.12 a=1 stroke=#FFD166 lw=5.24 butt miter glow=36.4:#FFD166
-[off0] stroke M1654.77,274.62 L1654.77,734.11 a=1 stroke=#FFD166 lw=6.8 butt miter glow=36.4:#FFD166
-[off0] stroke M1418.49,400.02 L1418.49,930.8 a=1 stroke=#FFD166 lw=5.24 butt miter glow=36.4:#FFD166
-[off0] fillText "鮮" @1739.89,271.84 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "や" @1739.89,374.67 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "か" @1739.89,472.52 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "な" @1739.89,570.38 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "憂" @1531.83,433.74 m[1.06,0,0,1.06] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "鬱" @1531.83,614.56 m[1.06,0,0,1.06] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "を" @1531.83,722.38 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] clip R1052.04,348.96 1595.44,348.95 1595.44,926.21 1052.04,926.23
-[off0] fillText "抱" @1323.74,522.64 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "き" @1323.74,625.48 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "し" @1323.74,723.34 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "め" @1323.74,821.21 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "て" @1323.74,919.07 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill R1251.29,926.22 1396.2,926.22 1396.2,939.32 1251.29,939.33 a=1 fill=#FFD166
+[off0] fill A1838.64,345.64 r=2 0..6.28 a=0.04 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1363.55,212.67 r=3.68 0..6.28 a=0.51 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1517.51,341.95 r=2.45 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1196.24,571.45 r=4.03 0..6.28 a=0.71 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1658.99,728.25 r=3.67 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1637.74,327 r=2.46 0..6.28 a=0.04 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1574.49,513.4 r=2.96 0..6.28 a=0.29 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1309.53,356.03 r=3.06 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1232.93,802.41 r=2.81 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1468.42,640.59 r=2.48 0..6.28 a=0.64 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1273.15,370.7 r=4.59 0..6.28 a=0.77 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1360.24,651.25 r=2.29 0..6.28 a=0.86 fill=#FFD166 glow=36.4:#FFD166
+[off0] stroke M-1361,-43.08 L2903.91,1931.32 a=0.75 stroke=#FFD166 lw=2.16 butt miter glow=36.4:#FFD166
+[off0] stroke M-1117.03,-570.09 L3147.89,1404.32 a=0.48 stroke=#FFD166 lw=3.1 butt miter glow=36.4:#FFD166
+[off0] stroke M3143.16,1414.53 L-1121.76,-559.88 a=0.79 stroke=#FFD166 lw=3.67 butt miter glow=36.4:#FFD166
+[off0] stroke M1835.53,148.18 L1835.53,582.23 a=1 stroke=#FFD166 lw=5.24 butt miter glow=36.4:#FFD166
+[off0] stroke M1655.19,273.9 L1655.19,734.64 a=1 stroke=#FFD166 lw=6.8 butt miter glow=36.4:#FFD166
+[off0] stroke M1418.27,399.64 L1418.27,931.87 a=1 stroke=#FFD166 lw=5.24 butt miter glow=36.4:#FFD166
+[off0] fillText "鮮" @1740.55,271.11 m[1.07,0,0,1.07] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "や" @1740.55,374.22 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "か" @1740.55,472.34 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "な" @1740.55,570.46 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "憂" @1531.92,433.45 m[1.07,0,0,1.07] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "鬱" @1531.92,614.77 m[1.07,0,0,1.07] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "を" @1531.92,722.87 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] clip R1050.83,348.44 1595.71,348.43 1595.71,927.26 1050.83,927.28
+[off0] fillText "抱" @1323.27,522.59 m[1.07,0,0,1.07] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "き" @1323.27,625.71 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "し" @1323.27,723.84 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "め" @1323.27,821.97 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "て" @1323.27,920.1 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill R1250.62,927.27 1395.92,927.27 1395.92,940.41 1250.62,940.41 a=1 fill=#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1920,1080
 [off0] fill A1847.72,345.43 r=2.05 0..6.28 a=0.07 fill=#FFD166 glow=36.4:#FFD166
@@ -756,56 +756,56 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1920,1080 a=1 fill=#000000
 [off1] clearRect 0,0 1920,1080
 [off0] clearRect 0,0 1920,1080
-[off0] stroke M-1231.02,1667.32 L3405.01,296.81 a=0.47 stroke=#FFD166 lw=4.92 butt miter glow=36.4:#FFD166
-[off0] stroke M159.93,290.09 L1636.41,238.9 a=1 stroke=#FFD166 lw=4.56 butt miter glow=36.4:#FFD166
-[off0] stroke M147.78,438.48 L1772.22,415.43 a=1 stroke=#FFD166 lw=4.56 butt miter glow=36.4:#FFD166
-[off0] fillText "S" @275.94,265.22 m[0.92,-0.04,0,1.02] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "h" @381.75,261.25 m[0.94,-0.04,0,1.03] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "i" @490.64,257.16 m[0.97,-0.04,0,1.05] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "n" @602.77,252.96 m[1,-0.04,0,1.06] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "e" @718.26,248.63 m[1.03,-0.04,0,1.08] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "o" @960,239.56 m[1.1,-0.05,0,1.11] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "n" @1086.58,234.81 m[1.13,-0.05,0,1.13] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "," @1217.21,229.91 m[1.17,-0.05,0,1.15] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "w" @1491.44,219.62 m[1.25,-0.05,0,1.18] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "e" @1635.46,214.22 m[1.29,-0.06,0,1.2] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "a" @275.94,415.81 m[0.92,-0.02,0,1.02] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "r" @381.75,414.01 m[0.94,-0.02,0,1.03] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "e" @490.64,412.15 m[0.97,-0.02,0,1.05] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "t" @718.26,408.28 m[1.03,-0.02,0,1.08] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "h" @837.29,406.25 m[1.06,-0.02,0,1.09] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "e" @960,404.16 m[1.1,-0.03,0,1.11] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "n" @1217.21,399.78 m[1.17,-0.03,0,1.15] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "i" @1352.09,397.49 m[1.21,-0.03,0,1.16] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "g" @1491.44,395.11 m[1.25,-0.03,0,1.18] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "h" @1635.46,392.66 m[1.29,-0.03,0,1.2] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "t" @1784.42,390.13 m[1.33,-0.03,0,1.22] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] stroke M-1222.15,1661.78 L3395.11,296.82 a=0.47 stroke=#FFD166 lw=4.92 butt miter glow=36.4:#FFD166
+[off0] stroke M163.17,290.13 L1633.67,239.14 a=1 stroke=#FFD166 lw=4.56 butt miter glow=36.4:#FFD166
+[off0] stroke M151.06,437.92 L1768.94,414.96 a=1 stroke=#FFD166 lw=4.56 butt miter glow=36.4:#FFD166
+[off0] fillText "S" @278.71,265.36 m[0.91,-0.04,0,1.01] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "h" @384.09,261.4 m[0.94,-0.04,0,1.03] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "i" @492.54,257.34 m[0.97,-0.04,0,1.04] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "n" @604.21,253.15 m[1,-0.04,0,1.06] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "e" @719.24,248.83 m[1.03,-0.04,0,1.07] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "o" @960,239.8 m[1.09,-0.05,0,1.11] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "n" @1086.07,235.07 m[1.13,-0.05,0,1.12] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "," @1216.17,230.19 m[1.16,-0.05,0,1.14] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "w" @1489.29,219.95 m[1.24,-0.05,0,1.18] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "e" @1632.73,214.57 m[1.28,-0.06,0,1.2] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "a" @278.71,415.34 m[0.91,-0.02,0,1.01] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "r" @384.09,413.54 m[0.94,-0.02,0,1.03] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "e" @492.54,411.7 m[0.97,-0.02,0,1.04] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "t" @719.24,407.84 m[1.03,-0.02,0,1.07] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "h" @837.78,405.82 m[1.06,-0.02,0,1.09] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "e" @960,403.74 m[1.09,-0.03,0,1.11] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "n" @1216.17,399.38 m[1.16,-0.03,0,1.14] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "i" @1350.51,397.09 m[1.2,-0.03,0,1.16] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "g" @1489.29,394.73 m[1.24,-0.03,0,1.18] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "h" @1632.73,392.29 m[1.28,-0.03,0,1.2] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "t" @1781.08,389.76 m[1.33,-0.03,0,1.22] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1920,1080
-[off0] stroke M-1221.11,1663.05 L3393.95,297.95 a=0.47 stroke=#FFD166 lw=4.92 butt miter glow=36.4:#FFD166
-[off0] stroke M163.72,291.64 L1633.2,239.94 a=1 stroke=#FFD166 lw=4.56 butt miter glow=36.4:#FFD166
-[off0] stroke M151.45,439.22 L1768.55,415.94 a=1 stroke=#FFD166 lw=4.56 butt miter glow=36.4:#FFD166
-[off0] fillText "S" @279.88,266.81 m[0.91,-0.04,0,1.01] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "h" @384.97,262.81 m[0.94,-0.04,0,1.03] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "i" @493.17,258.69 m[0.97,-0.04,0,1.04] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "n" @604.62,254.45 m[0.99,-0.04,0,1.06] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "e" @719.47,250.08 m[1.03,-0.05,0,1.07] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "o" @960,240.93 m[1.09,-0.05,0,1.11] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "n" @1086.03,236.13 m[1.13,-0.05,0,1.12] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "," @1216.16,231.18 m[1.16,-0.05,0,1.14] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "w" @1489.51,220.77 m[1.24,-0.05,0,1.18] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "e" @1633.18,215.3 m[1.29,-0.06,0,1.2] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "a" @279.88,416.63 m[0.91,-0.02,0,1.01] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "r" @384.97,414.81 m[0.94,-0.02,0,1.03] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "e" @493.17,412.95 m[0.97,-0.02,0,1.04] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "t" @719.47,409.04 m[1.03,-0.02,0,1.07] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "h" @837.87,406.99 m[1.06,-0.02,0,1.09] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "e" @960,404.88 m[1.09,-0.03,0,1.11] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "n" @1216.16,400.45 m[1.16,-0.03,0,1.14] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "i" @1350.58,398.13 m[1.2,-0.03,0,1.16] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "g" @1489.51,395.73 m[1.24,-0.03,0,1.18] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "h" @1633.18,393.25 m[1.29,-0.03,0,1.2] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "t" @1781.85,390.68 m[1.33,-0.03,0,1.22] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] stroke M-1210.69,1656.53 L3382.32,297.96 a=0.47 stroke=#FFD166 lw=4.92 butt miter glow=36.4:#FFD166
+[off0] stroke M167.53,291.68 L1629.98,240.22 a=1 stroke=#FFD166 lw=4.56 butt miter glow=36.4:#FFD166
+[off0] stroke M155.31,438.56 L1764.69,415.38 a=1 stroke=#FFD166 lw=4.56 butt miter glow=36.4:#FFD166
+[off0] fillText "S" @283.13,266.97 m[0.91,-0.04,0,1.01] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "h" @387.72,262.99 m[0.93,-0.04,0,1.02] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "i" @495.4,258.89 m[0.96,-0.04,0,1.04] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "n" @606.32,254.67 m[0.99,-0.04,0,1.05] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "e" @720.62,250.32 m[1.02,-0.05,0,1.07] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "o" @960,241.2 m[1.09,-0.05,0,1.1] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "n" @1085.43,236.43 m[1.12,-0.05,0,1.12] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "," @1214.93,231.5 m[1.16,-0.05,0,1.14] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "w" @1486.98,221.15 m[1.24,-0.05,0,1.17] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "e" @1629.96,215.7 m[1.28,-0.06,0,1.19] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "a" @283.13,416.07 m[0.91,-0.02,0,1.01] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "r" @387.72,414.26 m[0.93,-0.02,0,1.02] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "e" @495.4,412.4 m[0.96,-0.02,0,1.04] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "t" @720.62,408.51 m[1.02,-0.02,0,1.07] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "h" @838.46,406.48 m[1.05,-0.02,0,1.08] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "e" @960,404.38 m[1.09,-0.03,0,1.1] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "n" @1214.93,399.97 m[1.16,-0.03,0,1.14] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "i" @1348.71,397.66 m[1.2,-0.03,0,1.16] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "g" @1486.98,395.27 m[1.24,-0.03,0,1.17] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "h" @1629.96,392.8 m[1.28,-0.03,0,1.19] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "t" @1777.92,390.25 m[1.32,-0.03,0,1.22] font=400 114px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 drawImage off1 @0,0 a=1 fill=#000000
 ## t=24.068
@@ -930,22 +930,22 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1920,1080 a=1 fill=#000000
 [off1] clearRect 0,0 1920,1080
 [off0] clearRect 0,0 1920,1080
-[off0] fillText "ど" @639.23,594.04 m[1.09,0,0,1.09] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "こ" @739.09,594.04 m[1.09,0,0,1.09] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "ま" @838.96,594.04 m[1.09,0,0,1.09] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "で" @938.83,594.04 m[1.09,0,0,1.09] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "も" @1038.7,594.04 m[1.09,0,0,1.09] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "行" @1159.74,594.04 m[1.09,0,0,1.09] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "け" @1280.77,594.04 m[1.09,0,0,1.09] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "ど" @645.64,592.96 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "こ" @743.51,592.96 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "ま" @841.38,592.96 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "で" @939.26,592.96 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "も" @1037.13,592.96 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "行" @1155.74,592.96 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "け" @1274.36,592.96 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1920,1080
-[off0] fillText "ど" @636.68,594.48 m[1.1,0,0,1.09] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "こ" @737.66,594.4 m[1.1,0,0,1.09] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "ま" @838.35,594.32 m[1.09,0,0,1.09] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "で" @938.76,594.24 m[1.09,0,0,1.09] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "も" @1038.87,594.17 m[1.09,0,0,1.09] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "行" @1159.82,594.07 m[1.08,0,0,1.09] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "け" @1280.35,593.98 m[1.08,0,0,1.08] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "ど" @644.28,593.2 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "こ" @742.89,593.12 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "ま" @841.21,593.04 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "で" @939.26,592.97 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "も" @1037.02,592.89 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "行" @1155.12,592.8 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "け" @1272.82,592.71 m[1.05,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 drawImage off1 @0,0 a=1 fill=#000000
 ## t=36.2
@@ -1180,67 +1180,67 @@ drawImage off1 @0,0 a=1 fill=#000000
 fillRect 0,0 1920,1080 a=1 fill=#000000
 [off1] clearRect 0,0 1920,1080
 [off0] clearRect 0,0 1920,1080
-[off0] fill A789.64,454.09 r=2.29 0..6.28 a=0.31 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1080.22,543.88 r=3.34 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A766.28,557.71 r=1.85 0..6.28 a=0.79 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A794.67,597.31 r=3.6 0..6.28 a=0.76 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1208.88,372.72 r=3.86 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A936.68,576.37 r=3.86 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1205.01,486.14 r=2.03 0..6.28 a=0.02 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A938.3,540.51 r=5.2 0..6.28 a=0.23 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A778.04,520.11 r=2.27 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A694.2,506.71 r=3.93 0..6.28 a=0.05 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A996.11,608.98 r=3.77 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1232.01,536.14 r=1.64 0..6.28 a=0.43 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1023.15,553.82 r=2.5 0..6.28 a=0.25 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1024.6,538.6 r=2.71 0..6.28 a=0.33 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A647.67,540.8 r=2.69 0..6.28 a=0.2 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A689.14,568.48 r=3.6 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1234.08,397.94 r=3.2 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1194.23,430.41 r=3.98 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1139.56,558.01 r=5.01 0..6.28 a=0.3 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A845.58,499.64 r=4.38 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] stroke M2838.38,-913.17 L-1215.87,1491.64 a=0.75 stroke=#FFD166 lw=7.81 butt miter glow=36.4:#FFD166
-[off0] stroke M700.55,641.85 L1219.45,641.86 a=1 stroke=#FFD166 lw=6.8 butt miter glow=36.4:#FFD166
-[off0] fillText "光" @770.64,609.11 m[1.07,0,0,1.07] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "光" @770.64,609.11 m[1.07,0,0,1.07] font=400 131px mt-noto-sans-jp align=center a=1 fill=grad(420.51,-41.28,565.88,11.64|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "を" @889.92,609.11 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "を" @889.92,609.11 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(309.01,-56.1,454.38,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "掴" @1030.08,609.12 m[1.07,0,0,1.07] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "掴" @1030.08,609.12 m[1.07,0,0,1.07] font=400 170px mt-noto-sans-jp align=center a=1 fill=grad(178.01,-26.46,323.38,26.46|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "め" @1170.25,609.12 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "め" @1170.25,609.12 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(47.01,-56.1,192.38,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fill A790.61,454.57 r=2.28 0..6.28 a=0.31 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1079.53,543.85 r=3.32 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A767.38,557.61 r=1.84 0..6.28 a=0.79 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A795.61,596.98 r=3.58 0..6.28 a=0.76 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1207.47,373.67 r=3.84 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A936.81,576.16 r=3.83 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1203.62,486.44 r=2.02 0..6.28 a=0.02 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A938.42,540.51 r=5.17 0..6.28 a=0.23 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A779.07,520.23 r=2.26 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A695.71,506.9 r=3.91 0..6.28 a=0.05 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A995.9,608.59 r=3.75 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1230.46,536.16 r=1.63 0..6.28 a=0.43 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1022.79,553.74 r=2.49 0..6.28 a=0.25 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1024.23,538.61 r=2.69 0..6.28 a=0.33 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A649.44,540.8 r=2.67 0..6.28 a=0.2 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A690.68,568.32 r=3.58 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1232.53,398.75 r=3.18 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1192.9,431.04 r=3.96 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1138.54,557.9 r=4.98 0..6.28 a=0.3 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A846.23,499.87 r=4.36 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] stroke M2827.72,-904.92 L-1203.52,1486.24 a=0.75 stroke=#FFD166 lw=7.81 butt miter glow=36.4:#FFD166
+[off0] stroke M702.02,641.27 L1217.98,641.28 a=1 stroke=#FFD166 lw=6.8 butt miter glow=36.4:#FFD166
+[off0] fillText "光" @771.71,608.72 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "光" @771.71,608.72 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=grad(420.51,-41.28,565.88,11.64|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "を" @890.32,608.72 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "を" @890.32,608.72 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(309.01,-56.1,454.38,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "掴" @1029.68,608.72 m[1.06,0,0,1.06] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "掴" @1029.68,608.72 m[1.06,0,0,1.06] font=400 170px mt-noto-sans-jp align=center a=1 fill=grad(178.01,-26.46,323.38,26.46|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "め" @1169.05,608.73 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "め" @1169.05,608.73 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(47.01,-56.1,192.38,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 [off0] clearRect 0,0 1920,1080
-[off0] fill A789.94,456.13 r=2.32 0..6.28 a=0.36 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1080.52,544.97 r=3.37 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A765.62,558.91 r=1.87 0..6.28 a=0.83 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A793.88,600.1 r=3.63 0..6.28 a=0.66 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1208.94,375.47 r=3.89 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A936.02,578.74 r=3.89 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1205.62,489.02 r=2.05 0..6.28 a=0.06 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A938.36,542.3 r=5.25 0..6.28 a=0.13 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A777.68,522.06 r=2.29 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A996.26,611.41 r=3.8 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1232.81,537.42 r=1.65 0..6.28 a=0.47 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1023.3,556.23 r=2.52 0..6.28 a=0.17 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1025.07,540.45 r=2.72 0..6.28 a=0.26 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A647.37,541.97 r=2.72 0..6.28 a=0.24 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A688.45,571.11 r=3.63 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1234.51,399.85 r=3.23 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1194.9,432.58 r=4.02 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A1140.27,560.24 r=5.05 0..6.28 a=0.21 fill=#FFD166 glow=36.4:#FFD166
-[off0] fill A845.58,501.98 r=4.42 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
-[off0] stroke M2840.38,-914.57 L-1218.19,1492.56 a=0.75 stroke=#FFD166 lw=7.81 butt miter glow=36.4:#FFD166
-[off0] stroke M700.27,641.64 L1219.73,642.26 a=1 stroke=#FFD166 lw=6.8 butt miter glow=36.4:#FFD166
-[off0] fillText "光" @770.89,609.03 m[1.07,0,0,1.07] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "光" @770.89,609.03 m[1.07,0,0,1.07] font=400 131px mt-noto-sans-jp align=center a=1 fill=grad(397.66,-41.28,543.03,11.64|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "を" @889.92,609.13 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "を" @889.92,609.13 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(286.16,-56.1,431.53,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "掴" @1030.19,609.24 m[1.07,0,0,1.07] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "掴" @1030.19,609.24 m[1.07,0,0,1.07] font=400 170px mt-noto-sans-jp align=center a=1 fill=grad(155.16,-26.46,300.53,26.46|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
-[off0] fillText "め" @1170.93,609.35 m[1.08,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
-[off0] fillText "め" @1170.93,609.35 m[1.08,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(24.16,-56.1,169.53,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fill A791.08,456.69 r=2.31 0..6.28 a=0.36 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1079.71,544.93 r=3.35 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A766.92,558.78 r=1.86 0..6.28 a=0.83 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A795,599.7 r=3.6 0..6.28 a=0.66 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1207.27,376.57 r=3.86 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A936.18,578.48 r=3.86 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1203.97,489.36 r=2.04 0..6.28 a=0.06 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A938.51,542.29 r=5.21 0..6.28 a=0.13 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A778.9,522.19 r=2.27 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A996.02,610.93 r=3.77 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1230.98,537.44 r=1.64 0..6.28 a=0.47 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1022.87,556.12 r=2.5 0..6.28 a=0.17 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1024.63,540.45 r=2.71 0..6.28 a=0.26 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A649.46,541.96 r=2.7 0..6.28 a=0.24 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A690.27,570.9 r=3.61 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1232.67,400.79 r=3.21 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1193.32,433.3 r=3.99 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A1139.07,560.11 r=5.01 0..6.28 a=0.21 fill=#FFD166 glow=36.4:#FFD166
+[off0] fill A846.34,502.24 r=4.39 0..6.28 a=0.9 fill=#FFD166 glow=36.4:#FFD166
+[off0] stroke M2827.78,-904.82 L-1203.59,1486.17 a=0.75 stroke=#FFD166 lw=7.81 butt miter glow=36.4:#FFD166
+[off0] stroke M702.01,640.96 L1217.99,641.58 a=1 stroke=#FFD166 lw=6.8 butt miter glow=36.4:#FFD166
+[off0] fillText "光" @772.16,608.57 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "光" @772.16,608.57 m[1.06,0,0,1.06] font=400 131px mt-noto-sans-jp align=center a=1 fill=grad(397.66,-41.28,543.03,11.64|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "を" @890.39,608.66 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "を" @890.39,608.66 m[1.06,0,0,1.06] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(286.16,-56.1,431.53,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "掴" @1029.72,608.78 m[1.07,0,0,1.06] font=400 170px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "掴" @1029.72,608.78 m[1.07,0,0,1.06] font=400 170px mt-noto-sans-jp align=center a=1 fill=grad(155.16,-26.46,300.53,26.46|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
+[off0] fillText "め" @1169.52,608.89 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=#FFD166 glow=36.4:#FFD166
+[off0] fillText "め" @1169.52,608.89 m[1.07,0,0,1.07] font=400 92px mt-noto-sans-jp align=center a=1 fill=grad(24.16,-56.1,169.53,-3.18|0:rgba(255,255,255,0) 0.5:rgba(255,255,255,0.85) 1:rgba(255,255,255,0))
 [off1] drawImage off0 @0,0 a=0.5 fill=#000000 op=lighter
 drawImage off1 @0,0 a=1 fill=#000000
 ## t=48.261

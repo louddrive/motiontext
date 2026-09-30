@@ -55,7 +55,8 @@ export interface Theme {
   motionBlur: { shutter: number; samples: number };
   /**
    * 追加エフェクトの強さ（shake: カメラシェイクの強さ、shineRate / particleRate: サビ行に付ける確率、interludeRate: 長い間奏に進み具合を表示する確率、
-   * underlineRate: 字幕に線を引く確率、pulse: 曲の拍に合わせてサビの歌詞が弾む大きさ（拡大率。曲を読み込んで拍に合わせるときだけ））
+   * underlineRate: 字幕に線を引く確率、pulse: 曲の拍に合わせてサビの歌詞が弾む大きさ（拡大率。曲を読み込んで拍に合わせるときだけ）、
+   * pulseEvery: 何拍に1回弾ませるか（1 で毎拍、2 で小節の1・3拍目））
    */
-  fx: { shake: number; shineRate: number; particleRate: number; interludeRate: number; underlineRate: number; pulse: number };
+  fx: { shake: number; shineRate: number; particleRate: number; interludeRate: number; underlineRate: number; pulse: number; pulseEvery: number };
 }

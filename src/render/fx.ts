@@ -69,12 +69,25 @@ export const PULSE_DECAY_SEC = 0.15;
 export const PULSE_DOWNBEAT_BOOST = 1.5;
 
 /**
- * 時刻 t の拍の脈動の拡大率（1 で脈動なし）。from より前の拍では弾まない（登場が終わってから弾ませる）。
- * amount は Timeline の sync.pulse
+ * 拍 i が、every 拍に1回の弾む拍か。小節の頭から数えて 0, every, 2 * every … 拍目（every = 2 なら小節の1・3拍目）。
+ * 小節の頭より前の拍は、拍の番号そのもので数える
  */
-export function pulseScale(rhythm: TimelineRhythm, amount: number, t: number, from: number): number {
+function isPulseBeat(rhythm: TimelineRhythm, i: number, every: number): boolean {
+  if (every <= 1) return true;
+  const d = lastIndexAtOrBefore(rhythm.downbeats, rhythm.beats[i]);
+  const origin = d >= 0 ? lastIndexAtOrBefore(rhythm.beats, rhythm.downbeats[d]) : 0;
+  return (((i - origin) % every) + every) % every === 0;
+}
+
+/**
+ * 時刻 t の拍の脈動の拡大率（1 で脈動なし）。from より前の拍では弾まない（登場が終わってから弾ませる）。
+ * amount は Timeline の sync.pulse、every は sync.pulseEvery（何拍に1回弾ませるか）
+ */
+export function pulseScale(rhythm: TimelineRhythm, amount: number, t: number, from: number, every = 1): number {
   if (amount <= 0) return 1;
-  const i = lastIndexAtOrBefore(rhythm.beats, t);
+  let i = lastIndexAtOrBefore(rhythm.beats, t);
+  // 弾まない拍は飛ばし、直前の弾む拍からの経過で決める
+  while (i >= 0 && !isPulseBeat(rhythm, i, every)) i--;
   if (i < 0) return 1;
   const b = rhythm.beats[i];
   if (b < from) return 1;

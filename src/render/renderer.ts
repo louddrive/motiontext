@@ -191,7 +191,7 @@ function drawLyrics(ctx: Ctx2D, timeline: Timeline, layouts: Layouts, t: number)
     ctx.save();
     // 拍の脈動: 登場が終わってから退場が始まるまで、拍ごとに歌詞のまとまりの中心を基準に少し拡大する
     if (item.sync?.pulse && timeline.rhythm && outP === 0) {
-      const s = pulseScale(timeline.rhythm, item.sync.pulse, t, item.start + inDur);
+      const s = pulseScale(timeline.rhythm, item.sync.pulse, t, item.start + inDur, item.sync.pulseEvery);
       if (s !== 1) {
         const cx = layout.bbox.x + layout.bbox.w / 2;
         const cy = layout.bbox.y + layout.bbox.h / 2;
